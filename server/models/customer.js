@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const Clothes = require("./clothesData");
+const Clothes = require("./clothesSchema");
 
 
 const CustomerSchema = new mongoose.Schema(
@@ -17,9 +17,10 @@ const CustomerSchema = new mongoose.Schema(
        password:{
         type: String
        },
-       cart:{
-          type: [String]
-       }
+       cart:[{
+         type: mongoose.Schema.Types.ObjectId,
+         ref: 'Clothes', // Reference Clothes model     
+       }]
        
     }
 )

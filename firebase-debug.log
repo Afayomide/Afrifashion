@@ -1,0 +1,123 @@
+[debug] [2024-03-16T10:26:50.689Z] ----------------------------------------------------------------------
+[debug] [2024-03-16T10:26:50.692Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\DARAMOLA\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2024-03-16T10:26:50.693Z] CLI Version:   12.8.1
+[debug] [2024-03-16T10:26:50.693Z] Platform:      win32
+[debug] [2024-03-16T10:26:50.693Z] Node Version:  v20.11.1
+[debug] [2024-03-16T10:26:50.693Z] Time:          Sat Mar 16 2024 11:26:50 GMT+0100 (West Africa Standard Time)
+[debug] [2024-03-16T10:26:50.693Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-03-16T10:26:50.777Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-03-16T10:26:50.777Z] > authorizing via signed-in user (daraseyi086@gmail.com)
+[debug] [2024-03-16T10:26:50.777Z] [iam] checking project coolafristyles for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2024-03-16T10:26:50.778Z] > refreshing access token with scopes: []
+[debug] [2024-03-16T10:26:50.780Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-03-16T10:26:50.780Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-03-16T10:27:05.139Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2024-03-16T10:27:05.139Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-03-16T10:27:05.162Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/coolafristyles:testIamPermissions [none]
+[debug] [2024-03-16T10:27:05.162Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/coolafristyles:testIamPermissions x-goog-quota-user=projects/coolafristyles
+[debug] [2024-03-16T10:27:05.163Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/coolafristyles:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-03-16T10:27:09.128Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/coolafristyles:testIamPermissions 200
+[debug] [2024-03-16T10:27:09.129Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/coolafristyles:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-03-16T10:27:09.130Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/coolafristyles [none]
+[debug] [2024-03-16T10:27:09.872Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/coolafristyles 200
+[debug] [2024-03-16T10:27:09.873Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/coolafristyles {"projectId":"coolafristyles","projectNumber":"115919190834","displayName":"coolafristyles","name":"projects/coolafristyles","resources":{"hostingSite":"coolafristyles"},"state":"ACTIVE","etag":"1_658f237e-d6b7-4631-8ef4-7dd6d3778d1c"}
+[info] 
+[info] === Deploying to 'coolafristyles'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2024-03-16T10:27:09.887Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/coolafristyles/versions [none]
+[debug] [2024-03-16T10:27:09.887Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/coolafristyles/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2024-03-16T10:27:11.896Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/coolafristyles/versions 200
+[debug] [2024-03-16T10:27:11.896Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/coolafristyles/versions {"name":"projects/115919190834/sites/coolafristyles/versions/230acf7177f21a21","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[coolafristyles]: beginning deploy... 
+[info] i  hosting[coolafristyles]: found 16 files in build 
+[debug] [2024-03-16T10:27:11.913Z] [hosting] uploading with 200 concurrency
+[debug] [2024-03-16T10:27:12.574Z] [hosting] hash cache [YnVpbGQ] stored for 16 files
+[debug] [2024-03-16T10:27:12.575Z] [hosting][hash queue][FINAL] {"max":653,"min":2,"avg":49.875,"active":0,"complete":16,"success":16,"errored":0,"retried":0,"total":16,"elapsed":660}
+[debug] [2024-03-16T10:27:12.575Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/115919190834/sites/coolafristyles/versions/230acf7177f21a21:populateFiles [none]
+[debug] [2024-03-16T10:27:12.575Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/115919190834/sites/coolafristyles/versions/230acf7177f21a21:populateFiles {"files":{"/favicon.ico":"27edce7be5922cf0bef7d4136f69b5bfbdd5bf8c13c7b026f71187d41a00aa7d","/logo192.png":"79e2b749561016bc8af300ea19f48347ceed3cb1a54f48ae456172eca45e08f0","/logo512.png":"212b102aa09e51b3b3e06647e81f7801a61333e171f6582e8124379aabccb41d","/manifest.json":"ee04fb47e525c67d8424ffe9b4d8a8a24e434504478afca4e0ca602146836d4c","/robots.txt":"bfe106a3fb878dc83461c86818bf74fc1bdc7f28538ba613cd3e775516ce8b49","/asset-manifest.json":"8046a560862cbfbdb3f3a33f8ba41243d60cb34331c8301ea9137a95fcfba14c","/index.html":"2e9f0e9167acf78adba1c95050a26c5678cc999d3f51268844656b246ea39f33","/static/css/main.2f99aca9.css":"365cd518d396ed0899fe113dbe84cfd016d103d2bd72f08e08ba85759e7147af","/static/js/453.f2576641.chunk.js":"5f83589fb088492e60924b0187df798d026f1b86b226e21ed86e26e47a572da4","/static/css/main.2f99aca9.css.map":"6d0e18ea5fe53903e958c7c87cf66248f07a646def68b0b190558498311ae5c7","/static/js/main.b30011bf.js.LICENSE.txt":"c803781cc4ff549574d326538b24f391cd624f6e44a4a1a3a6c9d2b201a8cc1e","/static/js/453.f2576641.chunk.js.map":"5f34709ae00dcb1b0939533941bd82bff3d77dbf0043ff432aba49d470896f59","/static/media/formbg.511a70857cd6247c4f0e.webp":"cda67783d46d538cbfed36cc0cbe09e4b05ba7e24378ed1b244342c81a5f6ed2","/static/media/fabricsbg.9e9cd948ee891d634c0e.jpeg":"2da4f5b162a802064c60c765b74d94b1cdd500e1fbac02002f92ddb58e020a5e","/static/js/main.b30011bf.js":"a75403f85d1df7ff34fd1a4e53ec8f4aa1ac0965c6517b8bf6b49e7c2d7be9df","/static/js/main.b30011bf.js.map":"cd231d4a686cdda9af8de7d82a68d2d0b05f50b2867d95ca2fb4686fac9be1b0"}}
+[debug] [2024-03-16T10:27:13.052Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/115919190834/sites/coolafristyles/versions/230acf7177f21a21:populateFiles 200
+[debug] [2024-03-16T10:27:13.053Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/115919190834/sites/coolafristyles/versions/230acf7177f21a21:populateFiles {"uploadRequiredHashes":["365cd518d396ed0899fe113dbe84cfd016d103d2bd72f08e08ba85759e7147af","6d0e18ea5fe53903e958c7c87cf66248f07a646def68b0b190558498311ae5c7","2da4f5b162a802064c60c765b74d94b1cdd500e1fbac02002f92ddb58e020a5e","a75403f85d1df7ff34fd1a4e53ec8f4aa1ac0965c6517b8bf6b49e7c2d7be9df","2e9f0e9167acf78adba1c95050a26c5678cc999d3f51268844656b246ea39f33","cd231d4a686cdda9af8de7d82a68d2d0b05f50b2867d95ca2fb4686fac9be1b0","cda67783d46d538cbfed36cc0cbe09e4b05ba7e24378ed1b244342c81a5f6ed2","8046a560862cbfbdb3f3a33f8ba41243d60cb34331c8301ea9137a95fcfba14c"],"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files"}
+[debug] [2024-03-16T10:27:13.055Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/365cd518d396ed0899fe113dbe84cfd016d103d2bd72f08e08ba85759e7147af [none]
+[debug] [2024-03-16T10:27:13.055Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/365cd518d396ed0899fe113dbe84cfd016d103d2bd72f08e08ba85759e7147af [stream]
+[debug] [2024-03-16T10:27:13.057Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/6d0e18ea5fe53903e958c7c87cf66248f07a646def68b0b190558498311ae5c7 [none]
+[debug] [2024-03-16T10:27:13.057Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/6d0e18ea5fe53903e958c7c87cf66248f07a646def68b0b190558498311ae5c7 [stream]
+[debug] [2024-03-16T10:27:13.059Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/2da4f5b162a802064c60c765b74d94b1cdd500e1fbac02002f92ddb58e020a5e [none]
+[debug] [2024-03-16T10:27:13.059Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/2da4f5b162a802064c60c765b74d94b1cdd500e1fbac02002f92ddb58e020a5e [stream]
+[debug] [2024-03-16T10:27:13.062Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/a75403f85d1df7ff34fd1a4e53ec8f4aa1ac0965c6517b8bf6b49e7c2d7be9df [none]
+[debug] [2024-03-16T10:27:13.062Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/a75403f85d1df7ff34fd1a4e53ec8f4aa1ac0965c6517b8bf6b49e7c2d7be9df [stream]
+[debug] [2024-03-16T10:27:13.063Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/2e9f0e9167acf78adba1c95050a26c5678cc999d3f51268844656b246ea39f33 [none]
+[debug] [2024-03-16T10:27:13.063Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/2e9f0e9167acf78adba1c95050a26c5678cc999d3f51268844656b246ea39f33 [stream]
+[debug] [2024-03-16T10:27:13.064Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/cd231d4a686cdda9af8de7d82a68d2d0b05f50b2867d95ca2fb4686fac9be1b0 [none]
+[debug] [2024-03-16T10:27:13.064Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/cd231d4a686cdda9af8de7d82a68d2d0b05f50b2867d95ca2fb4686fac9be1b0 [stream]
+[debug] [2024-03-16T10:27:13.065Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/cda67783d46d538cbfed36cc0cbe09e4b05ba7e24378ed1b244342c81a5f6ed2 [none]
+[debug] [2024-03-16T10:27:13.065Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/cda67783d46d538cbfed36cc0cbe09e4b05ba7e24378ed1b244342c81a5f6ed2 [stream]
+[debug] [2024-03-16T10:27:13.065Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/8046a560862cbfbdb3f3a33f8ba41243d60cb34331c8301ea9137a95fcfba14c [none]
+[debug] [2024-03-16T10:27:13.066Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/8046a560862cbfbdb3f3a33f8ba41243d60cb34331c8301ea9137a95fcfba14c [stream]
+[debug] [2024-03-16T10:27:13.067Z] [hosting][populate queue][FINAL] {"max":483,"min":483,"avg":483,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":495}
+[debug] [2024-03-16T10:27:13.067Z] [hosting] uploads queued: 8
+[debug] [2024-03-16T10:27:15.343Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/cda67783d46d538cbfed36cc0cbe09e4b05ba7e24378ed1b244342c81a5f6ed2 200
+[debug] [2024-03-16T10:27:15.344Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/cda67783d46d538cbfed36cc0cbe09e4b05ba7e24378ed1b244342c81a5f6ed2 [stream]
+[debug] [2024-03-16T10:27:15.396Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/2da4f5b162a802064c60c765b74d94b1cdd500e1fbac02002f92ddb58e020a5e 200
+[debug] [2024-03-16T10:27:15.396Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/2da4f5b162a802064c60c765b74d94b1cdd500e1fbac02002f92ddb58e020a5e [stream]
+[debug] [2024-03-16T10:27:15.415Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/8046a560862cbfbdb3f3a33f8ba41243d60cb34331c8301ea9137a95fcfba14c 200
+[debug] [2024-03-16T10:27:15.415Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/8046a560862cbfbdb3f3a33f8ba41243d60cb34331c8301ea9137a95fcfba14c [stream]
+[debug] [2024-03-16T10:27:15.416Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/6d0e18ea5fe53903e958c7c87cf66248f07a646def68b0b190558498311ae5c7 200
+[debug] [2024-03-16T10:27:15.416Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/6d0e18ea5fe53903e958c7c87cf66248f07a646def68b0b190558498311ae5c7 [stream]
+[debug] [2024-03-16T10:27:15.606Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/365cd518d396ed0899fe113dbe84cfd016d103d2bd72f08e08ba85759e7147af 200
+[debug] [2024-03-16T10:27:15.607Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/365cd518d396ed0899fe113dbe84cfd016d103d2bd72f08e08ba85759e7147af [stream]
+[debug] [2024-03-16T10:27:15.649Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/2e9f0e9167acf78adba1c95050a26c5678cc999d3f51268844656b246ea39f33 200
+[debug] [2024-03-16T10:27:15.649Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/2e9f0e9167acf78adba1c95050a26c5678cc999d3f51268844656b246ea39f33 [stream]
+[debug] [2024-03-16T10:27:15.880Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/a75403f85d1df7ff34fd1a4e53ec8f4aa1ac0965c6517b8bf6b49e7c2d7be9df 200
+[debug] [2024-03-16T10:27:15.880Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/a75403f85d1df7ff34fd1a4e53ec8f4aa1ac0965c6517b8bf6b49e7c2d7be9df [stream]
+[debug] [2024-03-16T10:27:26.476Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/cd231d4a686cdda9af8de7d82a68d2d0b05f50b2867d95ca2fb4686fac9be1b0 200
+[debug] [2024-03-16T10:27:26.477Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/coolafristyles/versions/230acf7177f21a21/files/cd231d4a686cdda9af8de7d82a68d2d0b05f50b2867d95ca2fb4686fac9be1b0 [stream]
+[debug] [2024-03-16T10:27:26.477Z] [hosting][upload queue][FINAL] {"max":13423,"min":2290,"avg":3844.25,"active":0,"complete":8,"success":8,"errored":0,"retried":0,"total":8,"elapsed":13424}
+[info] +  hosting[coolafristyles]: file upload complete 
+[debug] [2024-03-16T10:27:26.481Z] [hosting] deploy completed after 14581ms
+[debug] [2024-03-16T10:27:26.482Z] [
+  {
+    "config": {
+      "public": "build",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "site": "coolafristyles"
+    },
+    "version": "projects/115919190834/sites/coolafristyles/versions/230acf7177f21a21"
+  }
+]
+[info] i  hosting[coolafristyles]: finalizing version... 
+[debug] [2024-03-16T10:27:26.486Z] >>> [apiv2][query] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/coolafristyles/versions/230acf7177f21a21 updateMask=status%2Cconfig
+[debug] [2024-03-16T10:27:26.487Z] >>> [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/coolafristyles/versions/230acf7177f21a21 {"status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]}}
+[debug] [2024-03-16T10:27:32.172Z] <<< [apiv2][status] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/coolafristyles/versions/230acf7177f21a21 200
+[debug] [2024-03-16T10:27:32.172Z] <<< [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/coolafristyles/versions/230acf7177f21a21 {"name":"projects/115919190834/sites/coolafristyles/versions/230acf7177f21a21","status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2024-03-16T10:27:10.584244Z","createUser":{"email":"daraseyi086@gmail.com"},"finalizeTime":"2024-03-16T10:27:27.780Z","finalizeUser":{"email":"daraseyi086@gmail.com"}}
+[debug] [2024-03-16T10:27:32.172Z] [hosting] finalized version for coolafristyles:[object Object]
+[info] +  hosting[coolafristyles]: version finalized 
+[info] i  hosting[coolafristyles]: releasing new version... 
+[debug] [2024-03-16T10:27:32.177Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/coolafristyles/channels/live/releases versionName=projects%2F115919190834%2Fsites%2Fcoolafristyles%2Fversions%2F230acf7177f21a21
+[debug] [2024-03-16T10:27:32.177Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/coolafristyles/channels/live/releases {}
+[debug] [2024-03-16T10:27:32.811Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/coolafristyles/channels/live/releases 200
+[debug] [2024-03-16T10:27:32.811Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/coolafristyles/channels/live/releases {"name":"projects/115919190834/sites/coolafristyles/channels/live/releases/1710584851113000","version":{"name":"projects/115919190834/sites/coolafristyles/versions/230acf7177f21a21","status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2024-03-16T10:27:10.584244Z","createUser":{"email":"daraseyi086@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocLXn9hbvaYOBxtoP1grIQM37l19BZjWdICRZJRck7kp=mo"},"finalizeTime":"2024-03-16T10:27:27.780Z","finalizeUser":{"email":"daraseyi086@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocLXn9hbvaYOBxtoP1grIQM37l19BZjWdICRZJRck7kp=mo"}},"type":"DEPLOY","releaseTime":"2024-03-16T10:27:31.113Z","releaseUser":{"email":"daraseyi086@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocLXn9hbvaYOBxtoP1grIQM37l19BZjWdICRZJRck7kp=mo"}}
+[debug] [2024-03-16T10:27:32.811Z] [hosting] release: {"name":"projects/115919190834/sites/coolafristyles/channels/live/releases/1710584851113000","version":{"name":"projects/115919190834/sites/coolafristyles/versions/230acf7177f21a21","status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2024-03-16T10:27:10.584244Z","createUser":{"email":"daraseyi086@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocLXn9hbvaYOBxtoP1grIQM37l19BZjWdICRZJRck7kp=mo"},"finalizeTime":"2024-03-16T10:27:27.780Z","finalizeUser":{"email":"daraseyi086@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocLXn9hbvaYOBxtoP1grIQM37l19BZjWdICRZJRck7kp=mo"}},"type":"DEPLOY","releaseTime":"2024-03-16T10:27:31.113Z","releaseUser":{"email":"daraseyi086@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocLXn9hbvaYOBxtoP1grIQM37l19BZjWdICRZJRck7kp=mo"}}
+[info] +  hosting[coolafristyles]: release complete 
+[info] 
+[info] +  Deploy complete! 
+[info] 
+[info] Project Console: https://console.firebase.google.com/project/coolafristyles/overview
+[info] Hosting URL: https://coolafristyles.web.app
+[debug] [2024-03-16T10:27:55.668Z] Error: Timed out.
+    at Timeout._onTimeout (C:\Users\DARAMOLA\AppData\Roaming\npm\node_modules\firebase-tools\lib\utils.js:254:49)
+    at listOnTimeout (node:internal/timers:573:17)
+    at process.processTimers (node:internal/timers:514:7)
+[error] 
+[error] Error: An unexpected error has occurred.

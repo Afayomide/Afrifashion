@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const Clothes = require("./models/clothesData")
+const Clothes = require("./models/clothesSchema")
 const Customer = require('./models/customer');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
@@ -58,9 +58,7 @@ app.get('/', (req, res) => {
   res.redirect(targetURL);
 
 });
-app.get("/api/search", (req,res) =>{
-  res.redirect(targetURL);
-})
+
 app.get("/api", (req,res) =>{
   res.redirect(targetURL);
 })
@@ -119,13 +117,6 @@ app.post('/api/signup', async (req, res) => {
 });
 
 
-
-
-app.get('/api/user', (req, res) => {
-  let name = res.app.get("name")
-  res.json({ success: true, message: 'User route is protected', name});
-});
-
 app.get("/api/cart",async(req,res) => {
      let name = res.app.get("name")
      var cartLength
@@ -134,13 +125,14 @@ app.get("/api/cart",async(req,res) => {
       console.log(customer)
         if(customer) {
            cartLength = customer.cart.length
+           console.log(customer.cart.length)       
+            res.json({cartLength});
         }
 
         else {
           return res.status(404).json({ message: 'User not found' });
         }
                   
-        res.json(cartLength);
 
     
       } catch (error) {
@@ -150,31 +142,28 @@ app.get("/api/cart",async(req,res) => {
     });
 
 
+    app.post('/api/cart/add', async (req, res) => {
+      try {
+        const { productId } = req.body; // Extract product ID from request body
+    
+        if (!productId) {
+          return res.status(400).json({ message: 'Missing product ID' });
+        }
+    
+        const product = await Clothes.findById(productId); // Find product by ID
+        if (!product) {
+          return res.status(404).json({ message: 'Product not found' });
+        }
+    
+        // Implement cart logic here (e.g., store cart items in a database or session)
+    
+        res.json({ message: 'Product added to cart successfully' }); // Placeholder success message
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+      }
+    });
 
-
-  
-  app.post('/api/search', async (req, res) => {
-    let name = res.app.get("name")
-
-    try {
-      const result = await Instruments.find({ RiskScore: level });
-  
-      res.json(result);
-    } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
-
-
-app.post('/api/logout', (req, res) => {
-  res.clearCookie('token');
-  res.json({ message: 'Logout successful' });
-});
-
-app.get('/api/protected', (req, res) => {
-  res.json({ message: 'This is a protected route', user: req.user});
-});
 
 
 

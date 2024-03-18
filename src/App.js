@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import Header from './components/header/header';
@@ -9,8 +10,21 @@ import Footer from './components/footer/footer';
 import Signup from './components/forms/signup';
 import Login from './components/forms/login';
 import Cart from './components/cart/cart';
+import { FaPlay } from "react-icons/fa";
+import { FaPause } from "react-icons/fa6";
+
+import Sound from 'react-sound';
+import AfroSounds from "./assets/afrosounds.mp3"
+
 
 function App() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  const togglePlay = () => {
+    setIsPlaying(!isPlaying);
+  };
+
   return (
     <div className="App">
    <Header/>
@@ -25,6 +39,19 @@ function App() {
    <Route element={<Cart/>} path="/cart"/>
    </Routes>  
    </div>
+   <div className="sound">
+   <Sound
+        url={AfroSounds}
+        playStatus={isPlaying ? Sound.status.PLAYING : Sound.status.PAUSED}
+        ref={audioRef}
+      />
+       </div>
+       <div onClick={togglePlay}>
+  {
+        !isPlaying ? <FaPlay   className='playmusic'/> : <FaPause className='playmusic'/>
+       }
+       </div>
+     
  
    <Footer/>
     </div>

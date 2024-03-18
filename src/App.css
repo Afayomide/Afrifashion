@@ -9,6 +9,13 @@
   --bgbuttons: navy;
   --buttonscolor: #fff
 }
+.playmusic{
+  position: fixed;
+  bottom: 2vh;
+  color: var(--navcolor);
+  font-size: 1.5rem;
+  left: 1rem;
+}
 
 
 html,body{
