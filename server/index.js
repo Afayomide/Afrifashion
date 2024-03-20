@@ -56,7 +56,7 @@ app.use(bodyParser.text());
 
 
 app.get('/', (req, res) => {
-  res.redirect(targetURL);
+  res.send("welcome");
 
 });
 
