@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import "./header.css"
 import { BsFillTelephoneInboundFill } from "react-icons/bs";
 import { BsCart } from "react-icons/bs";
@@ -11,6 +11,8 @@ import { Link, NavLink } from "react-router-dom";
 import { GiAfrica } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
+import { CartContext } from '../cartContext';
+
 
 
 function Header() {
@@ -19,10 +21,12 @@ function Header() {
   const[authenticated, setAuthenticated] = useState()
   const [slideout, setSlideOut] = useState("")
   const [cartNo, setCartNo] = useState()
+  const { shouldFetchCart,setShouldFetchCart } = useContext(CartContext);
 
+
+  const Token = localStorage.getItem('authToken');
 
   useEffect(() => {
-  const Token = localStorage.getItem('authToken');
 
     if (Token) {
       console.log(Token)
@@ -50,8 +54,11 @@ function Header() {
             }
           };
     
-          fetchData();
-        });
+          if (shouldFetchCart) {
+          fetchData(); 
+          setShouldFetchCart(false); // Reset flag after fetching
+          }
+        }, [shouldFetchCart]);
 
 
 
@@ -73,7 +80,7 @@ function Header() {
   };
     return(
      <header>
-     {authenticated ? (<div>
+     {Token ? (<div>
       <nav className="big-screen-nav">
 
 <div>
@@ -117,7 +124,7 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 
 <div className="log-sign">
 <NavLink className="cart-link" to="/cart">
-<BsCart /><sup>{authenticated ?`${cartNo}` : 0}</sup>
+<BsCart /><sup>{Token ?`${cartNo}` : 0}</sup>
 </NavLink>
 
 <p className= "big-screen-link" onClick={handleLogout}>Logout</p>
@@ -142,7 +149,7 @@ Cool Styles<GiAfrica className="africalogo"/>
 
 
 <NavLink className="cart-link" to="/cart">
-<BsCart /><sup>{authenticated ?`${cartNo}` : 0}</sup>
+<BsCart /><sup>{Token ?`${cartNo}` : 0}</sup>
 </NavLink>
 </nav>
 
@@ -210,7 +217,7 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 
 <div className="log-sign">
 <NavLink className="cart-link" to="/cart">
-<BsCart /><sup>{authenticated ?`${cartNo}` : 0}</sup>
+<BsCart /><sup>{Token ?`${cartNo}` : 0}</sup>
 </NavLink>
 {/*  */}
 <NavLink className={({ isActive, isPending }) =>
@@ -240,7 +247,7 @@ Cool Styles<GiAfrica className="africalogo"/>
 
 
 <NavLink className="cart-link" to="/cart">
-<BsCart /><sup>{authenticated ?`${cartNo}` : 0}</sup>
+<BsCart /><sup>{Token ?`${cartNo}` : 0}</sup>
 </NavLink>
 </nav>
 

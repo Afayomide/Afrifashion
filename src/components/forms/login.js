@@ -24,6 +24,14 @@ export default function Login () {
              }
           }
   
+          const handleLogout = () => {
+            // Clear the token from localStorage (or sessionStorage)
+            localStorage.removeItem('authToken');
+            localStorage.removeItem("username")
+              navigate("/")
+          };
+
+
       const handleLogin = async (e) => { 
     e.preventDefault()
     function callCheck(){
@@ -46,9 +54,9 @@ export default function Login () {
           setErr(success)
           console.log(`Login successful. Token: ${token}`);
   
-          setInterval(() => {
-            localStorage.removeItem('adotadvisortoken');
-          }, 600000);
+          setTimeout(() => {
+            handleLogout()
+          }, 1800000);
         } else {
           console.error('Login failed:', response.data.message);
    setErr(response.data.message)
