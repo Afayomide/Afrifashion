@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './form.css';
 import { BsEyeFill } from 'react-icons/bs';
 import { BsEyeSlashFill } from 'react-icons/bs';
@@ -125,7 +125,8 @@ export default function Signup () {
            </div>     
         </div>  
      
-          <button type="submit">Signup</button>
+          <button type="submit">Submit</button>
+         <small>existing User? <Link to="/login" className='form-small-link'> login </Link></small>
         </form>
       </div>
     );

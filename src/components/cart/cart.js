@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios"
-
+import { useContext } from 'react';
+import { CartContext } from '../cartContext';
+import { Link } from "react-router-dom";
 
 function Cart () {
   const [cartList, setCartList] = useState([])
+  const { shouldFetchCart, setShouldFetchCart } = useContext(CartContext);
+
 
   useEffect(() => {
     const token = localStorage.getItem("authToken")
@@ -22,9 +26,12 @@ function Cart () {
         console.error('Error:', error);
       }
     };
-
-    fetchData();
+        fetchData();
+  
   })
+
+
+  
   
   async function  handleDelete  (item) {
     const token = localStorage.getItem("authToken");
@@ -38,15 +45,34 @@ function Cart () {
   
     const productId = item._id;
     try {
-      const response = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/api/cart/delete`,
-        { productId }, 
-        { headers }
-      );
-  
-      console.log('Deleting item from cart:', response.data); // Handle successful response (optional)
+      const fetchUrl = `${process.env.REACT_APP_API_URL}/api/cart/delete`;
+    
+      fetch(fetchUrl, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("authToken")}`,
+          'Content-Type': 'application/json' // Optional, but recommended for DELETE requests with a body
+        },
+        body: JSON.stringify({ productId }) // Include product ID in the request body
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Error deleting from cart: ${response.statusText}`);
+        }
+        return response.json(); // Parse the response as JSON
+      })
+      .then(data => {
+        console.log('Deleting item from cart:', data); // Handle successful deletion (optional)
+        setShouldFetchCart(true); 
+        setInterval(()=>{
+          setShouldFetchCart(false)
+        }, 10)
+      })
+      .catch(error => {
+        console.error('Error deleting from cart:', error);
+      });
     } catch (error) {
-      console.error('Error deleting from cart:', error);
+      console.error('Error deleting from cart (during fetch):', error);
     }
   }
       return(
@@ -55,10 +81,13 @@ function Cart () {
   {cartList ? (
         <ul>
           {cartList.map((item) => (
+            
             <div key={item._id}>
+            <Link to={`/${item._id}`}>
             <img src={item.image}/>
             <p>{item.name}</p>
-            <button onClick={() => handleDelete(item)}>Delete</button>
+            </Link>
+            <button onClick={() => handleDelete(item)}>Remove From Cart</button>
             </div>
           ))}
         </ul>

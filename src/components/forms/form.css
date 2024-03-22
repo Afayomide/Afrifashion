@@ -1,6 +1,17 @@
 .margin-top{
     margin-top: 20vh;
 }
+.auth-form button{
+    background-color: var(--navcolor);
+    color: white;
+    border-color: #1111;
+    padding: .5rem 1rem;
+    border-radius: 2rem;
+}
+.auth-form button:hover {
+    color:var(--navcolor);
+    background-color: white;
+}
 .auth-bg-image{
     filter: blur(10px);
     opacity: 0.5;
@@ -19,6 +30,7 @@
     right: 10px;
     position: absolute; 
 }
+
  
 .pwd-input-icons {
     position: relative;
@@ -53,6 +65,13 @@
     margin: auto;
     border-radius: 2rem;
    
+}
+form small{
+    margin-top: .5rem;
+    color: #111;
+}
+.form-small-link{
+    color: var(--navcolor);
 }
 .auth-form h3{
     font-size: 2rem;

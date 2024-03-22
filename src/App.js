@@ -13,6 +13,7 @@ import Cart from './components/cart/cart';
 import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa6";
 import { CartProvider } from './components/cartContext';
+import ItemsInfo from './components/sections/itemsInfo';
 
 import Sound from 'react-sound';
 import AfroSounds from "./assets/afrosounds.mp3"
@@ -39,6 +40,7 @@ function App() {
    <Route element={<Signup/>} path="/signup"/>
    <Route element={<Login/>} path="/login"/>
    <Route element={<Cart/>} path="/cart"/>
+   <Route element={<ItemsInfo/>} path='/:id'/>
    </Routes>  
    </div>
    <div className="sound">

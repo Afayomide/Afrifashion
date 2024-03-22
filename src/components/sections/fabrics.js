@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios"
 import { useContext } from 'react';
 import { CartContext } from '../cartContext';
+import { Link } from "react-router-dom";
 
   
 
@@ -69,15 +70,18 @@ const { setShouldFetchCart } = useContext(CartContext);
       ) : error ? (
         <p>Error: {error}</p>
       ) : (
-        fabricsList.length > 0 ? (
-          <ul>
-            {fabricsList.map((fabric) => (              <li key={fabric._id}>
+        fabricsList.length > 0 ? (              
+     <div>
+            {fabricsList.map((fabric) => ( 
+              <div key={fabric._id}>   
+               <Link to={`/${fabric._id}`}>   
                 <img src={fabric.image} alt={fabric.name} />
                 <p>{fabric.name}</p>
-                <button onClick={() => handleAddToCart(fabric)}>Add to Cart</button>
-              </li>
-            ))}
-          </ul>
+                 </Link>               
+                  <button onClick={() => handleAddToCart(fabric)}>Add to Cart</button>
+              </div>         
+            ))} 
+            </div>             
         ) : (
           <p>No fabrics available.</p>
         )

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import "./form.css"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { BsEyeFill } from 'react-icons/bs';
 import { BsEyeSlashFill } from 'react-icons/bs';
 import axios from 'axios';
@@ -23,13 +23,9 @@ export default function Login () {
               setChangePassword(true)
              }
           }
+          
   
-          const handleLogout = () => {
-            // Clear the token from localStorage (or sessionStorage)
-            localStorage.removeItem('authToken');
-            localStorage.removeItem("username")
-              navigate("/")
-          };
+        
 
 
       const handleLogin = async (e) => { 
@@ -53,10 +49,6 @@ export default function Login () {
           navigate("/femalestyles")
           setErr(success)
           console.log(`Login successful. Token: ${token}`);
-  
-          setTimeout(() => {
-            handleLogout()
-          }, 1800000);
         } else {
           console.error('Login failed:', response.data.message);
    setErr(response.data.message)
@@ -76,9 +68,7 @@ export default function Login () {
       <div className='orange'>{check == true ? "checking your details....." : ""}</div>
       <div className='error'>{err} </div>
       <div className='auth-form-input'>
-       {/* <label for="username">
-          Username:
-          </label> */}
+    
           <input className='input-field' type="text" id='username' value={username} onChange={(e) => {
             setErr("")
             setUsername(e.target.value)}} 
@@ -87,9 +77,7 @@ export default function Login () {
       </div>
         
        <div className='auth-form-input'>
-          {/* <label for="password">
-          Password:
-           </label> */}
+         
            <div className='pwd-input-icons'>
                    <input className='pwd-input-field input-field' type={changePassword ? "password" : "text"} id='password' value={password} onChange={(e) => {
                     setErr("")
@@ -102,7 +90,8 @@ export default function Login () {
   
            </div>
         <br />
-        <button type="submit">submit</button>
+        <button type="submit">submit</button>   
+           <small>New user? <Link className="form-small-link" to="/signup">sign Up</Link></small>
       </form>
       </div>
     );

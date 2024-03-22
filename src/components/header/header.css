@@ -17,6 +17,9 @@ h1{
     text-decoration: none;
     color: #fff
 }
+.log-sign .big-screen-search-button{
+  margin-right: 1rem;
+}
 
 .big-screen-nav{
     padding: .5rem 2rem;
@@ -86,7 +89,9 @@ nav .bold-link {
   color: gold;
 }
 
-
+.small-nav-links .logout-button{
+  color: var(--navcolor)
+}
 .hide-nav{
     display: none;
     animation: slideOutTop 0.9s ease-in-out; 

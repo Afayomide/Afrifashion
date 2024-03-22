@@ -12,7 +12,7 @@ import { GiAfrica } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
 import { CartContext } from '../cartContext';
-
+import { BsSearch } from "react-icons/bs";
 
 
 function Header() {
@@ -22,16 +22,32 @@ function Header() {
   const [slideout, setSlideOut] = useState("")
   const [cartNo, setCartNo] = useState()
   const { shouldFetchCart,setShouldFetchCart } = useContext(CartContext);
+  const [searchDisplay, setSearchDisplay] = useState(false)
 
 
   const Token = localStorage.getItem('authToken');
 
-  useEffect(() => {
 
-    if (Token) {
-      console.log(Token)
+function handleSearchDisplay(){
+  if (!searchDisplay){
+      setSearchDisplay(true)
+  }
+  else {
+    setSearchDisplay(false)
+  }
+}
+
+  useEffect(() => {
+    const authToken = localStorage.getItem('authToken');
+
+    if (authToken) {
       setAuthenticated(true);
-    } else {
+      setShouldFetchCart(true)
+      console.log(authToken)
+      setInterval(()=>{
+        setShouldFetchCart(false)
+      }, 10)
+    }  else if (!authToken) {
       setAuthenticated(false);
     }
   });
@@ -43,22 +59,31 @@ function Header() {
             try {
               const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart`, {
                 headers: {
-                  Authorization: `Bearer ${token}`, // Include JWT token with 'Bearer' prefix
+                  Authorization: `Bearer ${token}`,
                 },            
               });
   
               setCartNo(response.data.cartLength);
           }
             catch (error) {
-              console.error('Error:', error);
+              if (error.response && error.response.status === 403) {
+                console.error('Error (403 Forbidden):', error.message);
+                localStorage.removeItem('authToken');
+                setAuthenticated(false);
+                console.log("Login again (403)"); // Include the status code for clarity
+              } 
+              else {
+                console.error('Other Error:', error);
             }
           };
+        }
+          fetchData()
     
           if (shouldFetchCart) {
           fetchData(); 
-          setShouldFetchCart(false); // Reset flag after fetching
+          setShouldFetchCart(false);
           }
-        }, [shouldFetchCart]);
+        });
 
 
 
@@ -71,16 +96,14 @@ function Header() {
     }
 
   const handleLogout = () => {
-    // Clear the token from localStorage (or sessionStorage)
     localStorage.removeItem('authToken');
-    localStorage.removeItem("username")
     changeDisplay()
     setAuthenticated(false);
       navigate("/")
   };
     return(
      <header>
-     {Token ? (<div>
+     {authenticated ? (<div>
       <nav className="big-screen-nav">
 
 <div>
@@ -123,13 +146,17 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 </div>
 
 <div className="log-sign">
+  <p onClick={handleSearchDisplay} className="big-screen-search-button"><sup><BsSearch/></sup>search</p>
+
 <NavLink className="cart-link" to="/cart">
 <BsCart /><sup>{Token ?`${cartNo}` : 0}</sup>
 </NavLink>
 
-<p className= "big-screen-link" onClick={handleLogout}>Logout</p>
+
+<p className= "big-screen-link logout-button" onClick={handleLogout}>Logout</p>
 </div>
 </nav>
+{searchDisplay ? <input type="search" /> : ""}
 
 
 
@@ -166,7 +193,7 @@ isActive ? "picked nav-link" : `nav-link ${slideout}`
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked nav-link" : `nav-link ${slideout}`
 } onClick={changeDisplay}  to="/contact"><p>Contact US</p></NavLink>
-<button className="nav-link"  onClick={handleLogout}>Logout</button>
+<button className="nav-link logout-button"  onClick={handleLogout}>Logout</button>
 
 </div>
      </div>)
