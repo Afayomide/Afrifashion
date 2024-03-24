@@ -12,8 +12,10 @@ import Login from './components/forms/login';
 import Cart from './components/cart/cart';
 import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa6";
-import { CartProvider } from './components/cartContext';
+import { ProductProvider } from './components/productContext';
 import ItemsInfo from './components/sections/itemsInfo';
+import AboutUs from './components/aboutus/aboutus';
+import SearchResults from './components/sections/searchResults';
 
 import Sound from 'react-sound';
 import AfroSounds from "./assets/afrosounds.mp3"
@@ -28,7 +30,7 @@ function App() {
   };
 
   return (
-    <CartProvider>
+    <ProductProvider>
     <div className="App">
    <Header/>
    <div className="topmargin">
@@ -40,7 +42,9 @@ function App() {
    <Route element={<Signup/>} path="/signup"/>
    <Route element={<Login/>} path="/login"/>
    <Route element={<Cart/>} path="/cart"/>
+   <Route element={<AboutUs/>} path='/contact'/>
    <Route element={<ItemsInfo/>} path='/:id'/>
+   <Route path="/search" element={<SearchResults/>} /> {/* Initial empty results */}
    </Routes>  
    </div>
    <div className="sound">
@@ -59,7 +63,7 @@ function App() {
  
    <Footer/>
     </div>
-    </CartProvider>
+    </ProductProvider>
   );
 }
 

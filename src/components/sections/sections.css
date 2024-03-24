@@ -1,0 +1,111 @@
+.add-to-cart{
+    background-color: var(--bgbuttons);
+    color: #fff;
+    border: none;
+}
+.already-in-cart{
+    background-color: #fff;
+    color: var(--navcolor);
+    border: solid 1px var(--fadenavcolor)
+}
+.cart-button{
+    border-radius: 2rem;
+    padding: .5em 1rem;
+}
+.product-list{
+    color: black;
+    margin: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+}
+.product-list p{
+    margin: 10px;
+}
+.product-list-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 5rem 0;
+}
+.product-link{
+    text-decoration: none;
+    margin: 0;
+}
+.message{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 70vh;
+}
+.error-image{
+    border-radius: 2rem;
+}
+.error-message{
+    color: red;
+    font-weight: 700;
+    font-size: 3vw;
+
+}
+.loading-message{   
+     font-size: 5vw;
+    font-weight: 800;
+    color: var(--fadenavcolor);
+}
+
+
+
+.loader-container {
+    top: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.spinner {
+    width: 64px;
+    height: 64px;
+    border: 8px solid;
+    border-color: var(--bgbuttons)  transparent var(--bgbuttons)  transparent;
+    border-radius: 50%;
+    animation: spin-anim 1.2s linear infinite;
+}
+@keyframes spin-anim {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 800px) {
+     .product-list-container{
+        justify-content: space-evenly;
+     }
+     .product-list img{
+        width: 15rem;
+        height: 15rem;
+    }
+    .product-list p{
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 470px) {
+    .product-list{
+        margin: .1rem;
+    }
+    .product-list img{
+        width: 10rem;
+        height: 10rem;
+    }
+}

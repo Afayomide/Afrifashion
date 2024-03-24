@@ -1,6 +1,7 @@
 @charset "UTF-8";
 :root {
   --navcolor: rgb(41, 41, 92);
+  --fadenavcolor: rgba(41, 41, 92,0.4);
   --bgcolor: ;
   --fontcolor: #fff;
   --color-primary: rgba(0, 0, 128,0.3);
@@ -36,7 +37,7 @@ html,body{
 }
 @media (max-width:900px) {
   .topmargin{
-    margin-top: 0;
+    margin-top: 10vh;
   }
 }
 .error{

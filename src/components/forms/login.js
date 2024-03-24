@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import "./form.css"
 import { useNavigate, Link } from "react-router-dom";
 import { BsEyeFill } from 'react-icons/bs';
 import { BsEyeSlashFill } from 'react-icons/bs';
 import axios from 'axios';
 import formbg from '../../assets/formbg.webp'
+import { ProductContext } from '../productContext';
 
 export default function Login () {
     const [check, setCheck] = useState(false)
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const {authenticated, setAuthenticated} = useContext(ProductContext)
 
     const navigate = useNavigate();
           const [err, setErr] = useState("")
@@ -22,10 +24,7 @@ export default function Login () {
              if(changePassword == false) {
               setChangePassword(true)
              }
-          }
-          
-  
-        
+          }    
 
 
       const handleLogin = async (e) => { 
@@ -48,6 +47,7 @@ export default function Login () {
           localStorage.setItem('authToken', token);
           navigate("/femalestyles")
           setErr(success)
+          setAuthenticated(true)
           console.log(`Login successful. Token: ${token}`);
         } else {
           console.error('Login failed:', response.data.message);

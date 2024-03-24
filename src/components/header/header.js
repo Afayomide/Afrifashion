@@ -11,24 +11,28 @@ import { Link, NavLink } from "react-router-dom";
 import { GiAfrica } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
-import { CartContext } from '../cartContext';
+import { ProductContext } from '../productContext';
 import { BsSearch } from "react-icons/bs";
 
 
 function Header() {
   const navigate = useNavigate();
   const [displayNav, SetDisplayNav] = useState(false)
-  const[authenticated, setAuthenticated] = useState()
+  const {authenticated, setAuthenticated} = useContext(ProductContext)
   const [slideout, setSlideOut] = useState("")
   const [cartNo, setCartNo] = useState()
-  const { shouldFetchCart,setShouldFetchCart } = useContext(CartContext);
+  const { shouldFetchCart, setShouldSearch, setShouldFetchCart,mainLoading, setMainLoading } = useContext(ProductContext);
   const [searchDisplay, setSearchDisplay] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
+  
+
 
 
   const Token = localStorage.getItem('authToken');
 
 
-function handleSearchDisplay(){
+
+function handleSearchDisplay(e){
   if (!searchDisplay){
       setSearchDisplay(true)
   }
@@ -36,6 +40,15 @@ function handleSearchDisplay(){
     setSearchDisplay(false)
   }
 }
+
+
+async function handleSearch (e) {
+  e.preventDefault()
+
+      navigate(`/search?q=${searchTerm}`);
+      setShouldSearch(true)
+}
+
 
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
@@ -50,12 +63,13 @@ function handleSearchDisplay(){
     }  else if (!authToken) {
       setAuthenticated(false);
     }
-  });
+  },[]);
 
 
   useEffect(() => {
     const token = localStorage.getItem("authToken")
           const fetchData = async () => {
+
             try {
               const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart`, {
                 headers: {
@@ -75,6 +89,10 @@ function handleSearchDisplay(){
               else {
                 console.error('Other Error:', error);
             }
+            if (error.response && error.response.status === 500) {
+              setMainLoading(false)
+              console.log("empty")
+            }
           };
         }
           fetchData()
@@ -83,7 +101,7 @@ function handleSearchDisplay(){
           fetchData(); 
           setShouldFetchCart(false);
           }
-        });
+        }, [shouldFetchCart]);
 
 
 
@@ -102,6 +120,7 @@ function handleSearchDisplay(){
       navigate("/")
   };
     return(
+      <div>
      <header>
      {authenticated ? (<div>
       <nav className="big-screen-nav">
@@ -156,7 +175,7 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 <p className= "big-screen-link logout-button" onClick={handleLogout}>Logout</p>
 </div>
 </nav>
-{searchDisplay ? <input type="search" /> : ""}
+
 
 
 
@@ -174,10 +193,13 @@ Cool Styles<GiAfrica className="africalogo"/>
 
 </div>
 
+<div className="cart-search">
+<p onClick={handleSearchDisplay} className="small-screen-search-button"><BsSearch/></p>
 
 <NavLink className="cart-link" to="/cart">
 <BsCart /><sup>{Token ?`${cartNo}` : 0}</sup>
 </NavLink>
+</div>
 </nav>
 
 <div className={`small-nav-links ${displayNav ? "show-nav" : 'hide-nav'}`}>
@@ -196,7 +218,11 @@ isActive ? "picked nav-link" : `nav-link ${slideout}`
 <button className="nav-link logout-button"  onClick={handleLogout}>Logout</button>
 
 </div>
-     </div>)
+{searchDisplay ? <form className={`search-input-container ${searchDisplay ? "show-search-input": "hide-search-input"}`} onSubmit={handleSearch}><input className="search-input" type="search" placeholder="enter keyword" onChange={(e) => {
+            setSearchTerm(e.target.value)}} /></form> : ""}
+     </div>
+     
+     )
      
       : 
      
@@ -243,6 +269,7 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 </div>
 
 <div className="log-sign">
+<p onClick={handleSearchDisplay} className="big-screen-search-button">search<sup><BsSearch/></sup></p>
 <NavLink className="cart-link" to="/cart">
 <BsCart /><sup>{Token ?`${cartNo}` : 0}</sup>
 </NavLink>
@@ -255,6 +282,7 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 }  to="/login" >Login</NavLink>
 </div>
 </nav>
+
 
 
 
@@ -272,10 +300,14 @@ Cool Styles<GiAfrica className="africalogo"/>
 
 </div>
 
+<div className="cart-search">
+<p onClick={handleSearchDisplay} className="small-screen-search-button"><BsSearch/></p>
 
 <NavLink className="cart-link" to="/cart">
 <BsCart /><sup>{Token ?`${cartNo}` : 0}</sup>
 </NavLink>
+</div>
+
 </nav>
 
 <div className={`small-nav-links ${displayNav ? "show-nav" : 'hide-nav'}`}>
@@ -298,9 +330,13 @@ isActive ? "picked nav-link" : `nav-link ${slideout}`
 isActive ? "picked nav-link" : `nav-link ${slideout}`
 } onClick={changeDisplay}  to="/signup"><p>Signup</p></NavLink>
 </div>
+  {searchDisplay ? <form className={` search-input-container ${searchDisplay ? "show-search-input": "hide-search-input"}`} onSubmit={handleSearch}><input className="search-input" type="search" placeholder="enter keyword" onChange={(e) => {
+            setSearchTerm(e.target.value)}} /></form> : ""}
      </div>)}
     
      </header>
+   
+            </div>
     )
 }
 export default Header

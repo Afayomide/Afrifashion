@@ -22,8 +22,14 @@ const ClothesSchema = new mongoose.Schema(
        tribe: {
         type: String
        },
-       amount: {
-        type: String
+       price: {
+        type: Number
+       },
+       quantity:{
+        type: Number
+       },
+       description:{
+        type: [String]
        }
     }
 )

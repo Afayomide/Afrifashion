@@ -17,14 +17,46 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(
-  dburl,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  console.log('connected')
-);
+// mongoose.connect(
+//   dburl,
+//   {
+//     connectTimeoutMS: 20000,
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   },
+//   console.log('connected')
+// );
+
+async function connectToMongo(dburl) {
+  const retryAttempts = 3; 
+  const connectTimeoutMS = 20000; 
+
+  for (let attempt = 1; attempt <= retryAttempts; attempt++) {
+    try {
+      await mongoose.connect(dburl, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        connectTimeoutMS
+      });
+      console.log('Connected to Database');
+      return; 
+    } catch (error) {
+      console.error(`Connection attempt ${attempt} failed:`, error.message);
+
+      await new Promise(resolve => setTimeout(resolve, Math.min(attempt * 2000, 10000))); 
+    }
+  }
+
+  throw new Error('Failed to connect to MongoDB Atlas after retries');
+}
+
+connectToMongo(dburl)
+  .then(() => {
+    console.log("connection succesful")
+  })
+  .catch(error => {
+    console.error('Fatal error:', error.message);
+  });
 
 app.use(bodyParser());
 app.use(bodyParser.json());
@@ -46,8 +78,8 @@ app.use(bodyParser.text());
   
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = decoded; // Store decoded user ID for access in route handler
-      const now = Date.now() / 1000; // Convert milliseconds to seconds
+      req.user = decoded; 
+      const now = Date.now() / 1000; 
       if (decoded.exp < now) {
         console.warn('JWT has expired!');
         return res.status(401).json({ message: 'Your session has expired. Please log in again.' });
@@ -61,36 +93,36 @@ app.use(bodyParser.text());
     }
   }
 
-  function checkJwtExpiry(req, res, next) {
-    try {
-      // Extract the JWT token from the authorization header (adapt based on your header name)
-      const authHeader = req.headers.authorization;
+  // function checkJwtExpiry(req, res, next) {
+  //   try {
+  //     // Extract the JWT token from the authorization header (adapt based on your header name)
+  //     const authHeader = req.headers.authorization;
   
-      if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ message: 'Unauthorized: Access token is missing or invalid' });
-      }
+  //     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  //       return res.status(401).json({ message: 'Unauthorized: Access token is missing or invalid' });
+  //     }
   
-      const token = authHeader.split(' ')[1];
+  //     const token = authHeader.split(' ')[1];
   
-      // Decode the JWT token and get payload
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  //     // Decode the JWT token and get payload
+  //     const decoded = jwt.verify(token, process.env.JWT_SECRET);
   
-      // Check if the expiration time (in seconds) has passed
-      const now = Date.now() / 1000; // Convert milliseconds to seconds
-      if (decoded.exp < now) {
-        console.warn('JWT has expired!');
-        return res.status(401).json({ message: 'Your session has expired. Please log in again.' });
-      }
+  //     // Check if the expiration time (in seconds) has passed
+  //     const now = Date.now() / 1000; // Convert milliseconds to seconds
+  //     if (decoded.exp < now) {
+  //       console.warn('JWT has expired!');
+  //       return res.status(401).json({ message: 'Your session has expired. Please log in again.' });
+  //     }
   
-      // Attach decoded user data to the request object (optional)
-      req.user = decoded; // Adapt based on your desired property name for user data
+  //     // Attach decoded user data to the request object (optional)
+  //     req.user = decoded; // Adapt based on your desired property name for user data
   
-      next(); 
-    } catch (error) {
-      console.error('JWT verification error:', error.message);
-      return res.status(401).json({ message: 'Unauthorized: Access token is invalid' });
-    }
-  }
+  //     next(); 
+  //   } catch (error) {
+  //     console.error('JWT verification error:', error.message);
+  //     return res.status(401).json({ message: 'Unauthorized: Access token is invalid' });
+  //   }
+  // }
 
   
   
@@ -247,13 +279,66 @@ app.get("/api/cart", verifyToken, async(req,res) => {
           });
     
           const resolvedCartItems = await Promise.all(cartItems);
-          res.json({ cartItems: resolvedCartItems });
+          res.json({ cartItems: resolvedCartItems, initialItems: resolvedCartItems});
         } else {
           return res.status(404).json({ message: 'User not found' });
         }
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
+      }
+    });
+
+
+
+    // app.post('/api/search', async (req, res) => {  
+    //   const { searchTerm } = req.body; 
+    //  console.log(req.query)
+    //  console.log(req.params)
+    //  console.log(req.body)
+    //  try {
+    //         const allProducts = await Clothes.find()
+    //         const result = allProducts.filter(product =>
+    //           product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //           product.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //           product.color.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //           product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //           product.price.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //           product.tribe.toLowerCase().includes(searchTerm.toLowerCase()) 
+    //         );
+    //     res.json({result});
+    //     console.log(result)
+    //   } catch (error) {
+    //     console.error(error);
+    //     res.status(500).json({ message: 'Error retrieving products' });
+    //   }
+    // });
+
+
+    app.post('/api/search', async (req, res) => {  
+      const { searchTerm } = req.body; 
+     console.log(req.query)
+     console.log(req.params)
+     console.log(req.body)
+      try {
+          console.log(`this is ${searchTerm}`)
+        const searchOptions = {
+          $or: [ // Perform case-insensitive search across multiple fields
+            { name: { $regex: searchTerm, $options: 'i' } },
+            { type: { $regex: searchTerm, $options: 'i' } },
+            { color: { $regex: searchTerm, $options: 'i' } },
+            { gender: { $regex: searchTerm, $options: 'i' } },
+            // { price: searchTerm }, 
+            { tribe: { $regex: searchTerm, $options: 'i' } },
+          ],
+        };
+    
+        const result = await Clothes.find(searchOptions);
+        res.json({result});
+        console.log(result)
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error retrieving products' });
       }
     });
 
