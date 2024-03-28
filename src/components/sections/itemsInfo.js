@@ -19,6 +19,8 @@ export default function ItemsInfo() {
     return(
         <div>
 <img src={item.image}/>
+<p>{item.name}</p>
+<button>Add To Cart</button>
         </div>
     )
 }

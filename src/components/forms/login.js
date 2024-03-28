@@ -11,7 +11,8 @@ export default function Login () {
     const [check, setCheck] = useState(false)
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const {authenticated, setAuthenticated} = useContext(ProductContext)
+    const {authenticated, setAuthenticated, setShouldFetchCart} = useContext(ProductContext)
+
 
     const navigate = useNavigate();
           const [err, setErr] = useState("")
@@ -25,6 +26,7 @@ export default function Login () {
               setChangePassword(true)
              }
           }    
+
 
 
       const handleLogin = async (e) => { 
@@ -43,12 +45,14 @@ export default function Login () {
           });
           const token = response.data.token
           const { success } = response.data;
-        if (success) {
-          localStorage.setItem('authToken', token);
-          navigate("/femalestyles")
+
+        if (success) {         
+          localStorage.setItem('authToken', token);           
+          navigate(-1)
           setErr(success)
           setAuthenticated(true)
           console.log(`Login successful. Token: ${token}`);
+          setShouldFetchCart(true)
         } else {
           console.error('Login failed:', response.data.message);
    setErr(response.data.message)

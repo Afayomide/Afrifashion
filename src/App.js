@@ -21,7 +21,7 @@ import Sound from 'react-sound';
 import AfroSounds from "./assets/afrosounds.mp3"
 
 
-function App() {
+ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
 

@@ -20,16 +20,15 @@ function Header() {
   const [displayNav, SetDisplayNav] = useState(false)
   const {authenticated, setAuthenticated} = useContext(ProductContext)
   const [slideout, setSlideOut] = useState("")
-  const [cartNo, setCartNo] = useState()
-  const { shouldFetchCart, setShouldSearch, setShouldFetchCart,mainLoading, setMainLoading } = useContext(ProductContext);
+  const { cartNo, setCartNo, shouldFetchCart, setShouldSearch, setShouldFetchCart,mainLoading, setMainLoading, localCartLength } = useContext(ProductContext);
   const [searchDisplay, setSearchDisplay] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
+
   
 
 
 
   const Token = localStorage.getItem('authToken');
-
 
 
 function handleSearchDisplay(e){
@@ -65,11 +64,46 @@ async function handleSearch (e) {
     }
   },[]);
 
+  useEffect(() => {
+    const fetchList = async () => {
+      const token = localStorage.getItem("authToken")
+    if (token && mainLoading) {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/list`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const userCartItems = await response.data.cartItems;
+        const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
+
+    const cartItemsToAdd = storedCartList.filter(item => !userCartItems.some(userItem => userItem._id === item._id));
+
+    await Promise.all(cartItemsToAdd.map(async cartItem => {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/cart/add`,
+        { productId: cartItem._id }, 
+        { headers }
+      );
+      console.log('Added item to user cart:', response.data);
+    }
+    ));
+      }
+        catch{
+
+        }
+      }
+    }
+    fetchList()
+  }, [Token])
 
   useEffect(() => {
     const token = localStorage.getItem("authToken")
           const fetchData = async () => {
-
             try {
               const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart`, {
                 headers: {
@@ -78,6 +112,7 @@ async function handleSearch (e) {
               });
   
               setCartNo(response.data.cartLength);
+              console.log("fetched cart length")
           }
             catch (error) {
               if (error.response && error.response.status === 403) {
@@ -93,14 +128,12 @@ async function handleSearch (e) {
               setMainLoading(false)
               console.log("empty")
             }
-          };
+          }
+          finally{setShouldFetchCart(false)}
         }
           fetchData()
     
-          if (shouldFetchCart) {
-          fetchData(); 
-          setShouldFetchCart(false);
-          }
+       
         }, [shouldFetchCart]);
 
 
@@ -115,6 +148,7 @@ async function handleSearch (e) {
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem("localCartList")
     changeDisplay()
     setAuthenticated(false);
       navigate("/")
@@ -168,7 +202,7 @@ isActive ? "picked big-screen-link" : "big-screen-link"
   <p onClick={handleSearchDisplay} className="big-screen-search-button"><sup><BsSearch/></sup>search</p>
 
 <NavLink className="cart-link" to="/cart">
-<BsCart /><sup>{Token ?`${cartNo}` : 0}</sup>
+<BsCart /><sup>{Token ?`${cartNo}` : localCartLength}</sup>
 </NavLink>
 
 
@@ -197,7 +231,7 @@ Cool Styles<GiAfrica className="africalogo"/>
 <p onClick={handleSearchDisplay} className="small-screen-search-button"><BsSearch/></p>
 
 <NavLink className="cart-link" to="/cart">
-<BsCart /><sup>{Token ?`${cartNo}` : 0}</sup>
+<BsCart /><sup>{Token ?`${cartNo}` : localCartLength}</sup>
 </NavLink>
 </div>
 </nav>
@@ -271,7 +305,7 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 <div className="log-sign">
 <p onClick={handleSearchDisplay} className="big-screen-search-button">search<sup><BsSearch/></sup></p>
 <NavLink className="cart-link" to="/cart">
-<BsCart /><sup>{Token ?`${cartNo}` : 0}</sup>
+<BsCart /><sup>{Token ?`${cartNo}` : localCartLength}</sup>
 </NavLink>
 {/*  */}
 <NavLink className={({ isActive, isPending }) =>
@@ -304,7 +338,7 @@ Cool Styles<GiAfrica className="africalogo"/>
 <p onClick={handleSearchDisplay} className="small-screen-search-button"><BsSearch/></p>
 
 <NavLink className="cart-link" to="/cart">
-<BsCart /><sup>{Token ?`${cartNo}` : 0}</sup>
+<BsCart /><sup>{Token ?`${cartNo}` : localCartLength}</sup>
 </NavLink>
 </div>
 

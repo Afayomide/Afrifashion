@@ -26,10 +26,8 @@
 .product-list-container{
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     flex-wrap: wrap;
-    width: 100%;
-    padding: 5rem 0;
 }
 .product-link{
     text-decoration: none;
@@ -102,7 +100,12 @@
 
 @media (max-width: 470px) {
     .product-list{
-        margin: .1rem;
+        margin-left: .1rem;
+        margin-right: .1rem;
+        margin-bottom: .6rem;
+        margin-top: 1rem;
+
+    
     }
     .product-list img{
         width: 10rem;
