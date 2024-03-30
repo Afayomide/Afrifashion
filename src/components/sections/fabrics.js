@@ -13,73 +13,17 @@ const Fabrics = memo(() => {
   const [fabricsList, setFabricsList] = useState([])
      const [isLoading, setIsLoading] = useState(true); 
      const [error, setError] = useState(null); 
-const { cartNo, setCartNo, setShouldFetchCart,mainLoading, setMainLoading, setLocalCartLength } = useContext(ProductContext);
-const [cartList, setCartList] = useState([])
+const { cartNo, setCartNo, setShouldFetchCart,mainLoading, setMainLoading, setLocalCartLength, cartList, setCartList } = useContext(ProductContext);
 const [buttonType, setButtonType] = useState("add To Cart")
 
 
-// const handleAddToCart = async (fabric) => {
-//   const token = localStorage.getItem("authToken");
-//   const headers = {
-//     Authorization: `Bearer ${token}`,
-//   };
-
-
-//   if (!token) {
-//     const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
-//     const fabricId = fabric._id;
-//     const isFabricInCart = storedCartList.some(item => item._id === fabricId);
-
-//     if (!isFabricInCart) {
-//         const fabricWithQuantity = { ...fabric, newQuantity: 1 }; // Add newQuantity field with default value 1
-//         storedCartList.push(fabricWithQuantity);
-//         localStorage.setItem('localCartList', JSON.stringify(storedCartList));
-//         const localCart = JSON.parse(localStorage.getItem('localCartList'))
-//         setLocalCartLength(localCart.length)
-//         console.log(storedCartList);
-
-//     }
-//     else{
-//       console.log("already in cart")
-//     }
-// }
-//   else{
-
-//   const productId = fabric._id;
-   
-//   try {
-//     const response = await axios.post(
-//       `${process.env.REACT_APP_API_URL}/api/cart/add`,
-//       { productId }, 
-//       { headers }
-//     );
-
-//     console.log('Adding fabric to cart:', response.data); // Handle successful response (optional)
-
-//     // If addition to the cart on the server was successful, update storedCartList
-//     const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
-//     const fabricWithQuantity = { ...fabric, newquantity: 1 }; // Add newQuantity field with default value 1
-//     storedCartList.push(fabricWithQuantity);
-//     localStorage.setItem('localCartList', JSON.stringify(storedCartList));
-//   } catch (error) {
-//     console.error('Error adding to cart:', error);
-//     setError('An error occurred while adding to cart.'); // Display user-friendly error
-//   }
-//   finally {
-//     setShouldFetchCart(true);
-//   }
-// }
-// };
-
 const handleAddToCart = async (fabric) => {
   const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
-   // Add fabric to local cart
     const fabricWithQuantity = { ...fabric, newquantity: 1 }; // Add newQuantity field with default value 1
     storedCartList.push(fabricWithQuantity);
     localStorage.setItem('localCartList', JSON.stringify(storedCartList));
     console.log('Added fabric to local cart:', fabric);
 
-    // Update cart count (optional)
     setLocalCartLength(storedCartList.length);
     setCartNo(storedCartList.length)
 
@@ -89,7 +33,6 @@ const handleAddToCart = async (fabric) => {
   try {
  
 
-    // Add fabric to server cart
     const token = localStorage.getItem("authToken");
     if (token) {}
     const headers = {
@@ -112,12 +55,11 @@ const handleAddToCart = async (fabric) => {
     console.error('Error adding to cart:', error);
     setError('An error occurred while adding to cart.');
 
-    // Remove the item from local cart list if adding to server was not successful
     const updatedCartList = storedCartList.filter(item => item._id !== fabric._id);
     localStorage.setItem('localCartList', JSON.stringify(updatedCartList));
     console.log('Removed fabric from local cart:', fabric);
   } finally {
-    setShouldFetchCart(true); // Trigger cart fetch after adding to server
+    setShouldFetchCart(true); 
   }
 }
 };
@@ -131,7 +73,7 @@ const handleAddToCart = async (fabric) => {
         try { 
           const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/fabrics`, {
             headers: {
-              Authorization: `Bearer ${token}`, // Include JWT token with 'Bearer' prefix
+              Authorization: `Bearer ${token}`,
             },            
           });
   
@@ -142,7 +84,7 @@ const handleAddToCart = async (fabric) => {
           try{
             const cartResponse = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/list`, {
               headers: {
-                Authorization: `Bearer ${token}`, // Include JWT token with 'Bearer' prefix
+                Authorization: `Bearer ${token}`,
               },            
             });
             setCartList(cartResponse.data.cartItems)
@@ -167,9 +109,9 @@ const handleAddToCart = async (fabric) => {
             console.log("empty")
           }
           console.error('Error:', error);
-          setError(error.message || 'An error occurred.'); // Provide a user-friendly error message
+          setError(error.message || 'An error occurred.'); 
       } finally {
-        setIsLoading(false); // Set loading state to false after fetching or error
+        setIsLoading(false);
       }
       };
   if(mainLoading == true){
@@ -191,7 +133,7 @@ const handleAddToCart = async (fabric) => {
           <div className="loader-container">
           <div className="spinner"></div>
       </div>
-                    <p className="loading-message">....Getting fabrics</p>
+                    <p className="loading-message">....Getting all fabrics</p>
           </div>
       ) : error ? (
         <div className="message">

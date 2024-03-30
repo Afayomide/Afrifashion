@@ -11,8 +11,7 @@ console.log(JSON.parse(localStorage.getItem('localCartList')))
 function Cart () {
   const [cartList, setCartList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { shouldFetchCart, setShouldFetchCart, mainLoading, setMainLoading } = useContext(ProductContext);
-  const [initialItems, setInitialItems] = useState([]);
+  const {initialItems, setInitialItems, shouldFetchCart, setShouldFetchCart, mainLoading, setMainLoading, setLocalCartLength } = useContext(ProductContext);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("authToken");
 
@@ -63,15 +62,22 @@ function Cart () {
     setShouldFetchCart(false);
   }, [shouldFetchCart, mainLoading, setMainLoading, setShouldFetchCart, token]);
 
-  const handleQuantityChange = (itemIndex, newQuantity) => {
+
+  
+
+  const handleQuantityChange = (itemIndex, newQuantity, price) => {
     const updatedCart = [...cartList];
     updatedCart[itemIndex].quantity = newQuantity;
     setCartList(updatedCart);
-
+  
     const updatedInitialItems = [...initialItems];
     updatedInitialItems[itemIndex].newquantity = newQuantity;
+    
+    // Update price based on new quantity
+    updatedInitialItems[itemIndex].price = updatedCart[itemIndex].price * newQuantity;
+    
     setInitialItems(updatedInitialItems);
-
+  
     localStorage.setItem("localCartList", JSON.stringify(updatedInitialItems));
   };
 
@@ -85,6 +91,7 @@ function Cart () {
       localStorage.setItem("localCartList", JSON.stringify(updatedLocalCartList));
       setInitialItems(updatedLocalCartList);
       setCartList(updatedLocalCartList)
+      setLocalCartLength(updatedLocalCartList.length)
 
   
       // Update server cart
@@ -112,11 +119,11 @@ function Cart () {
   
   let total = 0;
   if (cartList.length > 0 && initialItems.length > 0) {
-    total = initialItems.reduce((accumulator, obj) => accumulator + (obj.price * obj.newquantity), 0);
+    total = initialItems.reduce((accumulator, obj) => accumulator + (obj.price), 0);
   }
 
   return (
-    <div className="topmargin">
+    <div className="cart-container">
       <h3 className="cart-total"><span>Your Total: </span>₦{total}</h3>
 
       {isLoading ? (
@@ -136,14 +143,16 @@ function Cart () {
         <div className="cart-list-container">
           {initialItems.map((item, index) => ( 
             <div className="cartlist" key={item._id}>
+              <div className="about-cart-item">
               <Link className="cartlist-link" to={`/${item._id}`}>
-                <img src={item.image} alt={item.name} />
+                <img src={item.image} alt={item.name} />       
+                </Link>
                 <div>
-                  <p>{item.name}</p>
-                  <p>{item.tribe}</p>
-                  <p>Price: {item.price}</p>
-                </div>
-              </Link>
+                  <p><span className="description-header">Type:</span> {item.type}</p>
+                  <p><span className="description-header">Total price:</span> ${item.price}</p>
+              
+              <div className="cart-quantity">
+              <p><span className="description-header">Quantity:</span></p>
               <select
                 className="quantity-input"
                 onChange={(e) => handleQuantityChange(index, parseInt(e.target.value))}
@@ -153,8 +162,13 @@ function Cart () {
                   <option key={optionValue} value={optionValue}>
                     {optionValue}
                   </option>
-                ))}
+                ))} 
               </select>
+              {initialItems[index]?.type == "lace" ? (initialItems[index]?.newquantity == 1 ? (<small>yard</small>) : <small>yards</small>) : "" }
+              </div>
+              </div>
+              </div>
+              
               <button className="remove-item-button" onClick={() => handleDelete(item)}>Remove</button>
             </div>
           ))}

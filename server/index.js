@@ -17,15 +17,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// mongoose.connect(
-//   dburl,
-//   {
-//     connectTimeoutMS: 20000,
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   },
-//   console.log('connected')
-// );
+
 
 async function connectToMongo(dburl) {
   const retryAttempts = 3; 
@@ -93,36 +85,6 @@ app.use(bodyParser.text());
     }
   }
 
-  // function checkJwtExpiry(req, res, next) {
-  //   try {
-  //     // Extract the JWT token from the authorization header (adapt based on your header name)
-  //     const authHeader = req.headers.authorization;
-  
-  //     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-  //       return res.status(401).json({ message: 'Unauthorized: Access token is missing or invalid' });
-  //     }
-  
-  //     const token = authHeader.split(' ')[1];
-  
-  //     // Decode the JWT token and get payload
-  //     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  
-  //     // Check if the expiration time (in seconds) has passed
-  //     const now = Date.now() / 1000; // Convert milliseconds to seconds
-  //     if (decoded.exp < now) {
-  //       console.warn('JWT has expired!');
-  //       return res.status(401).json({ message: 'Your session has expired. Please log in again.' });
-  //     }
-  
-  //     // Attach decoded user data to the request object (optional)
-  //     req.user = decoded; // Adapt based on your desired property name for user data
-  
-  //     next(); 
-  //   } catch (error) {
-  //     console.error('JWT verification error:', error.message);
-  //     return res.status(401).json({ message: 'Unauthorized: Access token is invalid' });
-  //   }
-  // }
 
   
   
@@ -150,7 +112,6 @@ app.post('/api/login', async (req, res) => {
     }
 
     const token = jwt.sign({ userId: customer._id }, process.env.JWT_SECRET, { expiresIn: '4d' });
-    console.log(token);
     res.json({ success: true, token });
   } catch (error) {
     console.error('Error:', error.message);
@@ -213,7 +174,6 @@ app.get("/api/cart", verifyToken, async(req,res) => {
   
       try {
        const fabrics = await Clothes.find();
-       console.log(fabrics)
          if(fabrics) {      
              res.json({fabrics});
          }
@@ -270,7 +230,6 @@ app.get("/api/cart", verifyToken, async(req,res) => {
     
       try {
         const customer = await Customer.findById(id);
-        console.log(customer);
     
         if (customer) {
           const cartItems = customer.cart.map(async (itemId) => {
@@ -323,19 +282,17 @@ app.get("/api/cart", verifyToken, async(req,res) => {
       try {
           console.log(`this is ${searchTerm}`)
         const searchOptions = {
-          $or: [ // Perform case-insensitive search across multiple fields
+          $or: [
             { name: { $regex: searchTerm, $options: 'i' } },
             { type: { $regex: searchTerm, $options: 'i' } },
             { color: { $regex: searchTerm, $options: 'i' } },
             { gender: { $regex: searchTerm, $options: 'i' } },
-            // { price: searchTerm }, 
             { tribe: { $regex: searchTerm, $options: 'i' } },
           ],
         };
     
         const result = await Clothes.find(searchOptions);
         res.json({result});
-        console.log(result)
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error retrieving products' });
@@ -348,7 +305,6 @@ app.get("/api/cart", verifyToken, async(req,res) => {
            try {
             const item = await Clothes.findById(id)
             if (item){           
-              console.log(id)
               return res.json({success: true, item})
             }
            }
@@ -357,29 +313,7 @@ app.get("/api/cart", verifyToken, async(req,res) => {
             }
     })
 
-    // app.post('/api/cart/delete',verifyToken,  async (req, res) => {
-    //   const userId = req.user.userId;
-    //   const {productId} = req.body;
-    
-    //   try {
-    //     const customer = await Customer.findById(userId);
-    
-    //     if (!customer) {
-    //       return res.status(404).json({ message: 'Customer not found' });
-    //     }
-    
-    //     const updatedCart = customer.cart.filter(item => item._id.toString() !== productId.toString()); 
-    //     customer.cart = updatedCart;
-    
-    //     await customer.save();
-    
-    //     res.json({ message: 'Item deleted from cart successfully' });
-    //   } catch (error) {
-    //     console.error(error);
-    //     res.status(500).json({ message: 'Internal server error' });
-    //   }
 
-    // })
 
     app.delete('/api/cart/delete', verifyToken, async (req, res) => {
       const userId = req.user.userId;

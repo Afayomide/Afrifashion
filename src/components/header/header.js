@@ -20,7 +20,7 @@ function Header() {
   const [displayNav, SetDisplayNav] = useState(false)
   const {authenticated, setAuthenticated} = useContext(ProductContext)
   const [slideout, setSlideOut] = useState("")
-  const { cartNo, setCartNo, shouldFetchCart, setShouldSearch, setShouldFetchCart,mainLoading, setMainLoading, localCartLength } = useContext(ProductContext);
+  const { cartNo, setCartNo, shouldFetchCart, setShouldSearch, setShouldFetchCart,mainLoading, setMainLoading, localCartLength, setLocalCartLength } = useContext(ProductContext);
   const [searchDisplay, setSearchDisplay] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
 
@@ -103,6 +103,7 @@ async function handleSearch (e) {
 
   useEffect(() => {
     const token = localStorage.getItem("authToken")
+    const localCart = JSON.parse(localStorage.getItem("localCartList"))
           const fetchData = async () => {
             try {
               const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart`, {
@@ -113,6 +114,10 @@ async function handleSearch (e) {
   
               setCartNo(response.data.cartLength);
               console.log("fetched cart length")
+              if (!localCart){
+                console.log(localCart)
+                setLocalCartLength(response.data.cartLength)
+              }
           }
             catch (error) {
               if (error.response && error.response.status === 403) {
@@ -149,9 +154,11 @@ async function handleSearch (e) {
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem("localCartList")
+    setShouldFetchCart(true)
     changeDisplay()
     setAuthenticated(false);
       navigate("/")
+      setLocalCartLength(0)
   };
     return(
       <div>
@@ -202,7 +209,7 @@ isActive ? "picked big-screen-link" : "big-screen-link"
   <p onClick={handleSearchDisplay} className="big-screen-search-button"><sup><BsSearch/></sup>search</p>
 
 <NavLink className="cart-link" to="/cart">
-<BsCart /><sup>{Token ?`${cartNo}` : localCartLength}</sup>
+<BsCart /><sup>{localCartLength}</sup>
 </NavLink>
 
 
@@ -231,7 +238,7 @@ Cool Styles<GiAfrica className="africalogo"/>
 <p onClick={handleSearchDisplay} className="small-screen-search-button"><BsSearch/></p>
 
 <NavLink className="cart-link" to="/cart">
-<BsCart /><sup>{Token ?`${cartNo}` : localCartLength}</sup>
+<BsCart /><sup>{localCartLength}</sup>
 </NavLink>
 </div>
 </nav>
@@ -305,7 +312,7 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 <div className="log-sign">
 <p onClick={handleSearchDisplay} className="big-screen-search-button">search<sup><BsSearch/></sup></p>
 <NavLink className="cart-link" to="/cart">
-<BsCart /><sup>{Token ?`${cartNo}` : localCartLength}</sup>
+<BsCart /><sup>{localCartLength}</sup>
 </NavLink>
 {/*  */}
 <NavLink className={({ isActive, isPending }) =>
@@ -338,7 +345,7 @@ Cool Styles<GiAfrica className="africalogo"/>
 <p onClick={handleSearchDisplay} className="small-screen-search-button"><BsSearch/></p>
 
 <NavLink className="cart-link" to="/cart">
-<BsCart /><sup>{Token ?`${cartNo}` : localCartLength}</sup>
+<BsCart /><sup>{localCartLength}</sup>
 </NavLink>
 </div>
 
