@@ -8,6 +8,5 @@ export default function Females () {
         <div className="margin-top">
         {Token ? (<div> Logged in </div>): "logged out"}
         </div>
-       
     )
 }

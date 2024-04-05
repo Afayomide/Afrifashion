@@ -138,7 +138,9 @@ function Cart () {
           <p className="error-message">Error: {error}</p>
         </div>
       ) : initialItems.length < 1 && token ? (
-        <p>Your cart is empty.</p>
+        <div className="empty-cart-container">
+        <p className="empty-cart">Your cart is empty!!!</p>
+        </div>
       ) : token ? (
         <div className="cart-list-container">
           {initialItems.map((item, index) => ( 
@@ -164,7 +166,7 @@ function Cart () {
                   </option>
                 ))} 
               </select>
-              {initialItems[index]?.type == "lace" ? (initialItems[index]?.newquantity == 1 ? (<small>yard</small>) : <small>yards</small>) : "" }
+              {initialItems[index]?.type == "fabric" ? (initialItems[index]?.newquantity == 1 ? (<small>yard</small>) : <small>yards</small>) : "" }
               </div>
               </div>
               </div>

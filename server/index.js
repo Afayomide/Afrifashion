@@ -190,6 +190,46 @@ app.get("/api/cart", verifyToken, async(req,res) => {
        }
      });
 
+    
+
+app.get("/api/clothespreview", async (req, res) => {
+  try {
+    const promises = [
+      Clothes.find({ type: 'ankara' }).limit(5),
+      Clothes.find({ type: 'aso-oke' }).limit(5),
+      Clothes.find({ type: 'dansiki' }).limit(5), 
+      Clothes.find({ type: 'gele' }).limit(5), 
+      Clothes.find({ type: 'lace' }).limit(5), 
+      Clothes.find({ type: 'bogolanfini' }).limit(5), 
+      Clothes.find({ type: 'kente' }).limit(5), 
+      Clothes.find({ type: 'senufoCloth' }).limit(5), 
+      Clothes.find({ type: 'shweshwe' }).limit(5), 
+
+    ];
+
+    const [
+      ankara,
+      asoOke,
+      dansiki,
+      gele,
+      lace,
+      bogolanfini,
+      kente,
+      senufoCLoth,
+      shweshwe] = await Promise.all(promises);
+
+    res.json({ ankara,asoOke, dansiki, gele, lace, bogolanfini,kente, senufoCLoth,shweshwe});
+    console.log("found 5")
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+
+
 
     app.post('/api/cart/add', verifyToken, async (req, res) => {
       const userId = req.user.userId;

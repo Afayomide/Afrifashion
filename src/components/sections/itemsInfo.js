@@ -22,19 +22,19 @@ export default function ItemsInfo() {
  })
 
  const handleDelete = async (item) => {
-    const token = localStorage.getItem("authToken");
-    const productId = item._id;
-  
-    try {
-      // Update localCartList without resetting it
-      const updatedLocalCartList = JSON.parse(localStorage.getItem("localCartList")).filter(cartItem => cartItem._id !== productId);
-      localStorage.setItem("localCartList", JSON.stringify(updatedLocalCartList));
-      setInitialItems(updatedLocalCartList);
-      setCartList(updatedLocalCartList)
-      setLocalCartLength(updatedLocalCartList.length)
+  const token = localStorage.getItem("authToken");
+  const productId = item._id;
 
-  
-      // Update server cart
+  try {
+    // Update localCartList without resetting it
+    const updatedLocalCartList = JSON.parse(localStorage.getItem("localCartList")).filter(cartItem => cartItem._id !== productId);
+    localStorage.setItem("localCartList", JSON.stringify(updatedLocalCartList));
+    setInitialItems(updatedLocalCartList);
+    setCartList(updatedLocalCartList)
+    setLocalCartLength(updatedLocalCartList.length)
+
+    if (token) {
+      // Update server cart only if token exists
       const fetchUrl = `${process.env.REACT_APP_API_URL}/api/cart/delete`;
       await axios.delete(fetchUrl, {
         headers: {
@@ -43,19 +43,22 @@ export default function ItemsInfo() {
         },
         data: { productId }
       });
-  
-    } catch (error) {
-      console.error('Error deleting from cart:', error);
-      setError('An error occurred while deleting from cart.');
-  
-      // If server update is not successful, add the item back to the local cart list
-      const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
-      storedCartList.push(item);
-      localStorage.setItem('localCartList', JSON.stringify(storedCartList));
-      console.log('Added item back to local cart:', item);
-      throw error; // Rethrow the error to indicate failure
     }
-  };
+
+  } catch (error) {
+    console.error('Error deleting from cart:', error);
+    setError('An error occurred while deleting from cart.');
+
+    // If server update is not successful or no token, add the item back to the local cart list
+    const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
+    storedCartList.push(item);
+    localStorage.setItem('localCartList', JSON.stringify(storedCartList));
+    console.log('Added item back to local cart:', item);
+    setLocalCartLength(storedCartList.length)
+    throw error; // Rethrow the error to indicate failure
+  }
+};
+
 
   const handleAddToCart = async (fabric) => {
     const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
@@ -98,6 +101,7 @@ export default function ItemsInfo() {
       const updatedCartList = storedCartList.filter(item => item._id !== fabric._id);
       localStorage.setItem('localCartList', JSON.stringify(updatedCartList));
       console.log('Removed fabric from local cart:', fabric);
+      setLocalCartLength(updatedCartList.length);
     } finally {
       setShouldFetchCart(true); 
     }
@@ -108,11 +112,20 @@ export default function ItemsInfo() {
     return(
         <div className="item-info">
         <div className="item-info-img-container">
-<img src={item.image}/>
+           {item.image ? (
+        <img className="item-info-img" src={item.image} alt={item.name} />
+      ) : (
+        <div className="loader">
+          <div className="item-image-loader-container">
+        <div className="item-image-spinner"></div>
+    </div>
+    </div>
+      )}
+      </div>
 {cartList.some((cartItem) => cartItem._id === item._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === item._id) ? (
 <button onClick={() => handleDelete(item)} className="already-in-cart">Remove From Cart</button>) : (<button onClick={()=> (handleAddToCart(item))} className="add-to-cart">Add To Cart</button>)}
 
-</div>
+
 
 <p>{item.name}</p>
         </div>

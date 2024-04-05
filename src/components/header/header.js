@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios"
 import { ProductContext } from '../productContext';
 import { BsSearch } from "react-icons/bs";
+import { GiCrown } from "react-icons/gi";
 
 
 function Header() {
@@ -142,6 +143,10 @@ async function handleSearch (e) {
         }, [shouldFetchCart]);
 
 
+        // useEffect(()=>{
+        //   setLocalCartLength(JSON.parse(localStorage.getItem("localCartList")).length || [].length)
+        // })
+
 
 
    
@@ -171,7 +176,7 @@ async function handleSearch (e) {
 className="h1-link" 
 to="/">
    <h1>
-       Cool Styles<GiAfrica className="africalogo"/>
+       AfroRoyals<GiAfrica className="africalogo"/><sup><GiCrown className="crown"/></sup>
 </h1>
 </NavLink>
 
@@ -227,7 +232,7 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 
 <NavLink className="h1-link" to="/">
 <h1>
-Cool Styles<GiAfrica className="africalogo"/>
+AfroRoyals<GiAfrica className="africalogo"/><sup><GiCrown className="crown"/></sup>
 </h1>
 
 </NavLink>
@@ -275,7 +280,7 @@ isActive ? "picked nav-link" : `nav-link ${slideout}`
 className="h1-link" 
 to="/">
    <h1>
-       Cool Styles<GiAfrica className="africalogo"/>
+       AfroRoyals<GiAfrica className="africalogo"/><sup><GiCrown className="crown"/></sup>
 </h1>
 </NavLink>
 
@@ -334,7 +339,7 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 
 <NavLink className="h1-link" to="/">
 <h1>
-Cool Styles<GiAfrica className="africalogo"/>
+AfroRoyals<GiAfrica className="africalogo"/><sup><GiCrown className="crown"/></sup>
 </h1>
 
 </NavLink>

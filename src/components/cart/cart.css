@@ -60,7 +60,7 @@
 }
 .quantity-input{
     height: 1rem;
-    width: 2rem;
+    width: 2.5rem;
 }
 .remove-item-button{
     background-color: var(--navcolor);
@@ -82,7 +82,19 @@
     font-size: 2vw;
     font-weight: 700;
 }
+.empty-cart{
+    text-align: center;
+    margin: auto;
+    font-weight: 900;
+    font-size: 3rem;
+    color: var(--navcolor);
+}
+.empty-cart-container{
+        height: 70vh;
+        display: flex;
+        justify-content: center;
 
+}
 
 
 

@@ -31,8 +31,6 @@ const handleAddToCart = async (fabric) => {
 
     if (token){
   try {
- 
-
     const token = localStorage.getItem("authToken");
     if (token) {}
     const headers = {
@@ -124,6 +122,7 @@ const handleAddToCart = async (fabric) => {
   }
     }, [handleAddToCart])
 
+    
 
 
     return (
@@ -149,16 +148,16 @@ const handleAddToCart = async (fabric) => {
               <div className="product-list" key={fabric._id}>   
                <Link className="product-link" to={`/${fabric._id}`}>   
                 <img src={fabric.image} alt={fabric.name} />
-                <div>
-                  <p>type: {fabric.name}</p>  
+                <div className="product-link-texts">
+                  <p><span>type:</span>{fabric.type}</p>  
                    <p>{fabric.description}</p>
-                   <p>Qty:{fabric.quantity} yards</p>
-                   <p>Price:{fabric.price} per yard</p>
+                   <p><span>Qty:</span>{fabric.quantity} yards</p>
+                   <p><span>Price:</span>{fabric.price} per yard</p>
                 </div>
                  </Link>      
         
                  {cartList.some((cartItem) => cartItem._id === fabric._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === fabric._id) ? (
-    <button className="cart-button already-in-cart">Already in Cart</button>
+    <button className="cart-button already-in-cart">Added To Cart</button>
 ) : (
     <button className="cart-button add-to-cart" onClick={() => handleAddToCart(fabric)}>Add to Cart</button>
 )}</div>         

@@ -17,6 +17,9 @@ h1{
     text-decoration: none;
     color: #fff
 }
+.crown{
+  color: gold;
+}
 .log-sign .big-screen-search-button{
   margin-right: 1rem;
 }
