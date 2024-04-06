@@ -299,7 +299,8 @@ app.get("/api/clothespreview", async (req, res) => {
     // await client.expire('preview', 60 * 60); // One hour expiration
 
     console.log("Fetched cloth preview data from database");
-    res.json(previewData);
+    console.log(previewData)
+    res.json({previewData});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
