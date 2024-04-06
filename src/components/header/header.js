@@ -143,9 +143,14 @@ async function handleSearch (e) {
         }, [shouldFetchCart]);
 
 
-        // useEffect(()=>{
-        //   setLocalCartLength(JSON.parse(localStorage.getItem("localCartList")).length || [].length)
-        // })
+        useEffect(()=>{
+          if(JSON.parse(localStorage.getItem("localCartList"))){
+                      setLocalCartLength(JSON.parse(localStorage.getItem("localCartList")).length)
+          }
+          else{
+            setLocalCartLength(0)
+          }
+        })
 
 
 
@@ -183,7 +188,7 @@ to="/">
 </div>
 
 <div className="header-links">
-<NavLink 
+{/* <NavLink 
 className={({ isActive, isPending }) =>
 isActive ? "picked big-screen-link" : "big-screen-link"
 }  
@@ -195,7 +200,7 @@ to="/femalestyles">
 isActive ? "picked big-screen-link" : "big-screen-link"
 }  to="/malestyles" >
 <BsGenderMale/><p>Male Styles</p>
-</NavLink>
+</NavLink> */}
 
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked big-screen-link" : "big-screen-link"
@@ -287,7 +292,7 @@ to="/">
 </div>
 
 <div className="header-links">
-<NavLink 
+{/* <NavLink 
 className={({ isActive, isPending }) =>
 isActive ? "picked big-screen-link" : "big-screen-link"
 }  
@@ -299,7 +304,7 @@ to="/femalestyles">
 isActive ? "picked big-screen-link" : "big-screen-link"
 }  to="/malestyles" >
 <BsGenderMale/><p>Male Styles</p>
-</NavLink>
+</NavLink> */}
 
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked big-screen-link" : "big-screen-link"

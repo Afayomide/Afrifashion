@@ -5,6 +5,8 @@ import { useContext } from 'react';
 import { ProductContext } from '../productContext';
 import { Link } from "react-router-dom";
 import "./cart.css";
+import { usePaystackPayment } from "react-paystack";
+
 
 console.log(JSON.parse(localStorage.getItem('localCartList')))
 
@@ -121,6 +123,77 @@ function Cart () {
   if (cartList.length > 0 && initialItems.length > 0) {
     total = initialItems.reduce((accumulator, obj) => accumulator + (obj.price), 0);
   }
+  const [email, setEmail] = useState("")
+  const amount = total + .00
+  const publicKey = "pk_test_92549e9f5f279539fd738adbad7ca5c4efa207ea";
+  const [disable, setDisable] = useState()
+
+
+  const config = {
+    reference: (new Date()).getTime().toString(),
+    email,
+    amount,
+    publicKey,
+};
+const onSuccess = () => {
+  console.log("Success")
+  // emailjs.sendForm('service_yyeo66h', 'template_e3plaus', form.current, '-uGNesM2dn2b2lqIY')
+  // localStorage.removeItem("item");
+  // ToggleData()
+  // setItems([])
+};
+const onClose = () => {
+  // implementation for  whatever you want to do when the Paystack dialog closed.
+  console.log('closed')
+}
+
+  const PaystackHookButton = () => {
+    const initializePayment = usePaystackPayment(config);
+// function flashWarning(e) {
+//   if(phone == ""){
+//     setPhoneWarning("warning")
+//   }
+//   if(phone !==""){
+//     setPhoneWarning("")
+//   }
+//   if(email == ""){
+//     setEmailWarning("warning")
+//   }
+//   if(email !==""){
+//     setEmailWarning("")
+//   }
+//   if(radioval == ""){
+//     setRadioWarning("warning")
+//   }
+//   if(radioval !== "") {
+//     setRadioWarning("")
+//   }
+//   if(addVisibility == true && address == "") {
+//     setAddressWarning("warning")
+//   }
+//   if(address !==  ""){
+//     setAddressWarning("")
+//   }
+//   if(phone !== ""  && email !=="" && radioval !==""){
+//     if(addVisibility == true && address!== "" || addVisibility == false){
+//       initializePayment(onSuccess, onClose)
+//     }
+//     // if (addVisibility== false){
+//     //   initializePayment(onSuccess, onClose)
+//     // }
+//   }
+// }
+
+    return (
+      <div>
+          <button className="checkout-button"  type="button" onClick={() => {
+            // flashWarning()
+            initializePayment(onSuccess, onClose)
+            console.log(publicKey)
+          }}>Checkout</button>
+      </div>
+    );
+};
 
   return (
     <div className="cart-container">
@@ -174,6 +247,7 @@ function Cart () {
               <button className="remove-item-button" onClick={() => handleDelete(item)}>Remove</button>
             </div>
           ))}
+          <div><PaystackHookButton type="submit"/></div>
         </div>
       ) : (
         <div className="no-cart">

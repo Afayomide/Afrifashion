@@ -94,8 +94,8 @@ return(
                 Authorization: `Bearer ${token}`,
               },            
             });
-        const fiveItems = response.data
-          console.log(response.data)
+        const fiveItems = response.data.previewData
+          console.log(response.data.previewData)
           setAsoOke(fiveItems.asoOke)
           setLace(fiveItems.lace)
           setDansiki(fiveItems.dansiki)

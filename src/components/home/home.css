@@ -91,6 +91,11 @@ text-align: center;
   align-items: flex-start;
   flex-wrap: wrap;
 }
+@media (max-width: 1200px) {
+   .home-product-list{
+     margin-bottom: 1rem;
+  } 
+}
 @media (max-width: 800px) {
   .home-links{
     margin: 0 2rem;
@@ -101,13 +106,14 @@ text-align: center;
   .home-link{
     margin-top: 2rem;
   }
+
   }
 
 @media (max-width: 470px) {
   .home-product-list{
       margin-left: .1rem;
       margin-right: .1rem;
-      margin-bottom: 1rem;
+     
   }
   .home-product-list img{
       width: 10rem;
