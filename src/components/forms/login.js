@@ -6,18 +6,26 @@ import { BsEyeSlashFill } from 'react-icons/bs';
 import axios from 'axios';
 import formbg from '../../assets/formbg.webp'
 import { ProductContext } from '../productContext';
+    const authToken = localStorage.getItem("authToken");
+
+
+
+
 
 export default function Login () {
     const [check, setCheck] = useState(false)
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const {authenticated, setAuthenticated, setShouldFetchCart, setLocalCartLength} = useContext(ProductContext)
-
-
     const navigate = useNavigate();
-          const [err, setErr] = useState("")
-          const [changePassword, setChangePassword] = useState(true);
-  
+    const [err, setErr] = useState("")
+    const [changePassword, setChangePassword] = useState(true);
+
+  if (authToken){
+      navigate("/")
+    }
+    
+
           function handlePassword() {
               if(changePassword == true){
                 setChangePassword(false)
@@ -26,9 +34,7 @@ export default function Login () {
               setChangePassword(true)
              }
           }    
-
-
-
+          
       const handleLogin = async (e) => { 
     e.preventDefault()
     function callCheck(){

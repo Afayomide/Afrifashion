@@ -1,9 +1,29 @@
+.cart-bg-image{
+    filter: blur(30px);
+    opacity: 0.5;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  margin: auto;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+}
 .cartlist-link{
     text-decoration: none;
     color: black;
 }
 .cartlist-link div{
     margin-left: .3rem;
+}
+.checkout-button{
+    background-color:green;
+    color: white;
+    border-color: #1111;
+    padding: .5rem 1rem;
+    border-radius: 2rem;
+    margin: 5vh 0;
 }
 .about-cart-item{
         display: flex;
@@ -95,8 +115,6 @@
         justify-content: center;
 
 }
-
-
 
 @media (max-width:800px) {
     .cart-container{

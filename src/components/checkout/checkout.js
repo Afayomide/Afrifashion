@@ -1,0 +1,171 @@
+import { useContext, useState, useEffect } from 'react';
+import { ProductContext } from '../productContext';
+import { usePaystackPayment } from "react-paystack";
+import bgImage from "../../assets/fabricsbg.jpeg"
+import { Link } from 'react-router-dom';
+import "./checkout.css"
+
+
+
+function CheckoutPage(){
+  const publicKey = "pk_test_92549e9f5f279539fd738adbad7ca5c4efa207ea";
+  const [disable, setDisable] = useState()
+const { total, setTotal } = useContext(ProductContext);
+  const [email, setEmail] = useState("")
+  const [fullName, setFullName] = useState("")
+  const [phone, setPhone] = useState("")
+  const [address, setAddress] = useState("")
+  const token = localStorage.getItem("authToken");
+
+useEffect(()=>{
+  setTotal(localStorage.getItem("total"))
+})
+  const amount = total + .00
+  const config = {
+    reference: (new Date()).getTime().toString(),
+    email,
+    amount,
+    publicKey,
+};
+
+var localEmail = localStorage.getItem('email')
+var localName = localStorage.getItem('fullname')
+
+
+
+useEffect(() => {
+if (localEmail){
+  setEmail(localEmail) 
+
+}
+if(localName){
+  setFullName(localName)   
+}
+},[])
+
+
+
+const onSuccess = () => {
+    console.log("Success")
+    // emailjs.sendForm('service_yyeo66h', 'template_e3plaus', form.current, '-uGNesM2dn2b2lqIY')
+    // localStorage.removeItem("item");
+    // ToggleData()
+    // setItems([])
+  };
+  const onClose = () => {
+    // implementation for  whatever you want to do when the Paystack dialog closed.
+    console.log('closed')
+  }
+
+
+  const PaystackHookButton = () => {
+    const initializePayment = usePaystackPayment(config);
+// function flashWarning(e) {
+//   if(phone == ""){
+//     setPhoneWarning("warning")
+//   }
+//   if(phone !==""){
+//     setPhoneWarning("")
+//   }
+//   if(email == ""){
+//     setEmailWarning("warning")
+//   }
+//   if(email !==""){
+//     setEmailWarning("")
+//   }
+//   if(radioval == ""){
+//     setRadioWarning("warning")
+//   }
+//   if(radioval !== "") {
+//     setRadioWarning("")
+//   }
+//   if(addVisibility == true && address == "") {
+//     setAddressWarning("warning")
+//   }
+//   if(address !==  ""){
+//     setAddressWarning("")
+//   }
+//   if(phone !== ""  && email !=="" && radioval !==""){
+//     if(addVisibility == true && address!== "" || addVisibility == false){
+//       initializePayment(onSuccess, onClose)
+//     }
+//     // if (addVisibility== false){
+//     //   initializePayment(onSuccess, onClose)
+//     // }
+//   }
+// }
+
+    return (
+      <div>
+        <button className="checkout-button"  type="button" onClick={() => {
+            // flashWarning()
+            initializePayment(onSuccess, onClose)
+            console.log(publicKey)
+          }}>Checkout</button> 
+   
+          
+      </div>
+    );
+};
+return(
+    <div>
+                      <img className="cart-bg-image" src={bgImage} alt="backgroundImage"/>
+                {token ? 
+                <div>
+      <h3 className="cart-total"><span>Your Total: </span>${total}</h3>
+
+ <form className='checkout-form' >
+     <small>We ship to you anywhere you are in the world</small>
+      <h3>Enter Your details for delivery</h3> 
+
+      <div className='checkout-form-input'>
+          <input className='input-field' 
+          type="text"
+           id='username' 
+           onChange={(e) => setFullName(e.target.value)}
+           value={fullName}
+             placeholder='Full Name'   
+            /> 
+      </div>
+      
+      <div className='checkout-form-input'>
+          <input className='input-field'
+           type="email" 
+           id='email' 
+           onChange={(e) => setEmail(e.target.value)}
+           value={email}
+             placeholder='email address'   
+            /> 
+      </div>
+
+      <div className='checkout-form-input'>
+          <input className='input-field'
+           type="phone" 
+           id='phone' 
+           onChange={(e) => setPhone(e.target.value)}
+           value={phone}
+             placeholder='phone number'   
+            /> 
+      </div>
+        
+       <div className='checkout-form-input'>
+          <textarea className='input-field' 
+          placeholder='address'
+          onChange={(e) => setAddress(e.target.value)}
+          value={address}
+          >
+          </textarea>
+        </div>
+        <br />     
+        <PaystackHookButton type="submit"/>
+
+      </form>
+                </div>
+                      : <div className="no-cart">
+          <p>Please <Link to="/login">Login</Link> Or <Link to="/signup">Sign Up</Link> to view cart items.</p>
+        </div>}       
+    </div>
+)
+}
+
+export default CheckoutPage

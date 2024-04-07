@@ -5,6 +5,8 @@ import './form.css';
 import { BsEyeFill } from 'react-icons/bs';
 import { BsEyeSlashFill } from 'react-icons/bs';
 import formbg from '../../assets/formbg.webp'
+const authToken = localStorage.getItem("authToken");
+
 
 
 
@@ -16,7 +18,12 @@ export default function Signup () {
     const [email, setEmail] = useState('');
     const [err, setErr] = useState("")
     const [changePassword, setChangePassword] = useState(true);
-  
+    const navigate = useNavigate();
+
+     if (authToken){
+      navigate("/")
+    }
+
     function handlePassword() {
         if(changePassword == true){
           setChangePassword(false)
@@ -26,7 +33,8 @@ export default function Signup () {
        }
     }
     
-    const navigate = useNavigate();
+
+ 
   
     const handleSignup = async (e) => {
       e.preventDefault();

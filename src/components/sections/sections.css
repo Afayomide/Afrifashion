@@ -1,3 +1,15 @@
+.fabrics-bg-image{
+    filter: blur(30px);
+    opacity: 0.5;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  margin: auto;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+}
 .add-to-cart{
     background-color: var(--bgbuttons);
     color: #fff;
@@ -24,6 +36,7 @@
 }
 .product-link-texts{
     text-align: center;
+    margin-bottom: .8rem;
 }
 .product-link-texts p {
     color: black;
@@ -41,7 +54,7 @@
     align-items: center;
 }
 .product-list p{
-    margin: 10px;
+    margin: 3px;
 }
 .product-list-container{
     display: flex;

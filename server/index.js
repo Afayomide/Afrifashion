@@ -172,7 +172,9 @@ app.get("/api/cart", verifyToken, async(req,res) => {
     const customer = await Customer.findById(id);
     if (customer) {
       const cartLength = customer.cart.length;
-      res.json({ cartLength });
+      const fullName = customer.fullname
+      const email = customer.email
+      res.json({ cartLength, fullName, email });
     } else {
       return res.status(404).json({ message: 'User not found' });
         }

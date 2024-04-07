@@ -1,0 +1,40 @@
+.checkout-form{
+    background-image: linear-gradient(to bottom, var(--bgcolor), var(--navcolor));
+    color: var(--navcolor);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    width: 50%;
+    margin: auto;
+    border-radius: 2rem;
+   
+}
+.checkout-form button{
+    background-color:green;
+    color: white;
+    border-color: #1111;
+    padding: .5rem 1rem;
+    border-radius: 2rem;
+}
+.checkout-form button:hover {
+    color:var(--navcolor);
+    background-color: white;
+}
+.checkout-form h3{
+   border-bottom: .2rem solid ;
+}
+.checkout-form-input  {
+    margin-bottom: 1rem;
+    display: flex;
+}
+
+@media (max-width: 900px) {
+    .checkout-form {
+        width: 100%;
+        border-radius: 0;
+        background-image: none;
+        background-color: var(--bgcolor);
+    }
+}

@@ -16,6 +16,7 @@ import { ProductProvider } from './components/productContext';
 import ItemsInfo from './components/sections/itemsInfo';
 import AboutUs from './components/aboutus/aboutus';
 import SearchResults from './components/sections/searchResults';
+import CheckoutPage from './components/checkout/checkout';
 
 import Sound from 'react-sound';
 import AfroSounds from "./assets/afrosounds.mp3"
@@ -45,6 +46,7 @@ import AfroSounds from "./assets/afrosounds.mp3"
    <Route element={<AboutUs/>} path='/contact'/>
    <Route element={<ItemsInfo/>} path='/:id'/>
    <Route path="/search" element={<SearchResults/>} /> {/* Initial empty results */}
+   <Route element={<CheckoutPage/>} path="/checkout"/>
    </Routes>  
    </div>
    <div className="sound">

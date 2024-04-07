@@ -5,6 +5,8 @@ import { ProductContext } from '../productContext';
 import { Link } from "react-router-dom";
 import "./sections.css"
 import formbg from "../../assets/formbg.webp"
+import bgImage from "../../assets/fabricsbg.jpeg"
+
 
   
 
@@ -127,6 +129,7 @@ const handleAddToCart = async (fabric) => {
 
     return (
         <div className="product-list-container">
+                  <img className="fabrics-bg-image" src={bgImage} alt="backgroundImage"/>
       {isLoading ? (
         <div className="message">
           <div className="loader-container">
@@ -149,10 +152,10 @@ const handleAddToCart = async (fabric) => {
                <Link className="product-link" to={`/${fabric._id}`}>   
                 <img src={fabric.image} alt={fabric.name} />
                 <div className="product-link-texts">
-                  <p><span>type:</span>{fabric.type}</p>  
+                  <p>{fabric.type}</p>  
                    <p>{fabric.description}</p>
-                   <p><span>Qty:</span>{fabric.quantity} yards</p>
-                   <p><span>Price:</span>{fabric.price} per yard</p>
+                   <p><span>{fabric.quantity} yards</span> available</p>
+                   <p><span>${fabric.price}</span> per yard</p>
                 </div>
                  </Link>      
         

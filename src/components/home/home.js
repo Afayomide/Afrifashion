@@ -113,7 +113,7 @@ fetchData()
         <div className="home-links">
                 {/* <Link to="/femalestyles" className="home-link">Shop Women</Link>
      <Link to="/malestyles" className="home-link">Shop Men</Link> */}   
-       <Link to="/fabrics" className="home-link">All Fabrics</Link> 
+       <Link to="/fabrics" className="home-link">View All Fabrics</Link> 
         <div>     
         <div className="home-fabric-section">
                 <h3><Link className="home-section-link" to="/search?q=aso%20oke">Ankara</Link></h3>

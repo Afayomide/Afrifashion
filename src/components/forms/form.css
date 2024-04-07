@@ -1,6 +1,3 @@
-.margin-top{
-    margin-top: 20vh;
-}
 .auth-form button{
     background-color: var(--navcolor);
     color: white;
@@ -30,8 +27,6 @@
     right: 10px;
     position: absolute; 
 }
-
- 
 .pwd-input-icons {
     position: relative;
     z-index: 1;
@@ -51,8 +46,8 @@
     color: var(--navcolor);
     width: 15rem;
     border: .1rem var(--color-primary) solid;
-    
 }
+
 .auth-form{
     background-image: linear-gradient(to bottom, var(--bgcolor), var(--navcolor));
     color: var(--navcolor);
@@ -89,7 +84,6 @@ form small{
 @media (max-width: 900px) {
     .auth-form {
         width: 100%;
-        height: 100vh;
         border-radius: 0;
         background-image: none;
         background-color: var(--bgcolor);

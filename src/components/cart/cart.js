@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { ProductContext } from '../productContext';
 import { Link } from "react-router-dom";
 import "./cart.css";
-import { usePaystackPayment } from "react-paystack";
+import bgImage from "../../assets/fabricsbg.jpeg"
 
 
 console.log(JSON.parse(localStorage.getItem('localCartList')))
@@ -13,7 +13,7 @@ console.log(JSON.parse(localStorage.getItem('localCartList')))
 function Cart () {
   const [cartList, setCartList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const {initialItems, setInitialItems, shouldFetchCart, setShouldFetchCart, mainLoading, setMainLoading, setLocalCartLength } = useContext(ProductContext);
+  const {initialItems, setInitialItems, shouldFetchCart, setShouldFetchCart, mainLoading, setMainLoading, setLocalCartLength, total, setTotal } = useContext(ProductContext);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("authToken");
 
@@ -119,85 +119,24 @@ function Cart () {
     }
   };
   
-  let total = 0;
   if (cartList.length > 0 && initialItems.length > 0) {
-    total = initialItems.reduce((accumulator, obj) => accumulator + (obj.price), 0);
+    setTotal(initialItems.reduce((accumulator, obj) => accumulator + (obj.price), 0));
+    localStorage.setItem("total" ,initialItems.reduce((accumulator, obj) => accumulator + (obj.price), 0))
   }
-  const [email, setEmail] = useState("")
-  const amount = total + .00
-  const publicKey = "pk_test_92549e9f5f279539fd738adbad7ca5c4efa207ea";
-  const [disable, setDisable] = useState()
+  
+  
 
 
-  const config = {
-    reference: (new Date()).getTime().toString(),
-    email,
-    amount,
-    publicKey,
-};
-const onSuccess = () => {
-  console.log("Success")
-  // emailjs.sendForm('service_yyeo66h', 'template_e3plaus', form.current, '-uGNesM2dn2b2lqIY')
-  // localStorage.removeItem("item");
-  // ToggleData()
-  // setItems([])
-};
-const onClose = () => {
-  // implementation for  whatever you want to do when the Paystack dialog closed.
-  console.log('closed')
-}
+ 
 
-  const PaystackHookButton = () => {
-    const initializePayment = usePaystackPayment(config);
-// function flashWarning(e) {
-//   if(phone == ""){
-//     setPhoneWarning("warning")
-//   }
-//   if(phone !==""){
-//     setPhoneWarning("")
-//   }
-//   if(email == ""){
-//     setEmailWarning("warning")
-//   }
-//   if(email !==""){
-//     setEmailWarning("")
-//   }
-//   if(radioval == ""){
-//     setRadioWarning("warning")
-//   }
-//   if(radioval !== "") {
-//     setRadioWarning("")
-//   }
-//   if(addVisibility == true && address == "") {
-//     setAddressWarning("warning")
-//   }
-//   if(address !==  ""){
-//     setAddressWarning("")
-//   }
-//   if(phone !== ""  && email !=="" && radioval !==""){
-//     if(addVisibility == true && address!== "" || addVisibility == false){
-//       initializePayment(onSuccess, onClose)
-//     }
-//     // if (addVisibility== false){
-//     //   initializePayment(onSuccess, onClose)
-//     // }
-//   }
-// }
 
-    return (
-      <div>
-          <button className="checkout-button"  type="button" onClick={() => {
-            // flashWarning()
-            initializePayment(onSuccess, onClose)
-            console.log(publicKey)
-          }}>Checkout</button>
-      </div>
-    );
-};
+  
 
   return (
     <div className="cart-container">
-      <h3 className="cart-total"><span>Your Total: </span>₦{total}</h3>
+              <img className="cart-bg-image" src={bgImage} alt="backgroundImage"/>
+
+      <h3 className="cart-total"><span>Your Total: </span>${total}</h3>
 
       {isLoading ? (
         <div className="message">
@@ -239,7 +178,7 @@ const onClose = () => {
                   </option>
                 ))} 
               </select>
-              {initialItems[index]?.type == "fabric" ? (initialItems[index]?.newquantity == 1 ? (<small>yard</small>) : <small>yards</small>) : "" }
+              {initialItems[index]?.name == "fabric" ? (initialItems[index]?.newquantity == 1 ? (<small>yard</small>) : <small>yards</small>) : "" }
               </div>
               </div>
               </div>
@@ -247,7 +186,7 @@ const onClose = () => {
               <button className="remove-item-button" onClick={() => handleDelete(item)}>Remove</button>
             </div>
           ))}
-          <div><PaystackHookButton type="submit"/></div>
+          <Link to="/checkout"><button className="checkout-button">Go To Checkout</button></Link>
         </div>
       ) : (
         <div className="no-cart">

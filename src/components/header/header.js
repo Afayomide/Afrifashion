@@ -114,6 +114,8 @@ async function handleSearch (e) {
               });
   
               setCartNo(response.data.cartLength);
+              localStorage.setItem('fullname', response.data.fullName) 
+              localStorage.setItem('email', response.data.email); 
               console.log("fetched cart length")
               if (!localCart){
                 console.log(localCart)
@@ -164,6 +166,8 @@ async function handleSearch (e) {
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     localStorage.removeItem("localCartList")
+    localStorage.removeItem('fullname')
+    localStorage.removeItem('email')
     setShouldFetchCart(true)
     changeDisplay()
     setAuthenticated(false);

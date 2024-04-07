@@ -12,12 +12,12 @@ export const ProductProvider = ({ children }) => {
   const [localCartLength, setLocalCartLength] = useState(initialLocalLength.length)
   const [cartList, setCartList] = useState([])
   const [initialItems, setInitialItems] = useState([]);
-
+  const [total, setTotal] = useState([])
 
   const [cartNo, setCartNo] = useState(0)
 
   return (
-    <ProductContext.Provider value={{ initialItems,setInitialItems, cartNo, setCartNo, shouldFetchCart, setShouldFetchCart, shouldSearch, setShouldSearch, authenticated, setAuthenticated, mainLoading, setMainLoading, localCartLength, setLocalCartLength, cartList, setCartList}}>
+    <ProductContext.Provider value={{ initialItems,setInitialItems, cartNo, setCartNo, shouldFetchCart, setShouldFetchCart, shouldSearch, setShouldSearch, authenticated, setAuthenticated, mainLoading, setMainLoading, localCartLength, setLocalCartLength, cartList, setCartList, total, setTotal}}>
       {children}
     </ProductContext.Provider>
   );

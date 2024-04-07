@@ -22,6 +22,10 @@
 html,body{
   margin: 0;
   padding: 0;
+  font-family: "EB Garamond", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-weight: 500;
 }
 .topmargin{
   margin-top: 10vh;
