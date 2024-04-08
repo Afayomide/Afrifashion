@@ -11,7 +11,9 @@ const session = require("express-session")
 const redis = require('redis');
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "https://coolafristyles.web.app"
+}));
 
 
 
