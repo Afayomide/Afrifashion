@@ -9,9 +9,7 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 const session = require("express-session")
 const app = express();
-app.use(cors({
-  origin: "https://coolafristyles.web.app"
-}));
+app.use(cors());
 
 const redis = require('redis');
 
