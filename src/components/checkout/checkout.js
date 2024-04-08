@@ -16,11 +16,16 @@ const { total, setTotal } = useContext(ProductContext);
   const [phone, setPhone] = useState("")
   const [address, setAddress] = useState("")
   const token = localStorage.getItem("authToken");
+  const [nameWarning, setNameWarning] = useState()
+  const [phoneWarning, setPhoneWarning] = useState()
+  const [emailWarning, setEmailWarning] = useState()
+  const[addressWarning, setAddressWarning] = useState()
+
 
 useEffect(()=>{
   setTotal(localStorage.getItem("total"))
 })
-  const amount = total + .00
+  const amount = total + '00'
   const config = {
     reference: (new Date()).getTime().toString(),
     email,
@@ -60,47 +65,40 @@ const onSuccess = () => {
 
   const PaystackHookButton = () => {
     const initializePayment = usePaystackPayment(config);
-// function flashWarning(e) {
-//   if(phone == ""){
-//     setPhoneWarning("warning")
-//   }
-//   if(phone !==""){
-//     setPhoneWarning("")
-//   }
-//   if(email == ""){
-//     setEmailWarning("warning")
-//   }
-//   if(email !==""){
-//     setEmailWarning("")
-//   }
-//   if(radioval == ""){
-//     setRadioWarning("warning")
-//   }
-//   if(radioval !== "") {
-//     setRadioWarning("")
-//   }
-//   if(addVisibility == true && address == "") {
-//     setAddressWarning("warning")
-//   }
-//   if(address !==  ""){
-//     setAddressWarning("")
-//   }
-//   if(phone !== ""  && email !=="" && radioval !==""){
-//     if(addVisibility == true && address!== "" || addVisibility == false){
-//       initializePayment(onSuccess, onClose)
-//     }
-//     // if (addVisibility== false){
-//     //   initializePayment(onSuccess, onClose)
-//     // }
-//   }
-// }
+function flashWarning(e) {
+  if(fullName == "") {
+    setNameWarning('warning')
+  }
+  if(phone == ""){
+    setPhoneWarning("warning")
+  }
+  if(phone !==""){
+    setPhoneWarning("")
+  }
+  if(email == ""){
+    setEmailWarning("warning")
+  }
+  if(email !==""){
+    setEmailWarning("")
+  }
+ 
+ 
+  if( address == "") {
+    setAddressWarning("warning")
+  }
+  if(address !==  ""){
+    setAddressWarning("")
+  }
+  if(phone !== ""  && email !=="" && fullName !=="" && address!== ""){
+      initializePayment(onSuccess, onClose)
+
+  }
+}
 
     return (
       <div>
-        <button className="checkout-button"  type="button" onClick={() => {
-            // flashWarning()
-            initializePayment(onSuccess, onClose)
-            console.log(publicKey)
+        <button className="checkout-button" disabled={disable} type="button" onClick={() => {
+            flashWarning()
           }}>Checkout</button> 
    
           
@@ -119,42 +117,47 @@ return(
       <h3>Enter Your details for delivery</h3> 
 
       <div className='checkout-form-input'>
-          <input className='input-field' 
+          <input className={`${nameWarning} input-field`} 
           type="text"
            id='username' 
            onChange={(e) => setFullName(e.target.value)}
            value={fullName}
              placeholder='Full Name'   
-            /> 
+            /> <br/>
+              {nameWarning == "warning" ? <small className="warning-text"> please fill this field </small> : ""}
       </div>
       
       <div className='checkout-form-input'>
-          <input className='input-field'
+          <input className={`${emailWarning} input-field`}
            type="email" 
            id='email' 
            onChange={(e) => setEmail(e.target.value)}
            value={email}
              placeholder='email address'   
-            /> 
+            /> <br/>
+                  {emailWarning == "warning" ? <small className="warning-text"> please fill this field </small> : ""}
       </div>
 
       <div className='checkout-form-input'>
-          <input className='input-field'
+          <input className={`${phoneWarning} input-field`}
            type="phone" 
            id='phone' 
            onChange={(e) => setPhone(e.target.value)}
            value={phone}
              placeholder='phone number'   
-            /> 
+            /> <br/>
+            {phoneWarning == "warning" ? <small className="warning-text"> please fill this field </small> : ""}
+
       </div>
         
        <div className='checkout-form-input'>
-          <textarea className='input-field' 
+          <textarea className={`${addressWarning} input-field`} 
           placeholder='address'
           onChange={(e) => setAddress(e.target.value)}
           value={address}
           >
-          </textarea>
+          </textarea><br/>
+          {addressWarning == "warning" ? <small className="warning-text"> please fill this field </small> : ""}
         </div>
         <br />     
         <PaystackHookButton type="submit"/>

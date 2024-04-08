@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import axios from "axios"
 import { useLocation } from "react-router-dom";
 import formbg from "../../assets/formbg.webp"
+import bgImage from "../../assets/fabricsbg.jpeg"
+
 
 
 
@@ -91,6 +93,7 @@ function SearchResults() {
 
     return (
       <div className="product-list-container">
+                          <img className="fabrics-bg-image" src={bgImage} alt="backgroundImage"/>
       {isLoading ? (
         <div className="message">
           <div className="loader-container">

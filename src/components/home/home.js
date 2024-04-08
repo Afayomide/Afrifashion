@@ -118,28 +118,28 @@ fetchData()
                 <div className="home-product-list-container">
                   {ankara.map(Card)}  
                 </div> 
-                <p><Link className="home-see-all-link">See all Aso Oke.....</Link></p>
+                <p><Link to='search?q=ankara' className="home-see-all-link">See all Ankara.....</Link></p>
             </div>     
             <div className="home-fabric-section">
                 <h3><Link className="home-section-link" to="/search?q=aso%20oke">Aso Oke(Top Cloth)</Link></h3>
                 <div className="home-product-list-container">
                   {asoOke.map(Card)}  
                 </div> 
-                <p><Link className="home-see-all-link">See all Aso Oke.....</Link></p>
+                <p><Link to='search?q=aso-oke' className="home-see-all-link">See all Aso Oke.....</Link></p>
             </div>
             <div className="home-fabric-section">
                 <h3><Link  className="home-section-link" to="/search?q=aso%20oke">Dansiki</Link></h3>  
                 <div className="home-product-list-container">
                   {dansiki.map(Card)}  
                 </div> 
-                <p><Link className="home-see-all-link">See all dansiki.....</Link></p>    
+                <p><Link to='search?q=dansiki' className="home-see-all-link">See all dansiki.....</Link></p>    
             </div>
             <div className="home-fabric-section">
                 <h3><Link className="home-section-link" to="/search?q=aso%20oke">Gele</Link></h3>
                 <div className="home-product-list-container">
                   {gele.map(Card)}  
                 </div> 
-                <p><Link className="home-see-all-link">See all gele.....</Link></p>    
+                <p><Link to='search?q=gele' className="home-see-all-link">See all gele.....</Link></p>    
             </div>
 
             <div className="home-fabric-section">
@@ -147,7 +147,7 @@ fetchData()
                 <div className="home-product-list-container">
                   {lace.map(Card)}  
                 </div>
-                <p><Link className="home-see-all-link">See all lace.....</Link></p>    
+                <p><Link to='search?q=lace' className="home-see-all-link">See all lace.....</Link></p>    
             </div>
 
             {/* <div className="home-fabric-section">

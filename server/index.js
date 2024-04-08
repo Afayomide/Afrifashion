@@ -11,8 +11,8 @@ const session = require("express-session")
 const redis = require('redis');
 
 const client = redis.createClient({
-  host: 'your_redis_host',
-  port: 6379,
+  url:process.env.REDIS_URL,
+  password: process.env.REDIS_PASSWORD
 });
 
 (async () => {
@@ -20,7 +20,7 @@ const client = redis.createClient({
     await client.connect();
     console.log('Connected to Redis server successfully!');
   } catch (error) {
-    console.error('Error connecting to Redis:', error);
+    console.log('Error connecting to Redis:', error);
   }
 })();
 
@@ -188,25 +188,25 @@ app.get("/api/cart", verifyToken, async(req,res) => {
     app.get("/api/fabrics",async(req,res) => {
   
       try {
-        // const cachedFabrics = await client.get('fabrics');
+        const cachedFabrics = await client.get('fabrics');
 
-        // if (cachedFabrics) {
-        //   console.log("using cached")
-        //   return res.json({fabrics : JSON.parse(cachedFabrics)});
-        // } 
-        // else{
+        if (cachedFabrics) {
+          console.log("using cached")
+          return res.json({fabrics : JSON.parse(cachedFabrics)});
+        } 
+        else{
 
        const fabrics = await Clothes.find();
          if(fabrics) {      
-          // await client.set('fabrics', JSON.stringify(fabrics));
-          // await client.expire('fabrics', 60 * 60); 
+          await client.set('fabrics', JSON.stringify(fabrics));
+          await client.expire('fabrics', 60 * 30); 
              res.json({fabrics});
          }
  
          else {
            return res.status(404).json({ message: 'no fabric found' });
          }
-        // }
+        }
                    
  
      
@@ -260,15 +260,13 @@ app.get("/api/cart", verifyToken, async(req,res) => {
 
 app.get("/api/clothespreview", async (req, res) => {
   try {
-    // Check Redis for cached preview data
-    // const cachedPreview = await client.get('preview');
+    const cachedPreview = await client.get('preview');
 
-    // if (cachedPreview) {
-    //   console.log("Using cached preview data");
-    //   return res.json({previewData: JSON.parse(cachedPreview)});
-    // }
+    if (cachedPreview) {
+      console.log("Using cached preview data");
+      return res.json({previewData: JSON.parse(cachedPreview)});
+    }
 
-    // If not cached, fetch cloth preview data from database
     const promises = [
       Clothes.find({ type: 'ankara' }).limit(5),
       Clothes.find({ type: 'aso-oke' }).limit(5),
@@ -297,8 +295,8 @@ app.get("/api/clothespreview", async (req, res) => {
     };
 
     // Cache the preview data for future requests
-    // await client.set('preview', JSON.stringify(previewData));
-    // await client.expire('preview', 60 * 60); // One hour expiration
+    await client.set('preview', JSON.stringify(previewData));
+    await client.expire('preview', 60 * 30); // One hour expiration
 
     console.log("Fetched cloth preview data from database");
     console.log(previewData)

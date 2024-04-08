@@ -27,7 +27,11 @@
 }
 .checkout-form-input  {
     margin-bottom: 1rem;
-    display: flex;
+}
+.checkout-form-input small{
+     color: red;
+     text-align: center;
+     margin: 0
 }
 
 @media (max-width: 900px) {

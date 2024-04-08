@@ -188,12 +188,11 @@ useEffect(() => {
         }, [shouldFetchCart, Token]);
 
 
-        // useEffect(()=>{
-        //   if(JSON.parse(localStorage.getItem("localCartList"))){
-        //               setLocalCartLength(JSON.parse(localStorage.getItem("localCartList")).length)
-        //   }
-         
-        // })
+        useEffect(()=>{
+          if(JSON.parse(localStorage.getItem("localCartList"))){
+                      setLocalCartLength(JSON.parse(localStorage.getItem("localCartList")).length)
+          }
+        })
 
 
 
@@ -256,7 +255,7 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked big-screen-link" : "big-screen-link"
 }  to="/faqs">
-<GrCircleQuestion/><p>Faqs</p>
+<GrCircleQuestion/><p>FAQs</p>
 </NavLink>
 
 <NavLink className={({ isActive, isPending }) =>
@@ -316,6 +315,10 @@ isActive ? "picked nav-link" : `nav-link ${slideout}`
 } onClick={changeDisplay}  to="/fabrics"><GiRolledCloth/><p>Fabrics</p></NavLink>
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked nav-link" : `nav-link ${slideout}`
+} onClick={changeDisplay}  to="/faqs"><GrCircleQuestion/><p>FAQs</p></NavLink>
+
+<NavLink className={({ isActive, isPending }) =>
+isActive ? "picked nav-link" : `nav-link ${slideout}`
 } onClick={changeDisplay}  to="/contact"><p>Contact US</p></NavLink>
 <button className="nav-link logout-button"  onClick={handleLogout}>Logout</button>
 
@@ -366,7 +369,7 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked big-screen-link" : "big-screen-link"
 }  to="/faqs">
-<GrCircleQuestion/><p>Faqs</p>
+<GrCircleQuestion/><p>FAQs</p>
 </NavLink>
 
 <NavLink className={({ isActive, isPending }) =>
@@ -428,6 +431,10 @@ isActive ? "picked nav-link" : `nav-link ${slideout}`
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked nav-link" : `nav-link ${slideout}`
 } onClick={changeDisplay}  to="/fabrics"><GiRolledCloth/><p>Fabrics</p></NavLink>
+<NavLink className={({ isActive, isPending }) =>
+isActive ? "picked nav-link" : `nav-link ${slideout}`
+} onClick={changeDisplay}  to="/faqs"><GrCircleQuestion/><p>FAQs</p></NavLink>
+
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked nav-link" : `nav-link ${slideout}`
 } onClick={changeDisplay}  to="/contact"><p>Contact US</p></NavLink>
