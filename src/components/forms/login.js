@@ -21,9 +21,7 @@ export default function Login () {
     const [err, setErr] = useState("")
     const [changePassword, setChangePassword] = useState(true);
 
-  if (authToken){
-      navigate("/")
-    }
+ 
     
 
           function handlePassword() {

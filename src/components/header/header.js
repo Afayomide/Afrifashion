@@ -14,6 +14,7 @@ import axios from "axios"
 import { ProductContext } from '../productContext';
 import { BsSearch } from "react-icons/bs";
 import { GiCrown } from "react-icons/gi";
+import { GrCircleQuestion } from "react-icons/gr";
 
 
 function Header() {
@@ -21,9 +22,10 @@ function Header() {
   const [displayNav, SetDisplayNav] = useState(false)
   const {authenticated, setAuthenticated} = useContext(ProductContext)
   const [slideout, setSlideOut] = useState("")
-  const { cartNo, setCartNo, shouldFetchCart, setShouldSearch, setShouldFetchCart,mainLoading, setMainLoading, localCartLength, setLocalCartLength } = useContext(ProductContext);
+  const { cartNo, setCartNo, shouldFetchCart, setShouldSearch, setShouldFetchCart,mainLoading, setMainLoading, localCartLength, setLocalCartLength, setInitialItems, initialItems } = useContext(ProductContext);
   const [searchDisplay, setSearchDisplay] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
+  const [error, setError] = useState(null);
 
   
 
@@ -50,6 +52,47 @@ async function handleSearch (e) {
 }
 
 
+useEffect(() => {
+  const fetchData = async () => {
+    if (Token && mainLoading) {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/list`, {
+          headers: {
+            Authorization: `Bearer ${Token}`,
+          },
+        });
+
+
+        const storedCartList = JSON.parse(localStorage.getItem('localCartList'));
+
+        
+        if (storedCartList && storedCartList.length === response.data.cartItems.length) {
+
+          setInitialItems(storedCartList);
+
+        } else {
+          const initialItemsWithQuantity = response.data.cartItems.map((item) => ({
+            ...item,
+            newquantity: 1,
+          }));
+          setInitialItems(initialItemsWithQuantity);
+          localStorage.setItem("localCartList", JSON.stringify(initialItemsWithQuantity));
+        }
+      } catch (error) {
+        
+        if (error.response && error.response.status === 500) {
+          setMainLoading(false);
+        }
+        setError(error.message || 'An error occurred.');
+        console.error('Error:', error);
+      } 
+    } 
+  };
+
+  fetchData();
+  setShouldFetchCart(false);
+}, [shouldFetchCart, mainLoading, setMainLoading, setShouldFetchCart, Token]);
+
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
 
@@ -67,15 +110,14 @@ async function handleSearch (e) {
 
   useEffect(() => {
     const fetchList = async () => {
-      const token = localStorage.getItem("authToken")
-    if (token && mainLoading) {
+    if (Token && mainLoading) {
       const headers = {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${Token}`,
       };
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/list`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${Token}`,
           },
         });
 
@@ -114,12 +156,13 @@ async function handleSearch (e) {
               });
   
               setCartNo(response.data.cartLength);
+              setLocalCartLength(response.data.cartLength);
+
               localStorage.setItem('fullname', response.data.fullName) 
               localStorage.setItem('email', response.data.email); 
               console.log("fetched cart length")
               if (!localCart){
                 console.log(localCart)
-                setLocalCartLength(response.data.cartLength)
               }
           }
             catch (error) {
@@ -142,17 +185,15 @@ async function handleSearch (e) {
           fetchData()
     
        
-        }, [shouldFetchCart]);
+        }, [shouldFetchCart, Token]);
 
 
-        useEffect(()=>{
-          if(JSON.parse(localStorage.getItem("localCartList"))){
-                      setLocalCartLength(JSON.parse(localStorage.getItem("localCartList")).length)
-          }
-          else{
-            setLocalCartLength(0)
-          }
-        })
+        // useEffect(()=>{
+        //   if(JSON.parse(localStorage.getItem("localCartList"))){
+        //               setLocalCartLength(JSON.parse(localStorage.getItem("localCartList")).length)
+        //   }
+         
+        // })
 
 
 
@@ -210,6 +251,12 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 isActive ? "picked big-screen-link" : "big-screen-link"
 }  to="/fabrics">
 <GiRolledCloth/><p>Fabrics</p>
+</NavLink>
+
+<NavLink className={({ isActive, isPending }) =>
+isActive ? "picked big-screen-link" : "big-screen-link"
+}  to="/faqs">
+<GrCircleQuestion/><p>Faqs</p>
 </NavLink>
 
 <NavLink className={({ isActive, isPending }) =>
@@ -314,6 +361,12 @@ isActive ? "picked big-screen-link" : "big-screen-link"
 isActive ? "picked big-screen-link" : "big-screen-link"
 }  to="/fabrics">
 <GiRolledCloth/><p>Fabrics</p>
+</NavLink>
+
+<NavLink className={({ isActive, isPending }) =>
+isActive ? "picked big-screen-link" : "big-screen-link"
+}  to="/faqs">
+<GrCircleQuestion/><p>Faqs</p>
 </NavLink>
 
 <NavLink className={({ isActive, isPending }) =>

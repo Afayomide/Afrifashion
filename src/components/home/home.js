@@ -27,19 +27,17 @@ function Home () {
       
           setLocalCartLength(storedCartList.length);
           setCartNo(storedCartList.length)
-      
           const token = localStorage.getItem("authToken");
       
           if (token){
         try {
-       
-      
+
           const token = localStorage.getItem("authToken");
           if (token) {}
           const headers = {
             Authorization: `Bearer ${token}`,
           };
-      
+
           if (!token) {
             throw new Error("User not authenticated");
           }

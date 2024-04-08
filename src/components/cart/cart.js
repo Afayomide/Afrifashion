@@ -32,7 +32,6 @@ function Cart () {
           const storedCartList = JSON.parse(localStorage.getItem('localCartList'));
 
           
-
           if (storedCartList && storedCartList.length === response.data.cartItems.length) {
 
             setInitialItems(storedCartList);
@@ -86,7 +85,6 @@ function Cart () {
   const handleDelete = async (item) => {
     const token = localStorage.getItem("authToken");
     const productId = item._id;
-  
     try {
       // Update localCartList without resetting it
       const updatedLocalCartList = JSON.parse(localStorage.getItem("localCartList")).filter(cartItem => cartItem._id !== productId);
@@ -118,11 +116,14 @@ function Cart () {
       throw error; // Rethrow the error to indicate failure
     }
   };
-  
-  if (cartList.length > 0 && initialItems.length > 0) {
+
+  useEffect(()=>{    
+      if (cartList.length >= 0 && initialItems.length >= 0) {
     setTotal(initialItems.reduce((accumulator, obj) => accumulator + (obj.price), 0));
     localStorage.setItem("total" ,initialItems.reduce((accumulator, obj) => accumulator + (obj.price), 0))
-  }
+  }}, [handleDelete])
+  
+
   
   
 
