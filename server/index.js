@@ -9,6 +9,18 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 const session = require("express-session")
 const redis = require('redis');
+const app = express();
+
+app.use(cors());
+
+
+
+
+const dburl = process.env.dburl
+
+
+
+app.use(express.json());
 
 const client = redis.createClient({
   url:process.env.REDIS_URL,
@@ -23,15 +35,6 @@ const client = redis.createClient({
     console.log('Error connecting to Redis:', error);
   }
 })();
-
-
-const dburl = process.env.dburl
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
 
 
 async function connectToMongo(dburl) {
