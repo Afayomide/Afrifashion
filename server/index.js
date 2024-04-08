@@ -8,12 +8,12 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt'); 
 require('dotenv').config();
 const session = require("express-session")
-const redis = require('redis');
 const app = express();
-
 app.use(cors({
   origin: "https://coolafristyles.web.app"
 }));
+
+const redis = require('redis');
 
 
 
