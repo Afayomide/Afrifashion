@@ -10,8 +10,11 @@ require('dotenv').config();
 const session = require("express-session")
 const app = express();
 
+const corsOptions = {
+  origin: ['http://localhost:3000', 'https://coolafristyles.web.app']
+}
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 const redis = require('redis');
 
