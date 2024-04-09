@@ -14,7 +14,11 @@ const corsOptions = {
   origin: ['http://localhost:3000', 'https://coolafristyles.web.app']
 }
 
-app.use(cors(corsOptions));
+app.use(cors(
+  {
+    origin: 'http://localhost:3000'
+  }
+));
 
 const redis = require('redis');
 
