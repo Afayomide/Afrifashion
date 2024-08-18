@@ -9,6 +9,15 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 const session = require("express-session")
 const app = express();
+const redis = require('redis');
+
+const client = redis.createClient({
+    password: process.env.REDIS_PASSWORD,
+    socket: {
+        host: process.env.REDIS_URL,
+        port: 10755
+    }
+});
 
 const corsOptions = {
   origin: ['http://localhost:3006', 'https://coolafristyles.web.app']
@@ -16,7 +25,6 @@ const corsOptions = {
 
 app.use(cors());
 
-const redis = require('redis');
 
 const dburl = process.env.dburl
 
@@ -24,10 +32,10 @@ const dburl = process.env.dburl
 
 app.use(express.json());
 
-const client = redis.createClient({
-  url:process.env.REDIS_URL,
-  password: process.env.REDIS_PASSWORD
-});
+// const client = redis.createClient({
+//   url:process.env.REDIS_URL,
+//   password: process.env.REDIS_PASSWORD
+// });
 
 (async () => {
   try {
