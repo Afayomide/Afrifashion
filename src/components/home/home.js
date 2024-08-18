@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react"
 import axios from "axios"
 import { Link } from "react-router-dom"
 import "./home.css"
-import bgImage from "../../assets/fabricsbg.jpeg"
+// import bgImage from "../../assets/fabricsbg.jpeg"
 import asooke from "../../assets/asooke.jpg"
 import { ProductContext } from "../productContext"
 
@@ -16,6 +16,7 @@ function Home () {
     const [dansiki, setDansiki] = useState([])
     const [ankara, setAnkara] = useState([])
     const [gele, setGele] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
 
     const handleAddToCart = async (fabric) => {
@@ -69,10 +70,10 @@ return(
                <Link className="home-product-link" to={`/${props._id}`}>   
                 <img src={props.image} alt={props.name} />
                 <div className="home-product-link-texts">
-                  <p><span>Type:</span>{props.type}</p>  
+                  <p>{props.type}</p>  
                    <p>{props.description}</p>
-                   <p><span>Qty:</span>{props.quantity} yards</p>
-                   <p><span>Price:</span>{props.price} per yard</p>
+                 <p>$<span>{props.price}</span> per yard</p>  
+                 <p><span>{props.quantity}</span> yards left</p>
                 </div>
                  </Link>      
         
@@ -101,53 +102,101 @@ return(
           setAnkara(fiveItems.ankara)
     }
     catch{}
+    finally{
+      setIsLoading(false)
+    }
 }
 fetchData()
 }, [])
      
     return(
         <div className="home-container">
-        <img className="home-bg-image" src={bgImage} alt="backgroundImage"/>
+        {/* <img className="home-bg-image" src={bgImage} alt="backgroundImage"/> */}
+        <h3 className="welcome">Welcome To AfroRoyals</h3>
         <div className="home-links">
                 {/* <Link to="/femalestyles" className="home-link">Shop Women</Link>
      <Link to="/malestyles" className="home-link">Shop Men</Link> */}   
        <Link to="/fabrics" className="home-link">View All Fabrics</Link> 
         <div>     
+
+
         <div className="home-fabric-section">
                 <h3><Link className="home-section-link" to="/search?q=aso%20oke">Ankara</Link></h3>
-                <div className="home-product-list-container">
+                {
+              !isLoading ?(<div className="home-product-list-container">
                   {ankara.map(Card)}  
-                </div> 
-                <p><Link to='search?q=ankara' className="home-see-all-link">See all Ankara.....</Link></p>
+                </div> ) : (        
+                  <div className="home-product-list-container">
+          <div className="loader-container">
+          <div className="spinner"></div>
+      </div>
+          </div>)
+                }
+                <p><Link to='search?q=ankara' className="home-see-all-link">{!isLoading ? <span>see all</span> : <span>fetching</span>} Ankara.....</Link></p>
             </div>     
+
+
             <div className="home-fabric-section">
                 <h3><Link className="home-section-link" to="/search?q=aso%20oke">Aso Oke(Top Cloth)</Link></h3>
-                <div className="home-product-list-container">
+                {
+              !isLoading ?(<div className="home-product-list-container">
                   {asoOke.map(Card)}  
-                </div> 
-                <p><Link to='search?q=aso-oke' className="home-see-all-link">See all Aso Oke.....</Link></p>
+                </div> ) : (        
+                  <div className="home-product-list-container">
+          <div className="loader-container">
+          <div className="spinner"></div>
+      </div>
+          </div>)
+                }
+                <p><Link to='search?q=aso-oke' className="home-see-all-link">{!isLoading ? <span>see all</span> : <span>fetching</span>} Aso Oke.....</Link></p>
             </div>
+
+
             <div className="home-fabric-section">
                 <h3><Link  className="home-section-link" to="/search?q=aso%20oke">Dansiki</Link></h3>  
-                <div className="home-product-list-container">
+                {
+                !isLoading ?(<div className="home-product-list-container">
                   {dansiki.map(Card)}  
-                </div> 
-                <p><Link to='search?q=dansiki' className="home-see-all-link">See all dansiki.....</Link></p>    
+                </div> ) : (        
+                  <div className="home-product-list-container">
+          <div className="loader-container">
+          <div className="spinner"></div>
+      </div>
+          </div>)
+                }
+                <p><Link to='search?q=dansiki' className="home-see-all-link">{!isLoading ? <span>see all</span> : <span>fetching</span>} dansiki.....</Link></p>    
             </div>
+
+
             <div className="home-fabric-section">
                 <h3><Link className="home-section-link" to="/search?q=aso%20oke">Gele</Link></h3>
-                <div className="home-product-list-container">
+                {
+          !isLoading ?(<div className="home-product-list-container">
                   {gele.map(Card)}  
-                </div> 
-                <p><Link to='search?q=gele' className="home-see-all-link">See all gele.....</Link></p>    
+                </div> ) : (        
+                  <div className="home-product-list-container">
+          <div className="loader-container">
+          <div className="spinner"></div>
+      </div>
+          </div>)
+                }
+                <p><Link to='search?q=gele' className="home-see-all-link">{!isLoading ? <span>see all</span> : <span>fetching</span>} gele.....</Link></p>    
             </div>
+
 
             <div className="home-fabric-section">
                 <h3><Link className="home-section-link" to="/search?q=lace">Lace</Link></h3>
-                <div className="home-product-list-container">
+                {
+          !isLoading ?(<div className="home-product-list-container">
                   {lace.map(Card)}  
-                </div>
-                <p><Link to='search?q=lace' className="home-see-all-link">See all lace.....</Link></p>    
+                </div> ) : (        
+                  <div className="home-product-list-container">
+          <div className="loader-container">
+          <div className="spinner"></div>
+      </div>
+          </div>)
+                }
+                <p><Link to='search?q=lace' className="home-see-all-link">{!isLoading ? <span>see all</span> : <span>fetching</span>} lace.....</Link></p>    
             </div>
 
             {/* <div className="home-fabric-section">

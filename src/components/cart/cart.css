@@ -110,7 +110,7 @@
     color: var(--navcolor);
 }
 .empty-cart-container{
-        height: 70vh;
+        height: 90vh;
         display: flex;
         justify-content: center;
 

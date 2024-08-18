@@ -1,0 +1,45 @@
+import { createBrowserRouter } from "react-router-dom";
+import App from "./App";
+import Header from './components/header/header';
+import Home from './components/home/home';
+import Females from './components/sections/females';
+import Males from './components/sections/males';
+import Fabrics from './components/sections/fabrics';
+import Footer from './components/footer/footer';
+import Signup from './components/forms/signup';
+import Login from './components/forms/login';
+import Cart from './components/cart/cart';
+import { FaPlay } from "react-icons/fa";
+import { FaPause } from "react-icons/fa6";
+import { ProductProvider } from './components/productContext';
+import ItemsInfo from './components/sections/itemsInfo';
+import AboutUs from './components/aboutus/aboutus';
+import SearchResults from './components/sections/searchResults';
+import CheckoutPage from './components/checkout/checkout';
+import Faq from './components/sections/faq';
+
+
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    children: [
+{element : <Home/>, path: "/" },
+{element : <Females/>, path: "/femalestyles" },
+{element : <Males/>, path: "/malestyles" },
+{element : <Fabrics/>, path: "/fabrics" },
+{element : <Signup/>, path: "/signup" },
+{element : <Login/>, path: "/login" },
+{element : <Cart/>, path: "/cart" },
+{element : <AboutUs/>, path: '/contact'},
+{element : <ItemsInfo/>, path: '/:id'},
+{path: "/search", element : <SearchResults/>},
+{element : <CheckoutPage/>, path: "/checkout" },
+{element : <Faq/>, path: '/faqs' },
+    ],
+
+  },
+]);
+
+
+

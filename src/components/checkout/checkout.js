@@ -4,6 +4,8 @@ import { usePaystackPayment } from "react-paystack";
 import bgImage from "../../assets/fabricsbg.jpeg"
 import { Link } from 'react-router-dom';
 import "./checkout.css"
+import { CiDeliveryTruck } from "react-icons/ci";
+import { GiDeliveryDrone } from 'react-icons/gi';
 
 
 
@@ -113,7 +115,7 @@ return(
       <h3 className="cart-total"><span>Your Total: </span>${total}</h3>
 
  <form className='checkout-form' >
-     <small>We ship to you anywhere you are in the world</small>
+     <small>Working with DHL<span><CiDeliveryTruck/></span>,  No matter where you are, we can ship to you.</small>
       <h3>Enter Your details for delivery</h3> 
 
       <div className='checkout-form-input'>
@@ -147,7 +149,6 @@ return(
              placeholder='phone number'   
             /> <br/>
             {phoneWarning == "warning" ? <small className="warning-text"> please fill this field </small> : ""}
-
       </div>
         
        <div className='checkout-form-input'>

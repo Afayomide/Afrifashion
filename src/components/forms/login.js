@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import "./form.css"
 import { useNavigate, Link } from "react-router-dom";
 import { BsEyeFill } from 'react-icons/bs';
@@ -20,6 +20,56 @@ export default function Login () {
     const navigate = useNavigate();
     const [err, setErr] = useState("")
     const [changePassword, setChangePassword] = useState(true);
+
+    useEffect(
+      () => {
+        const authToken = localStorage.getItem('authToken')
+        if(authToken){
+          navigate("/");
+        }
+      },[authenticated]
+    )
+
+    const fetchData = async (Token) => {
+      const headers = {
+        Authorization: `Bearer ${Token}`,
+      };
+
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/list`, {
+          headers,
+        });
+        const userCartItems = await response.data.cartItems;
+        const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
+        const cartItemsToAdd = storedCartList.filter(item => !userCartItems.some(userItem => userItem._id === item._id));
+
+        await Promise.all(cartItemsToAdd.map(async cartItem => {
+          const existingItem = userCartItems.find(item => item._id === cartItem._id);
+
+          if(!existingItem){
+          const response = await axios.post(
+            `${process.env.REACT_APP_API_URL}/api/cart/add`,
+            { productId: cartItem._id },
+            { headers }
+          );       
+             console.log('Added item to user cart:', response.data);
+        }
+        else{
+          console.log("already exists")
+        }
+        }));
+        
+      } catch (error) {
+        console.log(error)
+      }      
+      finally{           
+        setShouldFetchCart(true)         
+        setAuthenticated(true)
+        window.location.reload()     
+      }      
+
+    }
+
 
  
     
@@ -52,11 +102,9 @@ export default function Login () {
 
         if (success) {         
           localStorage.setItem('authToken', token); 
-          navigate(-1)
           setErr(success)
-          setAuthenticated(true)
           console.log(`Login successful. Token: ${token}`);
-          setShouldFetchCart(true)
+          fetchData(token)
         } else {
           console.error('Login failed:', response.data.message);
    setErr(response.data.message)

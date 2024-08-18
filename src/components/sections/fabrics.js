@@ -6,9 +6,9 @@ import { Link } from "react-router-dom";
 import "./sections.css"
 import formbg from "../../assets/formbg.webp"
 import bgImage from "../../assets/fabricsbg.jpeg"
+import { click } from "@testing-library/user-event/dist/click";
 
 
-  
 
 
 const Fabrics = memo(() => { 
@@ -50,6 +50,7 @@ const handleAddToCart = async (fabric) => {
       { headers }
     );
 
+
     console.log('Added fabric to server cart:', response.data);
   } catch (error) {
     console.error('Error adding to cart:', error);
@@ -64,6 +65,21 @@ const handleAddToCart = async (fabric) => {
 }
 };
 
+
+function localClickedList(fabric) {
+  const clickedList = JSON.parse(localStorage.getItem('localClickedList')) || [];
+  const clickedItemId = clickedList.find(item => item._id === fabric._id); // Assuming 'id' is unique for each fabric
+  if (clickedItemId) {
+      console.log("already in")
+  } else {
+      const clickedItem = { ...fabric, newquantity: 1 }; 
+      clickedList.push(clickedItem);
+      console.log(clickedItem)
+      console.log("not in")
+  }
+  localStorage.setItem('localClickedList', JSON.stringify(clickedList));
+  console.log(clickedList);
+}
 
 
 
@@ -88,9 +104,6 @@ const handleAddToCart = async (fabric) => {
               },            
             });
             setCartList(cartResponse.data.cartItems)
-
-
-    
          }
           
           catch (error) {
@@ -129,7 +142,7 @@ const handleAddToCart = async (fabric) => {
 
     return (
         <div className="product-list-container">
-                  <img className="fabrics-bg-image" src={bgImage} alt="backgroundImage"/>
+                  {/* <img className="fabrics-bg-image" src={bgImage} alt="backgroundImage"/> */}
       {isLoading ? (
         <div className="message">
           <div className="loader-container">
@@ -137,7 +150,10 @@ const handleAddToCart = async (fabric) => {
       </div>
                     <p className="loading-message">....Getting all fabrics</p>
           </div>
-      ) : error ? (
+      ) 
+      : 
+      error ? 
+      (
         <div className="message">
         <img src={formbg} alt='login background' className='auth-bg-image'/>
 
@@ -149,13 +165,13 @@ const handleAddToCart = async (fabric) => {
      <div className="product-list-container">
             {fabricsList.map((fabric, index) => ( 
               <div className="product-list" key={fabric._id}>   
-               <Link className="product-link" to={`/${fabric._id}`}>   
+               <Link onClick={()=> localClickedList(fabric)} className="product-link" to={`/${fabric._id}`}>   
                 <img src={fabric.image} alt={fabric.name} />
                 <div className="product-link-texts">
                   <p>{fabric.type}</p>  
                    <p>{fabric.description}</p>
-                   <p><span>{fabric.quantity} yards</span> available</p>
                    <p><span>${fabric.price}</span> per yard</p>
+                   <p><span>{fabric.quantity} yards</span> left</p>
                 </div>
                  </Link>      
         

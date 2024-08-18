@@ -11,15 +11,12 @@ const session = require("express-session")
 const app = express();
 
 const corsOptions = {
-  origin: ['http://localhost:3000', 'https://coolafristyles.web.app']
+  origin: ['http://localhost:3006', 'https://coolafristyles.web.app']
 }
 
 app.use(cors());
 
 const redis = require('redis');
-
-
-
 
 const dburl = process.env.dburl
 
@@ -196,25 +193,25 @@ app.get("/api/cart", verifyToken, async(req,res) => {
     app.get("/api/fabrics",async(req,res) => {
   
       try {
-        // const cachedFabrics = await client.get('fabrics');
+        const cachedFabrics = await client.get('fabrics');
 
-        // if (cachedFabrics) {
-        //   console.log("using cached")
-        //   return res.json({fabrics : JSON.parse(cachedFabrics)});
-        // } 
-        // else{
+        if (cachedFabrics) {
+          console.log("using cached")
+          return res.json({fabrics : JSON.parse(cachedFabrics)});
+        } 
+        else{
 
        const fabrics = await Clothes.find();
          if(fabrics) {      
-          // await client.set('fabrics', JSON.stringify(fabrics));
-          // await client.expire('fabrics', 60 * 30); 
+          await client.set('fabrics', JSON.stringify(fabrics));
+          await client.expire('fabrics', 60 * 30); 
              res.json({fabrics});
          }
  
          else {
            return res.status(404).json({ message: 'no fabric found' });
          }
-        // }
+        }
                    
  
      
@@ -268,12 +265,12 @@ app.get("/api/cart", verifyToken, async(req,res) => {
 
 app.get("/api/clothespreview", async (req, res) => {
   try {
-    // const cachedPreview = await client.get('preview');
+    const cachedPreview = await client.get('preview');
 
-    // if (cachedPreview) {
-    //   console.log("Using cached preview data");
-    //   return res.json({previewData: JSON.parse(cachedPreview)});
-    // }
+    if (cachedPreview) {
+      console.log("Using cached preview data");
+      return res.json({previewData: JSON.parse(cachedPreview)});
+    }
 
     const promises = [
       Clothes.find({ type: 'ankara' }).limit(5),
@@ -303,8 +300,8 @@ app.get("/api/clothespreview", async (req, res) => {
     };
 
     // Cache the preview data for future requests
-    // await client.set('preview', JSON.stringify(previewData));
-    // await client.expire('preview', 60 * 30); // One hour expiration
+    await client.set('preview', JSON.stringify(previewData));
+    await client.expire('preview', 60 * 30); // One hour expiration
 
     console.log("Fetched cloth preview data from database");
     console.log(previewData)

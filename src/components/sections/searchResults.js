@@ -93,7 +93,7 @@ function SearchResults() {
 
     return (
       <div className="product-list-container">
-                          <img className="fabrics-bg-image" src={bgImage} alt="backgroundImage"/>
+                          {/* <img className="fabrics-bg-image" src={bgImage} alt="backgroundImage"/> */}
       {isLoading ? (
         <div className="message">
           <div className="loader-container">

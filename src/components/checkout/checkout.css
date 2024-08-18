@@ -18,6 +18,10 @@
     padding: .5rem 1rem;
     border-radius: 2rem;
 }
+.checkout-form small{
+    color: green;
+    font-size: 1.5rem;
+}
 .checkout-form button:hover {
     color:var(--navcolor);
     background-color: white;

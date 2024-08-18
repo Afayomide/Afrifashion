@@ -7,7 +7,7 @@ import { ProductContext } from "../productContext"
 export default function ItemsInfo() {
     const [item, setItem] = useState([])
     const [error, setError] = useState("")
-    const {cartList, setCartList, setInitialItems, initialItems, setLocalCartLength, setShouldFetchCart, setCartNo} = useContext(ProductContext)
+    const {allClickedList,setAllClickedList, cartList, setCartList, setInitialItems, initialItems, setLocalCartLength, setShouldFetchCart, setCartNo} = useContext(ProductContext)
     const {id} = useParams()
 
     useEffect(()=>{
@@ -20,6 +20,64 @@ export default function ItemsInfo() {
 
   fetchData()
  })
+
+
+ const clickedList = JSON.parse(localStorage.getItem('localClickedList')) || []
+
+//  const handleQuantityChange = (itemIndex, newQuantity, price) => {
+//   const updatedCart = [...cartList];
+//   updatedCart[itemIndex].quantity = newQuantity;
+//   setCartList(updatedCart);
+
+//   const updatedInitialItems = [...initialItems];
+//   updatedInitialItems[itemIndex].newquantity = newQuantity;
+  
+//   updatedInitialItems[itemIndex].price = updatedCart[itemIndex].price * newQuantity;
+  
+//   setInitialItems(updatedInitialItems);
+
+//   localStorage.setItem("localCartList", JSON.stringify(updatedInitialItems));
+// };
+
+ const handleQuantityChange = (id ,newQuantity, price) => {
+
+  if(cartList.find((item) => item._id == id)){
+  const matchingCartItem = cartList.find((cartItem) => cartItem._id === id);
+
+  
+  if (!matchingCartItem) {
+    console.error("Item with id", id, "not found in cartList");
+    return; 
+  }
+
+  const updatedCartList = [...cartList];
+  matchingCartItem.quantity = newQuantity;
+  matchingCartItem.price = price * newQuantity; 
+
+  const matchingInitialItem = initialItems.find((initialItem) => initialItem._id === id);
+      // updatedInitialItems[itemIndex].price = updatedCart[itemIndex].price * newQuantity;
+
+
+  if (!matchingInitialItem) {
+    console.error("Item with id", id, "not found in initialItems");
+    return; 
+  }
+
+  const updatedInitialItems = [...initialItems];
+  const newInitialItem = updatedInitialItems.find((initialItem) => initialItem._id === id).newquantity = newQuantity;
+
+  setCartList(updatedCartList);
+  setInitialItems(newInitialItem);
+  console.log(newInitialItem)
+
+  localStorage.setItem("localCartList", JSON.stringify(updatedInitialItems)); // Or updatedInitialItems depending on your storage strategy
+  console.log(updatedCartList)
+  console.log(updatedInitialItems)
+} 
+else if(clickedList.find((item) => item._id === id)){
+   console.log("in")
+  }
+};
 
  const handleDelete = async (item) => {
   const token = localStorage.getItem("authToken");
@@ -69,9 +127,8 @@ export default function ItemsInfo() {
   
       setLocalCartLength(storedCartList.length);
       setCartNo(storedCartList.length)
-  
+
       const token = localStorage.getItem("authToken");
-  
       if (token){
     try {
    
@@ -107,6 +164,9 @@ export default function ItemsInfo() {
     }
   }
   };
+
+  // var itemLength =initialItems.find((initialItem) => initialItem._id === id)?.quantity || 1
+
   
 
     return(
@@ -125,7 +185,18 @@ export default function ItemsInfo() {
 {cartList.some((cartItem) => cartItem._id === item._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === item._id) ? (
 <button onClick={() => handleDelete(item)} className="already-in-cart">Remove From Cart</button>) : (<button onClick={()=> (handleAddToCart(item))} className="add-to-cart">Add To Cart</button>)}
 
-
+<select
+                className="quantity-input"
+                onChange={(e) => handleQuantityChange(id, parseInt(e.target.value))}
+                value={initialItems.find((item) => item._id == id)?.newquantity || clickedList.find((clickedList) => clickedList._id == id)?.newquantity}
+              >
+                {Array.from({ length: initialItems.find((initialItem) => initialItem._id === id)?.quantity || clickedList.find((clickedList) => clickedList._id === id)?.quantity }, (_, i) => i + 1).map((optionValue) => (
+                  <option key={optionValue} value={optionValue}>
+                    {optionValue}
+                  </option>
+                ))} 
+  </select>
+  <p>{item.price}</p>
 
 <p>{item.name}</p>
         </div>

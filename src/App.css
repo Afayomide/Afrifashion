@@ -1,14 +1,16 @@
 @charset "UTF-8";
 :root {
-  --navcolor: rgb(41, 41, 92);
+  /* --navcolor: rgb(41, 41, 92); */
+  --navcolor: rgb(13, 13, 77);
   --fadenavcolor: rgba(41, 41, 92,0.4);
-  --bgcolor: ;
   --fontcolor: #fff;
   --color-primary: rgba(0, 0, 128,0.3);
   --color-secondary: #ffcb03;
   --homebuttons: 2rem;
-  --bgbuttons: navy;
-  --buttonscolor: #fff
+  --bgbuttons: rgb(29, 29, 97);
+  --bgcolor: rgba(41,41,92,0.1);
+  --buttonscolor: #fff;
+  --footerBackground: rgb(13, 13, 77);
 }
 .playmusic{
   position: fixed;
@@ -20,6 +22,8 @@
 
 
 html,body{
+  position: relative;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
   font-family: "EB Garamond", serif;
@@ -28,7 +32,9 @@ html,body{
   font-weight: 500;
 }
 .topmargin{
-  margin-top: 10vh;
+  padding-top: 10vh;
+  padding-bottom: 20vh;
+  background-color: var(--bgcolor);
 }
 
 .fade-in {
@@ -41,7 +47,7 @@ html,body{
 }
 @media (max-width:900px) {
   .topmargin{
-    margin-top: 10vh;
+    padding-top: 10vh;
   }
 }
 .error{
@@ -55,6 +61,6 @@ html,body{
 
 @media (max-width:500px) {
   .topmargin{
-    margin-top: 7vh;
+    padding-top: 7vh;
   }
 }

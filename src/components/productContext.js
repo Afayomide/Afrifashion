@@ -13,11 +13,12 @@ export const ProductProvider = ({ children }) => {
   const [cartList, setCartList] = useState([])
   const [initialItems, setInitialItems] = useState([]);
   const [total, setTotal] = useState([])
+  const [allClickedList, setAllClickedList] = useState([])
 
   const [cartNo, setCartNo] = useState(0)
 
   return (
-    <ProductContext.Provider value={{ initialItems,setInitialItems, cartNo, setCartNo, shouldFetchCart, setShouldFetchCart, shouldSearch, setShouldSearch, authenticated, setAuthenticated, mainLoading, setMainLoading, localCartLength, setLocalCartLength, cartList, setCartList, total, setTotal}}>
+    <ProductContext.Provider value={{ allClickedList, setAllClickedList, initialItems,setInitialItems, cartNo, setCartNo, shouldFetchCart, setShouldFetchCart, shouldSearch, setShouldSearch, authenticated, setAuthenticated, mainLoading, setMainLoading, localCartLength, setLocalCartLength, cartList, setCartList, total, setTotal}}>
       {children}
     </ProductContext.Provider>
   );

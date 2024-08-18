@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useContext } from 'react';
@@ -6,6 +5,8 @@ import { ProductContext } from '../productContext';
 import { Link } from "react-router-dom";
 import "./cart.css";
 import bgImage from "../../assets/fabricsbg.jpeg"
+
+
 
 
 console.log(JSON.parse(localStorage.getItem('localCartList')))
@@ -17,6 +18,23 @@ function Cart () {
   const [error, setError] = useState(null);
   const token = localStorage.getItem("authToken");
 
+
+function arraysHaveSameItemsById(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  const sortedArr1 = arr1.slice().sort((a, b) => a.id - b.id);
+  const sortedArr2 = arr2.slice().sort((a, b) => a.id - b.id);
+
+  for (let i = 0; i < sortedArr1.length; i++) {
+    if (sortedArr1[i].id !== sortedArr2[i].id) {
+      return false; 
+    }
+  }
+
+  return true;
+}
   useEffect(() => {
     const fetchData = async () => {
       if (token && mainLoading) {
@@ -30,12 +48,11 @@ function Cart () {
           setCartList(response.data.cartItems);
 
           const storedCartList = JSON.parse(localStorage.getItem('localCartList'));
+          const userCartItems = await response.data.cartItems;
 
           
-          if (storedCartList && storedCartList.length === response.data.cartItems.length) {
-
+          if (storedCartList && arraysHaveSameItemsById(storedCartList, userCartItems)) {
             setInitialItems(storedCartList);
-
           } else {
             const initialItemsWithQuantity = response.data.cartItems.map((item) => ({
               ...item,
@@ -74,7 +91,6 @@ function Cart () {
     const updatedInitialItems = [...initialItems];
     updatedInitialItems[itemIndex].newquantity = newQuantity;
     
-    // Update price based on new quantity
     updatedInitialItems[itemIndex].price = updatedCart[itemIndex].price * newQuantity;
     
     setInitialItems(updatedInitialItems);
@@ -108,12 +124,11 @@ function Cart () {
       console.error('Error deleting from cart:', error);
       setError('An error occurred while deleting from cart.');
   
-      // If server update is not successful, add the item back to the local cart list
       const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
       storedCartList.push(item);
       localStorage.setItem('localCartList', JSON.stringify(storedCartList));
       console.log('Added item back to local cart:', item);
-      throw error; // Rethrow the error to indicate failure
+      throw error; 
     }
   };
 

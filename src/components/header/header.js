@@ -22,7 +22,7 @@ function Header() {
   const [displayNav, SetDisplayNav] = useState(false)
   const {authenticated, setAuthenticated} = useContext(ProductContext)
   const [slideout, setSlideOut] = useState("")
-  const { cartNo, setCartNo, shouldFetchCart, setShouldSearch, setShouldFetchCart,mainLoading, setMainLoading, localCartLength, setLocalCartLength, setInitialItems, initialItems } = useContext(ProductContext);
+  const { cartNo, setCartNo, shouldFetchCart,setCartList, setShouldSearch, setShouldFetchCart,mainLoading, setMainLoading, localCartLength, setLocalCartLength, setInitialItems, initialItems } = useContext(ProductContext);
   const [searchDisplay, setSearchDisplay] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [error, setError] = useState(null);
@@ -32,6 +32,37 @@ function Header() {
 
 
   const Token = localStorage.getItem('authToken');
+  function arraysHaveSameItemsById(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+      return false;
+    }
+  
+    const sortedArr1 = arr1.slice().sort((a, b) => a.id - b.id);
+    const sortedArr2 = arr2.slice().sort((a, b) => a.id - b.id);
+  
+    for (let i = 0; i < sortedArr1.length; i++) {
+      if (sortedArr1[i].id !== sortedArr2[i].id) {
+        return false; 
+      }
+    }
+  
+    return true;
+  }
+
+    useEffect(() => {
+    const authToken = localStorage.getItem('authToken');
+
+    if (authToken) {
+      setAuthenticated(true);
+      setShouldFetchCart(true)
+      console.log(authToken)
+      setInterval(()=>{
+        setShouldFetchCart(false)
+      }, 10)
+    }  else if (!authToken) {
+      setAuthenticated(false);
+    }
+  },[]);
 
 
 function handleSearchDisplay(e){
@@ -55,21 +86,24 @@ async function handleSearch (e) {
 useEffect(() => {
   const fetchData = async () => {
     if (Token && mainLoading) {
+      const headers = {
+        Authorization: `Bearer ${Token}`,
+      };
+
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/list`, {
-          headers: {
-            Authorization: `Bearer ${Token}`,
-          },
+          headers,
         });
+        const userCartItems = await response.data.cartItems;
+        setCartList(response.data.cartItems)
+        
 
-
-        const storedCartList = JSON.parse(localStorage.getItem('localCartList'));
+        const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
 
         
-        if (storedCartList && storedCartList.length === response.data.cartItems.length) {
 
+        if (storedCartList && arraysHaveSameItemsById(storedCartList, userCartItems)) {
           setInitialItems(storedCartList);
-
         } else {
           const initialItemsWithQuantity = response.data.cartItems.map((item) => ({
             ...item,
@@ -78,71 +112,22 @@ useEffect(() => {
           setInitialItems(initialItemsWithQuantity);
           localStorage.setItem("localCartList", JSON.stringify(initialItemsWithQuantity));
         }
+
       } catch (error) {
-        
         if (error.response && error.response.status === 500) {
           setMainLoading(false);
         }
         setError(error.message || 'An error occurred.');
         console.error('Error:', error);
-      } 
-    } 
+      }
+    }
   };
 
   fetchData();
-  setShouldFetchCart(false);
-}, [shouldFetchCart, mainLoading, setMainLoading, setShouldFetchCart, Token]);
+}, [shouldFetchCart, mainLoading, Token]);
 
-  useEffect(() => {
-    const authToken = localStorage.getItem('authToken');
 
-    if (authToken) {
-      setAuthenticated(true);
-      setShouldFetchCart(true)
-      console.log(authToken)
-      setInterval(()=>{
-        setShouldFetchCart(false)
-      }, 10)
-    }  else if (!authToken) {
-      setAuthenticated(false);
-    }
-  },[]);
 
-  useEffect(() => {
-    const fetchList = async () => {
-    if (Token && mainLoading) {
-      const headers = {
-        Authorization: `Bearer ${Token}`,
-      };
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/list`, {
-          headers: {
-            Authorization: `Bearer ${Token}`,
-          },
-        });
-
-        const userCartItems = await response.data.cartItems;
-        const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
-
-    const cartItemsToAdd = storedCartList.filter(item => !userCartItems.some(userItem => userItem._id === item._id));
-
-    await Promise.all(cartItemsToAdd.map(async cartItem => {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/cart/add`,
-        { productId: cartItem._id }, 
-        { headers }
-      );
-      console.log('Added item to user cart:', response.data);
-    }
-    ));
-      }
-        catch{
-
-        }
-      }
-    }
-    fetchList()
-  }, [Token])
 
   useEffect(() => {
     const token = localStorage.getItem("authToken")
@@ -208,11 +193,11 @@ useEffect(() => {
     localStorage.removeItem("localCartList")
     localStorage.removeItem('fullname')
     localStorage.removeItem('email')
-    setShouldFetchCart(true)
     changeDisplay()
     setAuthenticated(false);
       navigate("/")
       setLocalCartLength(0)
+      window.location.reload()
   };
     return(
       <div>
