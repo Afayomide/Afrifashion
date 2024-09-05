@@ -103,7 +103,6 @@ export default function Login () {
         if (success) {         
           localStorage.setItem('authToken', token); 
           setErr(success)
-          console.log(`Login successful. Token: ${token}`);
           fetchData(token)
         } else {
           console.error('Login failed:', response.data.message);

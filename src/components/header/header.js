@@ -55,7 +55,6 @@ function Header() {
     if (authToken) {
       setAuthenticated(true);
       setShouldFetchCart(true)
-      console.log(authToken)
       setInterval(()=>{
         setShouldFetchCart(false)
       }, 10)
@@ -145,9 +144,7 @@ useEffect(() => {
 
               localStorage.setItem('fullname', response.data.fullName) 
               localStorage.setItem('email', response.data.email); 
-              console.log("fetched cart length")
               if (!localCart){
-                console.log(localCart)
               }
           }
             catch (error) {
@@ -155,14 +152,12 @@ useEffect(() => {
                 console.error('Error (403 Forbidden):', error.message);
                 localStorage.removeItem('authToken');
                 setAuthenticated(false);
-                console.log("Login again (403)"); // Include the status code for clarity
               } 
               else {
                 console.error('Other Error:', error);
             }
             if (error.response && error.response.status === 500) {
               setMainLoading(false)
-              console.log("empty")
             }
           }
           finally{setShouldFetchCart(false)}
@@ -289,12 +284,12 @@ AfroRoyals<GiAfrica className="africalogo"/><sup><GiCrown className="crown"/></s
 </nav>
 
 <div className={`small-nav-links ${displayNav ? "show-nav" : 'hide-nav'}`}>
-<NavLink className={({ isActive, isPending }) =>
+{/* <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked nav-link" : `nav-link ${slideout}`
-} onClick={changeDisplay}  to="/femalestyles" ><BsGenderFemale/><p>Female Styles</p></NavLink>
-<NavLink className={({ isActive, isPending }) =>
+} onClick={changeDisplay}  to="/femalestyles" ><BsGenderFemale/><p>Female Styles</p></NavLink> */}
+{/* <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked nav-link" : `nav-link ${slideout}`
-} onClick={changeDisplay}  to="/malestyles"><BsGenderMale/><p>Male Styles</p></NavLink>
+} onClick={changeDisplay}  to="/malestyles"><BsGenderMale/><p>Male Styles</p></NavLink> */}
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked nav-link" : `nav-link ${slideout}`
 } onClick={changeDisplay}  to="/fabrics"><GiRolledCloth/><p>Fabrics</p></NavLink>
@@ -407,12 +402,12 @@ AfroRoyals<GiAfrica className="africalogo"/><sup><GiCrown className="crown"/></s
 </nav>
 
 <div className={`small-nav-links ${displayNav ? "show-nav" : 'hide-nav'}`}>
-<NavLink className={({ isActive, isPending }) =>
+{/* <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked nav-link" : `nav-link ${slideout}`
-} onClick={changeDisplay}  to="/femalestyles" ><BsGenderFemale/><p>Female Styles</p></NavLink>
-<NavLink className={({ isActive, isPending }) =>
+} onClick={changeDisplay}  to="/femalestyles" ><BsGenderFemale/><p>Female Styles</p></NavLink> */}
+{/* <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked nav-link" : `nav-link ${slideout}`
-} onClick={changeDisplay}  to="/malestyles"><BsGenderMale/><p>Male Styles</p></NavLink>
+} onClick={changeDisplay}  to="/malestyles"><BsGenderMale/><p>Male Styles</p></NavLink> */}
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked nav-link" : `nav-link ${slideout}`
 } onClick={changeDisplay}  to="/fabrics"><GiRolledCloth/><p>Fabrics</p></NavLink>

@@ -5,6 +5,7 @@ import "./home.css"
 // import bgImage from "../../assets/fabricsbg.jpeg"
 import asooke from "../../assets/asooke.jpg"
 import { ProductContext } from "../productContext"
+import logo from "../../assets/logo.png"
 
 
 
@@ -64,26 +65,7 @@ function Home () {
       }
       };
 
-function Card (props){
-return(
-              <div className="home-product-list"  key={props._id}>   
-               <Link className="home-product-link" to={`/${props._id}`}>   
-                <img src={props.image} alt={props.name} />
-                <div className="home-product-link-texts">
-                  <p>{props.type}</p>  
-                   <p>{props.description}</p>
-                 <p>$<span>{props.price}</span> per yard</p>  
-                 <p><span>{props.quantity}</span> yards left</p>
-                </div>
-                 </Link>      
-        
-                 {cartList.some((cartItem) => cartItem._id === props._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === props._id) ? (
-    <button className="home-cart-button already-in-cart">Added To Cart</button>
-) : (
-    <button className="home-cart-button add-to-cart" onClick={() => handleAddToCart(props)}>Add to Cart</button>
-)}</div>         
-)
-}
+
     useEffect(() => {
         const token = localStorage.getItem("authToken")
         const fetchData = async () => {
@@ -104,15 +86,39 @@ return(
     catch{}
     finally{
       setIsLoading(false)
+      console.log(JSON.parse(localStorage.getItem('localCartList')))
     }
 }
 fetchData()
 }, [])
-     
+
+
+     function Card (props){
+return(
+              <div className="home-product-list"  key={props._id}>   
+               <Link className="home-product-link" to={`/${props._id}`}>   
+                <img src={props.image} alt={props.name} />
+                <div className="home-product-link-texts">
+                  <p>{props.type}</p>  
+                   <p>{props.description}</p>
+                 <p>$<span>{props.price}</span> per yard</p>  
+                 <p><span>{props.quantity}</span> yards left</p>
+                </div>
+                 </Link>      
+        
+                 {/* {cartList.some((cartItem) => cartItem._id === props._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === props._id) ? ( */}
+
+                 {(JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === props._id) ? (
+    <Link to={`/${props._id}`}><button onclick={`window.location.href=/${props._id}`} className="home-cart-button already-in-cart">Added To Cart</button></Link>
+) : (
+    <button className="home-cart-button add-to-cart" onClick={() => handleAddToCart(props)}>Add to Cart</button>
+)}</div>         
+)
+}
     return(
         <div className="home-container">
         {/* <img className="home-bg-image" src={bgImage} alt="backgroundImage"/> */}
-        <h3 className="welcome">Welcome To AfroRoyals</h3>
+        <h3 className="welcome">Welcome To AfroRoyals <img src={logo} className="logo"/></h3>
         <div className="home-links">
                 {/* <Link to="/femalestyles" className="home-link">Shop Women</Link>
      <Link to="/malestyles" className="home-link">Shop Men</Link> */}   

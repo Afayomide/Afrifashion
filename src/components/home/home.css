@@ -42,7 +42,11 @@
   text-decoration: none;
   width: auto;
 }
-
+.logo{
+  width: 2rem;
+  border-radius: 5rem;
+  
+}
 
 .home-fabric-section h3{
   margin: .3rem 0

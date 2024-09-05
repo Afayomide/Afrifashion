@@ -176,7 +176,7 @@ function localClickedList(fabric) {
                  </Link>      
         
                  {cartList.some((cartItem) => cartItem._id === fabric._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === fabric._id) ? (
-    <button className="cart-button already-in-cart">Added To Cart</button>
+<button className="cart-button already-in-cart"><Link className="already-link" to={`/${fabric._id}`}> Added To Cart</Link></button>
 ) : (
     <button className="cart-button add-to-cart" onClick={() => handleAddToCart(fabric)}>Add to Cart</button>
 )}</div>         

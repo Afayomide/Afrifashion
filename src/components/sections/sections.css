@@ -42,6 +42,10 @@
     width: 80%;
     cursor: pointer;
 }
+.already-link{
+    color: var(--navcolor);
+    text-decoration: none;
+}
 .product-list img{
     width: 20rem;
     height: 15rem;

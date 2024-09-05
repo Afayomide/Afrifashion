@@ -49,7 +49,7 @@
 }
 
 .auth-form{
-    background-image: linear-gradient(to bottom, var(--bgcolor), var(--navcolor));
+    /* background-image: linear-gradient(to bottom, var(--bgcolor), var(--navcolor)); */
     color: var(--navcolor);
     display: flex;
     flex-direction: column;
@@ -57,7 +57,7 @@
     align-items: center;
     height: 80vh;
     width: 50%;
-    margin: auto;
+    margin: 10vh auto;
     border-radius: 2rem;
    
 }
@@ -85,7 +85,8 @@ form small{
     .auth-form {
         width: 100%;
         border-radius: 0;
-        background-image: none;
-        background-color: var(--bgcolor);
+        padding: 0;
+        margin: 0;
+        height: 90vh
     }
 }

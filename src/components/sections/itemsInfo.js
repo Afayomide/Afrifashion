@@ -9,6 +9,10 @@ export default function ItemsInfo() {
     const [error, setError] = useState("")
     const {allClickedList,setAllClickedList, cartList, setCartList, setInitialItems, initialItems, setLocalCartLength, setShouldFetchCart, setCartNo} = useContext(ProductContext)
     const {id} = useParams()
+    const [selectedQuantity, setSelectedQuantity] = useState(() => {
+      const storedQuantity = JSON.parse(localStorage.getItem(`selectedQuantity-${id}`));
+      return storedQuantity || 1 // Default to 1 if no stored quantity
+  });
 
     useEffect(()=>{
   async function fetchData(){
@@ -19,7 +23,7 @@ export default function ItemsInfo() {
   } 
 
   fetchData()
- })
+ }, [])
 
 
  const clickedList = JSON.parse(localStorage.getItem('localClickedList')) || []
@@ -39,45 +43,47 @@ export default function ItemsInfo() {
 //   localStorage.setItem("localCartList", JSON.stringify(updatedInitialItems));
 // };
 
- const handleQuantityChange = (id ,newQuantity, price) => {
 
-  if(cartList.find((item) => item._id == id)){
-  const matchingCartItem = cartList.find((cartItem) => cartItem._id === id);
+const handleQuantityChange = (id, newQuantity, price) => {
 
-  
-  if (!matchingCartItem) {
-    console.error("Item with id", id, "not found in cartList");
-    return; 
-  }
+  setSelectedQuantity(newQuantity); // Update the selected quantity in the state
 
-  const updatedCartList = [...cartList];
-  matchingCartItem.quantity = newQuantity;
-  matchingCartItem.price = price * newQuantity; 
-
-  const matchingInitialItem = initialItems.find((initialItem) => initialItem._id === id);
-      // updatedInitialItems[itemIndex].price = updatedCart[itemIndex].price * newQuantity;
+  localStorage.setItem(`selectedQuantity-${id}`, JSON.stringify(newQuantity));
 
 
-  if (!matchingInitialItem) {
-    console.error("Item with id", id, "not found in initialItems");
-    return; 
-  }
+  if (Array.isArray(cartList) && cartList.find((item) => item._id == id)) {
+    const matchingCartItem = cartList.find((cartItem) => cartItem._id === id);
 
-  const updatedInitialItems = [...initialItems];
-  const newInitialItem = updatedInitialItems.find((initialItem) => initialItem._id === id).newquantity = newQuantity;
+    if (!matchingCartItem) {
+      console.error("Item with id", id, "not found in cartList");
+      return; 
+    }
 
-  setCartList(updatedCartList);
-  setInitialItems(newInitialItem);
-  console.log(newInitialItem)
+    const updatedCartList = [...cartList];
+    matchingCartItem.quantity = newQuantity;
+    matchingCartItem.price = price * newQuantity; 
 
-  localStorage.setItem("localCartList", JSON.stringify(updatedInitialItems)); // Or updatedInitialItems depending on your storage strategy
-  console.log(updatedCartList)
-  console.log(updatedInitialItems)
-} 
-else if(clickedList.find((item) => item._id === id)){
-   console.log("in")
+    const matchingInitialItem = Array.isArray(initialItems) && initialItems.find((initialItem) => initialItem._id === id);
+
+    if (!matchingInitialItem) {
+      console.error("Item with id", id, "not found in initialItems");
+      return; 
+    }
+
+    const updatedInitialItems = [...initialItems];
+    updatedInitialItems.find((initialItem) => initialItem._id === id).newquantity = newQuantity;
+
+    setCartList(updatedCartList);
+    setInitialItems(updatedInitialItems);  // Use updatedInitialItems here
+
+    localStorage.setItem("localCartList", JSON.stringify(updatedInitialItems));
+    console.log(updatedCartList);
+    console.log(updatedInitialItems);
+  } else if (Array.isArray(clickedList) && clickedList.find((item) => item._id === id)) {
+    console.log("Item found in clickedList");
   }
 };
+
 
  const handleDelete = async (item) => {
   const token = localStorage.getItem("authToken");
@@ -182,20 +188,36 @@ else if(clickedList.find((item) => item._id === id)){
     </div>
       )}
       </div>
+      <p>Type: {item.name}</p>
+            <p>Material: {item.type}</p>
+            <p>Your Total Price: {item.price * selectedQuantity}</p>
+      <div>
+        Quantity of yards left in stock : <select
+  className="quantity-input"
+  onChange={(e) => handleQuantityChange(id, parseInt(e.target.value))}
+  value={
+    (Array.isArray(initialItems) && initialItems.find((item) => item._id == id)?.newquantity) ||
+    (Array.isArray(clickedList) && clickedList.find((clickedItem) => clickedItem._id == id)?.newquantity) ||
+    1
+  }
+>
+  {Array.from({
+    length:
+      (Array.isArray(initialItems) && initialItems.find((initialItem) => initialItem._id === id)?.quantity) ||
+      (Array.isArray(clickedList) && clickedList.find((clickedItem) => clickedItem._id === id)?.quantity) ||
+      1,
+  }, (_, i) => i + 1).map((optionValue) => (
+    <option key={optionValue} value={optionValue}>
+      {optionValue}
+    </option>
+  ))}
+</select>
+      </div>
 {cartList.some((cartItem) => cartItem._id === item._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === item._id) ? (
 <button onClick={() => handleDelete(item)} className="already-in-cart">Remove From Cart</button>) : (<button onClick={()=> (handleAddToCart(item))} className="add-to-cart">Add To Cart</button>)}
 
-<select
-                className="quantity-input"
-                onChange={(e) => handleQuantityChange(id, parseInt(e.target.value))}
-                value={initialItems.find((item) => item._id == id)?.newquantity || clickedList.find((clickedList) => clickedList._id == id)?.newquantity}
-              >
-                {Array.from({ length: initialItems.find((initialItem) => initialItem._id === id)?.quantity || clickedList.find((clickedList) => clickedList._id === id)?.quantity }, (_, i) => i + 1).map((optionValue) => (
-                  <option key={optionValue} value={optionValue}>
-                    {optionValue}
-                  </option>
-                ))} 
-  </select>
+
+
   <p>{item.price}</p>
 
 <p>{item.name}</p>
