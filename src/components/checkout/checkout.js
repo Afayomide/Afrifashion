@@ -166,7 +166,7 @@ return(
       </form>
                 </div>
                       : <div className="no-cart">
-          <p>Please <Link to="/login">Login</Link> Or <Link to="/signup">Sign Up</Link> to view cart items.</p>
+          <p>Please <Link to="/login">Login</Link> Or <Link to="/signup">Sign Up</Link> to checkout.</p>
         </div>}       
     </div>
 )

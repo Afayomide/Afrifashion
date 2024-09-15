@@ -72,6 +72,8 @@ const handleQuantityChange = (id, newQuantity, price) => {
 
     const updatedInitialItems = [...initialItems];
     updatedInitialItems.find((initialItem) => initialItem._id === id).newquantity = newQuantity;
+    updatedInitialItems.find((initialItem) => initialItem._id === id).price = newQuantity * item.price;
+
 
     setCartList(updatedCartList);
     setInitialItems(updatedInitialItems);  // Use updatedInitialItems here
@@ -190,9 +192,9 @@ const handleQuantityChange = (id, newQuantity, price) => {
       </div>
       <p>Type: {item.name}</p>
             <p>Material: {item.type}</p>
-            <p>Your Total Price: {item.price * selectedQuantity}</p>
+            <p>Price per one: {item.price}</p>
       <div>
-        Quantity of yards left in stock : <select
+        Quantity in yards: <select
   className="quantity-input"
   onChange={(e) => handleQuantityChange(id, parseInt(e.target.value))}
   value={
@@ -203,24 +205,23 @@ const handleQuantityChange = (id, newQuantity, price) => {
 >
   {Array.from({
     length:
-      (Array.isArray(initialItems) && initialItems.find((initialItem) => initialItem._id === id)?.quantity) ||
-      (Array.isArray(clickedList) && clickedList.find((clickedItem) => clickedItem._id === id)?.quantity) ||
-      1,
+      // (Array.isArray(initialItems) && initialItems.find((initialItem) => initialItem._id === id)?.quantity) ||
+      // (Array.isArray(clickedList) && clickedList.find((clickedItem) => clickedItem._id === id)?.quantity) ||
+      // 1,
+      item.quantity
   }, (_, i) => i + 1).map((optionValue) => (
     <option key={optionValue} value={optionValue}>
       {optionValue}
     </option>
   ))}
-</select>
+</select>            
+
       </div>
+      <p>Your Total Price: {initialItems.find((item) => item._id == id)?.price}</p>
+
 {cartList.some((cartItem) => cartItem._id === item._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === item._id) ? (
 <button onClick={() => handleDelete(item)} className="already-in-cart">Remove From Cart</button>) : (<button onClick={()=> (handleAddToCart(item))} className="add-to-cart">Add To Cart</button>)}
 
-
-
-  <p>{item.price}</p>
-
-<p>{item.name}</p>
         </div>
     )
 }

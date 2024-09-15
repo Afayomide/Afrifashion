@@ -150,7 +150,7 @@ function arraysHaveSameItemsById(arr1, arr2) {
 
   return (
     <div className="cart-container">
-              <img className="cart-bg-image" src={bgImage} alt="backgroundImage"/>
+              {/* <img className="cart-bg-image" src={bgImage} alt="backgroundImage"/> */}
 
       <h3 className="cart-total"><span>Your Total: </span>${total}</h3>
 
@@ -177,9 +177,8 @@ function arraysHaveSameItemsById(arr1, arr2) {
               <Link className="cartlist-link" to={`/${item._id}`}>
                 <img src={item.image} alt={item.name} />       
                 </Link>
-                <div>
-                  <p><span className="description-header">Type:</span> {item.type}</p>
-                  <p><span className="description-header">Total price:</span> ${item.price}</p>
+                <div className="cartlist-description">
+                  <p><span className="description-header">Material:</span> {item.type}</p>
               
               <div className="cart-quantity">
               <p><span className="description-header">Quantity:</span></p>
@@ -195,14 +194,16 @@ function arraysHaveSameItemsById(arr1, arr2) {
                 ))} 
               </select>
               {initialItems[index]?.name == "fabric" ? (initialItems[index]?.newquantity == 1 ? (<small>yard</small>) : <small>yards</small>) : "" }
-              </div>
+              </div> 
+              <p><span className="description-header">Total price:</span> ${item.price}</p>
               </div>
               </div>
               
               <button className="remove-item-button" onClick={() => handleDelete(item)}>Remove</button>
             </div>
-          ))}
-          <Link to="/checkout"><button className="checkout-button">Go To Checkout</button></Link>
+          ))}                 
+
+          <Link className="checkout" to="/checkout"><button className="checkout-button">Go To Checkout</button></Link>
         </div>
       ) : (
         <div className="no-cart">
