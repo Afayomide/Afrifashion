@@ -141,7 +141,7 @@ app.post('/api/login', async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,   
       secure: process.env.NODE_ENV === 'production',  
-      // sameSite: process.env.SAME_SITE,  
+      sameSite: process.env.SAME_SITE,  
       maxAge: 4 * 24 * 60 * 60 * 1000 
     });
     console.log(res.cookie)
@@ -191,7 +191,7 @@ app.post('/api/logout', async (req, res) => {
   res.cookie('token', '', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // Set to true in production for HTTPS
-    // sameSite: process.env.SAME_SITE,
+    sameSite: process.env.SAME_SITE,
     maxAge: 0 
   });
 
