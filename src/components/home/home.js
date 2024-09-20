@@ -1,8 +1,7 @@
 import { useEffect, useState, useContext } from "react"
 import axios from "axios"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import "./home.css"
-// import bgImage from "../../assets/fabricsbg.jpeg"
 import asooke from "../../assets/asooke.jpg"
 import { ProductContext } from "../productContext"
 import logo from "../../assets/logo.png"
@@ -10,9 +9,10 @@ import logo from "../../assets/logo.png"
 
 
 function Home () {
+  const navigate = useNavigate()
     const [lace, setLace ] = useState([])
     const [asoOke, setAsoOke] = useState([])
-    const { cartNo, setCartNo, setShouldFetchCart,mainLoading, setMainLoading, setLocalCartLength, cartList, setCartList } = useContext(ProductContext);
+    const {authenticated, cartNo, setCartNo, setShouldFetchCart,mainLoading, setMainLoading, setLocalCartLength, cartList, setCartList } = useContext(ProductContext);
     const [error, setError] = useState(null); 
     const [dansiki, setDansiki] = useState([])
     const [ankara, setAnkara] = useState([])
@@ -29,18 +29,11 @@ function Home () {
       
           setLocalCartLength(storedCartList.length);
           setCartNo(storedCartList.length)
-          const token = localStorage.getItem("authToken");
       
-          if (token){
-        try {
+          if (authenticated){
+        try {         
 
-          const token = localStorage.getItem("authToken");
-          if (token) {}
-          const headers = {
-            Authorization: `Bearer ${token}`,
-          };
-
-          if (!token) {
+          if (!authenticated) {
             throw new Error("User not authenticated");
           }
       
@@ -48,7 +41,6 @@ function Home () {
           const response = await axios.post(
             `${process.env.REACT_APP_API_URL}/api/cart/add`,
             { productId }, 
-            { headers }
           );
       
           console.log('Added fabric to server cart:', response.data);
@@ -86,7 +78,6 @@ function Home () {
     catch{}
     finally{
       setIsLoading(false)
-      console.log(JSON.parse(localStorage.getItem('localCartList')))
     }
 }
 fetchData()
@@ -106,10 +97,9 @@ return(
                 </div>
                  </Link>      
         
-                 {/* {cartList.some((cartItem) => cartItem._id === props._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === props._id) ? ( */}
 
                  {(JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === props._id) ? (
-    <Link to={`/${props._id}`}><button onclick={`window.location.href=/${props._id}`} className="home-cart-button already-in-cart">Added To Cart</button></Link>
+    <Link to={`/${props._id}`}><button onClick={() => navigate(`/${props.id}`)} className="home-cart-button already-in-cart">Added To Cart</button></Link>
 ) : (
     <button className="home-cart-button add-to-cart" onClick={() => handleAddToCart(props)}>Add to Cart</button>
 )}</div>         
@@ -117,17 +107,15 @@ return(
 }
     return(
         <div className="home-container">
-        {/* <img className="home-bg-image" src={bgImage} alt="backgroundImage"/> */}
         <h3 className="welcome">Welcome To AfroRoyals <img src={logo} className="logo"/></h3>
         <div className="home-links">
-                {/* <Link to="/femalestyles" className="home-link">Shop Women</Link>
-     <Link to="/malestyles" className="home-link">Shop Men</Link> */}   
+              
        <Link to="/fabrics" className="home-link">View All Fabrics</Link> 
         <div>     
 
 
         <div className="home-fabric-section">
-                <h3><Link className="home-section-link" to="/search?q=aso%20oke">Ankara</Link></h3>
+                <h3><Link className="home-section-link" to="/search?q=asoOke">Ankara</Link></h3>
                 {
               !isLoading ?(<div className="home-product-list-container">
                   {ankara.map(Card)}  
@@ -143,7 +131,7 @@ return(
 
 
             <div className="home-fabric-section">
-                <h3><Link className="home-section-link" to="/search?q=aso%20oke">Aso Oke(Top Cloth)</Link></h3>
+                <h3><Link className="home-section-link" to="/search?q=aso-oke">Aso Oke(Top Cloth)</Link></h3>
                 {
               !isLoading ?(<div className="home-product-list-container">
                   {asoOke.map(Card)}  
@@ -159,7 +147,7 @@ return(
 
 
             <div className="home-fabric-section">
-                <h3><Link  className="home-section-link" to="/search?q=aso%20oke">Dansiki</Link></h3>  
+                <h3><Link  className="home-section-link" to="/search?q=aso-oke">Dansiki</Link></h3>  
                 {
                 !isLoading ?(<div className="home-product-list-container">
                   {dansiki.map(Card)}  
@@ -175,7 +163,7 @@ return(
 
 
             <div className="home-fabric-section">
-                <h3><Link className="home-section-link" to="/search?q=aso%20oke">Gele</Link></h3>
+                <h3><Link className="home-section-link" to="/search?q=aso-oke">Gele</Link></h3>
                 {
           !isLoading ?(<div className="home-product-list-container">
                   {gele.map(Card)}  
@@ -205,18 +193,6 @@ return(
                 <p><Link to='search?q=lace' className="home-see-all-link">{!isLoading ? <span>see all</span> : <span>fetching</span>} lace.....</Link></p>    
             </div>
 
-            {/* <div className="home-fabric-section">
-                <h3><Link className="home-section-link" to="/search?q=aso%20oke">Bogolanfini</Link></h3>
-            </div>
-            <div className="home-fabric-section">
-                <h3><Link className="home-section-link" to="/search?q=aso%20oke">Kente</Link></h3>
-            </div>
-            <div className="home-fabric-section">
-                <h3><Link className="home-section-link" to="/search?q=aso%20oke">Senufo CLoth</Link></h3>
-            </div>
-            <div className="home-fabric-section">
-                <h3><Link className="home-section-link" to="/search?q=aso%20oke">Shweshwe</Link></h3>
-            </div> */}
         </div>
         </div>
 

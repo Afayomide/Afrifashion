@@ -1,15 +1,40 @@
-.checkout-form{
-    background-image: linear-gradient(to bottom, var(--bgcolor), var(--navcolor));
+
+.checkout-container{
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 5rem;
+    gap: 20px;
+     width: 100%;    
+}
+.checkout-form-container{
+  width: 100%;
     color: var(--navcolor);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: end;
     height: 80vh;
-    width: 50%;
-    margin: 3rem auto;
+    margin: 0;
     border-radius: 2rem;
-   
+    flex: 1; /* Make this take up equal space */   
+}
+.checkout-form{    
+   display: flex;
+   flex-direction: column;
+   align-items: start;
+}
+.checkout-form-input  {
+    width: 80%;
+    margin-bottom: 1rem;
+}
+.checkout-form-input .input-field{
+   width: 100%;
+}
+
+.checkout-form small{
+    color: green;
+    font-size: 1rem;
+    width: 60%;
 }
 .checkout-form button{
     background-color:green;
@@ -17,33 +42,86 @@
     border-color: #1111;
     padding: .5rem 1rem;
     border-radius: 2rem;
+    width: 80%;
 }
-.checkout-form small{
-    color: green;
-    font-size: 1rem;
-    width: 60%;
-    text-align: center;
-}
+
 .checkout-form button:hover {
     color:var(--navcolor);
     background-color: white;
+    border-color: green;
 }
 .checkout-form h3{
    border-bottom: .2rem solid ;
 }
-.checkout-form-input  {
-    margin-bottom: 1rem;
+.order-summary{
+ flex: 1;
+ margin-bottom: 3vh;
 }
-.checkout-form-input small{
-     color: red;
-     text-align: center;
-     margin: 0
+.about-summary-item{
+    display: flex;
+    justify-content: start;
+   
+}
+.summary-item-link img{
+  width: 10rem;
+  height: auto;
+  margin-right: 2rem;
 }
 
+
+@keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .rotate {     
+    font-size: 5rem;   
+    color: var(--color-secondary);
+    animation: rotate 1s linear infinite;
+  }
+
+  .check{
+   background-color: var(--success);
+   color: white;
+   font-size: 5rem;   
+   padding: 3rem;
+   border-radius: 10rem;
+  }
+  .check span{
+    font-size: small;
+  }
+  .success-message{
+        font-size: 5vw;
+       font-weight: 600;
+       color: var(--fadenavcolor);
+       margin-bottom: 0;
+   } 
+  
+
 @media (max-width: 900px) {
+    .checkout-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        margin: auto;
+        gap: 20px;
+         width: 90%;    
+    }
     .checkout-form {
         width: 100%;
         border-radius: 0;
-        background-image: none;
     }
+    .check{
+        font-size: 6rem;   
+        padding: 5rem;
+        border-radius: 10rem;
+       }
+    .check-mail{
+        width: 80vw;
+    }
+    
 }

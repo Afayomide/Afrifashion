@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect} from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import './form.css';
 import { BsEyeFill } from 'react-icons/bs';
 import { BsEyeSlashFill } from 'react-icons/bs';
 import formbg from '../../assets/formbg.webp'
-const authToken = localStorage.getItem("authToken");
-
+import { ProductContext } from '../productContext';
+import {toast} from 'react-hot-toast';
 
 
 
 export default function Signup () {
     const[check, setCheck] = useState(false)
+    const {authenticated} = useContext(ProductContext)
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [fullname, setFullname] = useState('');
@@ -20,9 +21,15 @@ export default function Signup () {
     const [changePassword, setChangePassword] = useState(true);
     const navigate = useNavigate();
 
-     if (authToken){
-      navigate("/")
-    }
+    useEffect(() => {
+      const checkAuth = async () => {
+          if (authenticated) {
+            toast("You are already logged in");
+            navigate("../")
+          } 
+      };
+      checkAuth();
+    }, [authenticated]);
 
     function handlePassword() {
         if(changePassword == true){

@@ -1,11 +1,11 @@
-import bgImage from "../../assets/faqimg.jpg"
+// import bgImage from "../../assets/faqimg.jpg"
 
 
 function Faq(){
 
     return(
         <div className="faq-list-container">
-            <img className="faq-bg-image" src={bgImage} alt="backgroundImage"/>
+            {/* <img className="faq-bg-image" src={bgImage} alt="backgroundImage"/> */}
             <ol className="faq-list">
                 <li>
                     <h3>Why African Fabrics?</h3>
@@ -21,7 +21,7 @@ function Faq(){
                     </li>
                     <li>
                         <h3>Do you ship worldwide?</h3>
-                        <p>Yes, we work with DHL to deliver you fabrics to you anywhere you are in the world.</p>
+                        <p>Yes, we work with DHL to deliver you fabrics anywhere in the world.</p>
                     </li>
             </ol>
         </div>

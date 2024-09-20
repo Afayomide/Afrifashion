@@ -7,7 +7,7 @@ import { ProductContext } from "../productContext"
 export default function ItemsInfo() {
     const [item, setItem] = useState([])
     const [error, setError] = useState("")
-    const {allClickedList,setAllClickedList, cartList, setCartList, setInitialItems, initialItems, setLocalCartLength, setShouldFetchCart, setCartNo} = useContext(ProductContext)
+    const {allClickedList,setAllClickedList, cartList, setCartList, setInitialItems, initialItems, setLocalCartLength, setShouldFetchCart, setCartNo, authenticated} = useContext(ProductContext)
     const {id} = useParams()
     const [selectedQuantity, setSelectedQuantity] = useState(() => {
       const storedQuantity = JSON.parse(localStorage.getItem(`selectedQuantity-${id}`));
@@ -28,25 +28,11 @@ export default function ItemsInfo() {
 
  const clickedList = JSON.parse(localStorage.getItem('localClickedList')) || []
 
-//  const handleQuantityChange = (itemIndex, newQuantity, price) => {
-//   const updatedCart = [...cartList];
-//   updatedCart[itemIndex].quantity = newQuantity;
-//   setCartList(updatedCart);
-
-//   const updatedInitialItems = [...initialItems];
-//   updatedInitialItems[itemIndex].newquantity = newQuantity;
-  
-//   updatedInitialItems[itemIndex].price = updatedCart[itemIndex].price * newQuantity;
-  
-//   setInitialItems(updatedInitialItems);
-
-//   localStorage.setItem("localCartList", JSON.stringify(updatedInitialItems));
-// };
 
 
 const handleQuantityChange = (id, newQuantity, price) => {
 
-  setSelectedQuantity(newQuantity); // Update the selected quantity in the state
+  setSelectedQuantity(newQuantity); 
 
   localStorage.setItem(`selectedQuantity-${id}`, JSON.stringify(newQuantity));
 
@@ -76,7 +62,7 @@ const handleQuantityChange = (id, newQuantity, price) => {
 
 
     setCartList(updatedCartList);
-    setInitialItems(updatedInitialItems);  // Use updatedInitialItems here
+    setInitialItems(updatedInitialItems);  
 
     localStorage.setItem("localCartList", JSON.stringify(updatedInitialItems));
     console.log(updatedCartList);
@@ -88,25 +74,18 @@ const handleQuantityChange = (id, newQuantity, price) => {
 
 
  const handleDelete = async (item) => {
-  const token = localStorage.getItem("authToken");
   const productId = item._id;
 
   try {
-    // Update localCartList without resetting it
     const updatedLocalCartList = JSON.parse(localStorage.getItem("localCartList")).filter(cartItem => cartItem._id !== productId);
     localStorage.setItem("localCartList", JSON.stringify(updatedLocalCartList));
     setInitialItems(updatedLocalCartList);
     setCartList(updatedLocalCartList)
     setLocalCartLength(updatedLocalCartList.length)
 
-    if (token) {
-      // Update server cart only if token exists
+    if (authenticated) {
       const fetchUrl = `${process.env.REACT_APP_API_URL}/api/cart/delete`;
       await axios.delete(fetchUrl, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
         data: { productId }
       });
     }
@@ -115,20 +94,19 @@ const handleQuantityChange = (id, newQuantity, price) => {
     console.error('Error deleting from cart:', error);
     setError('An error occurred while deleting from cart.');
 
-    // If server update is not successful or no token, add the item back to the local cart list
     const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
     storedCartList.push(item);
     localStorage.setItem('localCartList', JSON.stringify(storedCartList));
     console.log('Added item back to local cart:', item);
     setLocalCartLength(storedCartList.length)
-    throw error; // Rethrow the error to indicate failure
+    throw error; 
   }
 };
 
 
   const handleAddToCart = async (fabric) => {
     const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
-      const fabricWithQuantity = { ...fabric, newquantity: 1 }; // Add newQuantity field with default value 1
+      const fabricWithQuantity = { ...fabric, newquantity: 1 }; 
       storedCartList.push(fabricWithQuantity);
       localStorage.setItem('localCartList', JSON.stringify(storedCartList));
       console.log('Added fabric to local cart:', fabric);
@@ -136,18 +114,9 @@ const handleQuantityChange = (id, newQuantity, price) => {
       setLocalCartLength(storedCartList.length);
       setCartNo(storedCartList.length)
 
-      const token = localStorage.getItem("authToken");
-      if (token){
+      if (authenticated){
     try {
-   
-  
-      const token = localStorage.getItem("authToken");
-      if (token) {}
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-  
-      if (!token) {
+      if (!authenticated) {
         throw new Error("User not authenticated");
       }
   
@@ -155,7 +124,6 @@ const handleQuantityChange = (id, newQuantity, price) => {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/cart/add`,
         { productId }, 
-        { headers }
       );
   
       console.log('Added fabric to server cart:', response.data);
@@ -173,7 +141,6 @@ const handleQuantityChange = (id, newQuantity, price) => {
   }
   };
 
-  // var itemLength =initialItems.find((initialItem) => initialItem._id === id)?.quantity || 1
 
   
 
@@ -189,10 +156,17 @@ const handleQuantityChange = (id, newQuantity, price) => {
     </div>
     </div>
       )}
+      {cartList.some((cartItem) => cartItem._id === item._id) || 
+      (JSON.parse(localStorage.getItem('localCartList')) || []).some(
+        (storedCartItem) => storedCartItem._id === item._id) ? (
+<button onClick={() => handleDelete(item)} className="already-in-cart">Remove From Cart</button>) :
+ (<button onClick={()=> (handleAddToCart(item))} className="add-to-cart">Add To Cart</button>)}
       </div>
-      <p>Type: {item.name}</p>
-            <p>Material: {item.type}</p>
-            <p>Price per one: {item.price}</p>
+  <div className="item-details">
+            <p className="description">{item.type}</p>      
+            <p className="type">{item.type}</p>
+            <p className="material">{item?.material}</p>
+            <p className="price">${item.price}</p>
       <div>
         Quantity in yards: <select
   className="quantity-input"
@@ -205,9 +179,7 @@ const handleQuantityChange = (id, newQuantity, price) => {
 >
   {Array.from({
     length:
-      // (Array.isArray(initialItems) && initialItems.find((initialItem) => initialItem._id === id)?.quantity) ||
-      // (Array.isArray(clickedList) && clickedList.find((clickedItem) => clickedItem._id === id)?.quantity) ||
-      // 1,
+
       item.quantity
   }, (_, i) => i + 1).map((optionValue) => (
     <option key={optionValue} value={optionValue}>
@@ -218,9 +190,8 @@ const handleQuantityChange = (id, newQuantity, price) => {
 
       </div>
       <p>Your Total Price: {initialItems.find((item) => item._id == id)?.price}</p>
+</div>
 
-{cartList.some((cartItem) => cartItem._id === item._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === item._id) ? (
-<button onClick={() => handleDelete(item)} className="already-in-cart">Remove From Cart</button>) : (<button onClick={()=> (handleAddToCart(item))} className="add-to-cart">Add To Cart</button>)}
 
         </div>
     )

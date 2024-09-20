@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { useState, useRef } from 'react';
 import './App.css';
 import { Outlet } from 'react-router-dom';
 import { FaPlay } from "react-icons/fa";
@@ -7,36 +6,54 @@ import { FaPause } from "react-icons/fa6";
 import { ProductProvider } from './components/productContext';
 import Footer from './components/footer/footer';
 import Header from './components/header/header';
-import Sound from 'react-sound';
 import AfroSounds from "./assets/afrosounds.mp3"
+import { Toaster } from "react-hot-toast"
+import axios from 'axios';
+axios.defaults.withCredentials = true;
+
 
 
  function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
 
-  const togglePlay = () => {
-    setIsPlaying(!isPlaying);
+  const togglePlayPause = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
   };
 
   return (
     <ProductProvider>
     <div className="App">
+    <Toaster  position="top-center"
+  reverseOrder={false}
+  gutter={8}
+  containerClassName=""
+  containerStyle={{}}
+  toastOptions={{
+    // Define default options
+    className: "",
+    duration: 5000,
+    style: {
+      background: "#ffd79f",
+      color: "#00000",
+    },
+  }}/>
    <Header/>
    <div className="topmargin">
 <Outlet/>
    </div>
    <div className="sound">
-   <Sound
-        url={AfroSounds}
-        playStatus={isPlaying ? Sound.status.PLAYING : Sound.status.PAUSED}
-        ref={audioRef}
-      />
-       </div>
-       <div onClick={togglePlay}>
-  {
-        !isPlaying ? <FaPlay   className='playmusic'/> : <FaPause className='playmusic'/>
-       }
+         <audio ref={audioRef} src={AfroSounds} />
+      <div className='playmusic' onClick={togglePlayPause}>
+        {isPlaying ?  <FaPause className='playmusic'/>  : <FaPlay className='playmusic'/>}
+      </div>
        </div>
      
  

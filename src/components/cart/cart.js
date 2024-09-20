@@ -4,19 +4,14 @@ import { useContext } from 'react';
 import { ProductContext } from '../productContext';
 import { Link } from "react-router-dom";
 import "./cart.css";
-import bgImage from "../../assets/fabricsbg.jpeg"
 
 
-
-
-console.log(JSON.parse(localStorage.getItem('localCartList')))
 
 function Cart () {
   const [cartList, setCartList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const {initialItems, setInitialItems, shouldFetchCart, setShouldFetchCart, mainLoading, setMainLoading, setLocalCartLength, total, setTotal } = useContext(ProductContext);
+  const {authenticated, initialItems, setInitialItems, shouldFetchCart, setShouldFetchCart, mainLoading, setMainLoading, setLocalCartLength, total, setTotal } = useContext(ProductContext);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem("authToken");
 
 
 function arraysHaveSameItemsById(arr1, arr2) {
@@ -37,13 +32,9 @@ function arraysHaveSameItemsById(arr1, arr2) {
 }
   useEffect(() => {
     const fetchData = async () => {
-      if (token && mainLoading) {
+      if (authenticated && mainLoading) {
         try {
-          const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/list`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/list`);
 
           setCartList(response.data.cartItems);
 
@@ -78,7 +69,7 @@ function arraysHaveSameItemsById(arr1, arr2) {
 
     fetchData();
     setShouldFetchCart(false);
-  }, [shouldFetchCart, mainLoading, setMainLoading, setShouldFetchCart, token]);
+  }, [shouldFetchCart, mainLoading, setMainLoading, setShouldFetchCart, authenticated]);
 
 
   
@@ -127,7 +118,6 @@ function arraysHaveSameItemsById(arr1, arr2) {
       const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
       storedCartList.push(item);
       localStorage.setItem('localCartList', JSON.stringify(storedCartList));
-      console.log('Added item back to local cart:', item);
       throw error; 
     }
   };
@@ -165,11 +155,11 @@ function arraysHaveSameItemsById(arr1, arr2) {
         <div className="message">
           <p className="error-message">Error: {error}</p>
         </div>
-      ) : initialItems.length < 1 && token ? (
+      ) : initialItems.length < 1 && authenticated ? (
         <div className="empty-cart-container">
         <p className="empty-cart">Your cart is empty!!!</p>
         </div>
-      ) : token ? (
+      ) : authenticated ? (
         <div className="cart-list-container">
           {initialItems.map((item, index) => ( 
             <div className="cartlist" key={item._id}>

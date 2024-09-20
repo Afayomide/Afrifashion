@@ -4,10 +4,9 @@ import { BsFillTelephoneInboundFill } from "react-icons/bs";
 import { BsCart } from "react-icons/bs";
 import { CiMenuFries } from "react-icons/ci";
 import { MdCancel } from "react-icons/md";
-import { BsGenderMale } from "react-icons/bs";
-import { BsGenderFemale } from "react-icons/bs";
+import { toast } from "react-hot-toast";
 import { GiRolledCloth } from "react-icons/gi";
-import { Link, NavLink } from "react-router-dom";
+import {  NavLink } from "react-router-dom";
 import { GiAfrica } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
@@ -26,12 +25,9 @@ function Header() {
   const [searchDisplay, setSearchDisplay] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [error, setError] = useState(null);
-
-  
-
+  const apiUrl = process.env.REACT_APP_API_URL
 
 
-  const Token = localStorage.getItem('authToken');
   function arraysHaveSameItemsById(arr1, arr2) {
     if (arr1.length !== arr2.length) {
       return false;
@@ -49,20 +45,27 @@ function Header() {
     return true;
   }
 
-    useEffect(() => {
-    const authToken = localStorage.getItem('authToken');
 
-    if (authToken) {
-      setAuthenticated(true);
-      setShouldFetchCart(true)
-      setInterval(()=>{
-        setShouldFetchCart(false)
-      }, 10)
-    }  else if (!authToken) {
-      setAuthenticated(false);
-    }
-  },[]);
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/api/checkAuth`);
 
+        if (response.status === 200) {
+          setAuthenticated(true)
+          console.log(response)
+        } else {
+          setAuthenticated(false)
+          
+        }
+      } catch (error) {
+        setAuthenticated(false);
+        console.log(error)
+      }
+    };
+
+    checkAuth();
+  }, [setAuthenticated, authenticated]);
 
 function handleSearchDisplay(e){
   if (!searchDisplay){
@@ -84,14 +87,13 @@ async function handleSearch (e) {
 
 useEffect(() => {
   const fetchData = async () => {
-    if (Token && mainLoading) {
-      const headers = {
-        Authorization: `Bearer ${Token}`,
-      };
+    if (authenticated && mainLoading) {
+      // const headers = {
+      //   Authorization: `Bearer ${Token}`,
+      // };
 
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart/list`, {
-          headers,
         });
         const userCartItems = await response.data.cartItems;
         setCartList(response.data.cartItems)
@@ -123,20 +125,17 @@ useEffect(() => {
   };
 
   fetchData();
-}, [shouldFetchCart, mainLoading, Token]);
+}, [shouldFetchCart, mainLoading, authenticated]);
 
 
 
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken")
     const localCart = JSON.parse(localStorage.getItem("localCartList"))
           const fetchData = async () => {
             try {
               const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/cart`, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },            
+    
               });
   
               setCartNo(response.data.cartLength);
@@ -165,7 +164,7 @@ useEffect(() => {
           fetchData()
     
        
-        }, [shouldFetchCart, Token]);
+        }, [shouldFetchCart, authenticated]);
 
 
         useEffect(()=>{
@@ -182,18 +181,29 @@ useEffect(() => {
             setSlideOut("links-slide-out")
              SetDisplayNav(!displayNav)
     }
-
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem("localCartList")
-    localStorage.removeItem('fullname')
-    localStorage.removeItem('email')
-    changeDisplay()
-    setAuthenticated(false);
-      navigate("/")
-      setLocalCartLength(0)
-      window.location.reload()
-  };
+    
+    const handleLogout = async () => {
+      toast.promise(
+        axios.post(`${apiUrl}/api/logout`),
+        {
+          loading: 'Logging out...',
+          success: 'Bye for now!',
+          error: 'Error while logging out',
+        }
+      ).then(response => {
+        const { success } = response.data;
+        if (success) {
+          ['authToken', 'localCartList', 'fullname', 'email'].forEach(item => localStorage.removeItem(item));
+          changeDisplay();
+          setAuthenticated(false);
+          navigate("/");
+          setLocalCartLength(0);
+          window.location.reload();
+        }
+      }).catch(error => {
+        console.error("Logout error:", error);
+      });
+    };
     return(
       <div>
      <header>
@@ -212,19 +222,7 @@ to="/">
 </div>
 
 <div className="header-links">
-{/* <NavLink 
-className={({ isActive, isPending }) =>
-isActive ? "picked big-screen-link" : "big-screen-link"
-}  
-to="/femalestyles">
-<BsGenderFemale/><p>Female Styles</p> 
-</NavLink>
 
-<NavLink className={({ isActive, isPending }) =>
-isActive ? "picked big-screen-link" : "big-screen-link"
-}  to="/malestyles" >
-<BsGenderMale/><p>Male Styles</p>
-</NavLink> */}
 
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked big-screen-link" : "big-screen-link"
@@ -284,12 +282,7 @@ AfroRoyals<GiAfrica className="africalogo"/><sup><GiCrown className="crown"/></s
 </nav>
 
 <div className={`small-nav-links ${displayNav ? "show-nav" : 'hide-nav'}`}>
-{/* <NavLink className={({ isActive, isPending }) =>
-isActive ? "picked nav-link" : `nav-link ${slideout}`
-} onClick={changeDisplay}  to="/femalestyles" ><BsGenderFemale/><p>Female Styles</p></NavLink> */}
-{/* <NavLink className={({ isActive, isPending }) =>
-isActive ? "picked nav-link" : `nav-link ${slideout}`
-} onClick={changeDisplay}  to="/malestyles"><BsGenderMale/><p>Male Styles</p></NavLink> */}
+
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked nav-link" : `nav-link ${slideout}`
 } onClick={changeDisplay}  to="/fabrics"><GiRolledCloth/><p>Fabrics</p></NavLink>
@@ -326,19 +319,6 @@ to="/">
 </div>
 
 <div className="header-links">
-{/* <NavLink 
-className={({ isActive, isPending }) =>
-isActive ? "picked big-screen-link" : "big-screen-link"
-}  
-to="/femalestyles">
-<BsGenderFemale/><p>Female Styles</p> 
-</NavLink>
-
-<NavLink className={({ isActive, isPending }) =>
-isActive ? "picked big-screen-link" : "big-screen-link"
-}  to="/malestyles" >
-<BsGenderMale/><p>Male Styles</p>
-</NavLink> */}
 
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked big-screen-link" : "big-screen-link"
@@ -402,12 +382,7 @@ AfroRoyals<GiAfrica className="africalogo"/><sup><GiCrown className="crown"/></s
 </nav>
 
 <div className={`small-nav-links ${displayNav ? "show-nav" : 'hide-nav'}`}>
-{/* <NavLink className={({ isActive, isPending }) =>
-isActive ? "picked nav-link" : `nav-link ${slideout}`
-} onClick={changeDisplay}  to="/femalestyles" ><BsGenderFemale/><p>Female Styles</p></NavLink> */}
-{/* <NavLink className={({ isActive, isPending }) =>
-isActive ? "picked nav-link" : `nav-link ${slideout}`
-} onClick={changeDisplay}  to="/malestyles"><BsGenderMale/><p>Male Styles</p></NavLink> */}
+
 <NavLink className={({ isActive, isPending }) =>
 isActive ? "picked nav-link" : `nav-link ${slideout}`
 } onClick={changeDisplay}  to="/fabrics"><GiRolledCloth/><p>Fabrics</p></NavLink>

@@ -5,8 +5,7 @@ import { ProductContext } from '../productContext';
 import { Link } from "react-router-dom";
 import "./sections.css"
 import formbg from "../../assets/formbg.webp"
-import bgImage from "../../assets/fabricsbg.jpeg"
-import { click } from "@testing-library/user-event/dist/click";
+
 
 
 
@@ -15,7 +14,7 @@ const Fabrics = memo(() => {
   const [fabricsList, setFabricsList] = useState([])
      const [isLoading, setIsLoading] = useState(true); 
      const [error, setError] = useState(null); 
-const { cartNo, setCartNo, setShouldFetchCart,mainLoading, setMainLoading, setLocalCartLength, cartList, setCartList } = useContext(ProductContext);
+const {authenticated, cartNo, setCartNo, setShouldFetchCart,mainLoading, setMainLoading, setLocalCartLength, cartList, setCartList } = useContext(ProductContext);
 const [buttonType, setButtonType] = useState("add To Cart")
 
 
@@ -29,17 +28,11 @@ const handleAddToCart = async (fabric) => {
     setLocalCartLength(storedCartList.length);
     setCartNo(storedCartList.length)
 
-    const token = localStorage.getItem("authToken");
 
-    if (token){
+    if (authenticated){
   try {
-    const token = localStorage.getItem("authToken");
-    if (token) {}
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
 
-    if (!token) {
+    if (!authenticated) {
       throw new Error("User not authenticated");
     }
 
@@ -47,7 +40,6 @@ const handleAddToCart = async (fabric) => {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/cart/add`,
       { productId }, 
-      { headers }
     );
 
 
@@ -135,7 +127,7 @@ function localClickedList(fabric) {
     console.log("something is wrong")
     setError("something is wrong")
   }
-    }, [handleAddToCart])
+    }, [])
 
     
 

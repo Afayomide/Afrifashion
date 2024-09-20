@@ -3,13 +3,7 @@ position: fixed;
 top: 0;
 width: 100%;
 }
-/* nav{
-    background-color: var(--navcolor);
-    color: white;
-   margin: 0;
-   position: relative;
-   z-index: 100;
-} */
+
 nav {
   position: relative;
   color: white;
@@ -17,8 +11,8 @@ nav {
   display: flex;
   align-items: center;
   padding: 0 20px;
-  z-index: 1; /* Ensures the navbar content is above the background image */
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.9); /* Text shadow for better contrast */
+  z-index: 1;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.9); 
 }
 
 nav::before {
@@ -28,11 +22,11 @@ nav::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../../assets/background-header.webp'); /* Replace with your image path */
+  background-image: url('../../assets/background-header.webp');
   background-size: cover;
   background-position: center;
-  opacity: 0.8; /* Adjust the opacity level here */
-  z-index: -1; /* Ensures the background image is behind the navbar content */
+  opacity: 0.8;
+  z-index: -1; 
 }
 nav::after {
   content: '';
@@ -98,7 +92,7 @@ h1{
     margin-left: 2rem;
 }
 nav .bold-link {
-    color:red; /* Apply bold styling here */
+    color:red;
   }
 .header-links{
     width: 30%;
@@ -127,11 +121,11 @@ nav .bold-link {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('../../assets/background-header.webp'); /* Replace with the path to your image */
+  background-image: url('../../assets/background-header.webp');
   background-size: cover;
   background-position: center;
-  opacity: 0.8; /* Adjust opacity to desired level */
-  z-index: -1; /* Place behind the content */
+  opacity: 0.8;
+  z-index: -1; 
 }
 .small-nav-links::after {
   content: '';
@@ -140,8 +134,8 @@ nav .bold-link {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(13, 13, 77,0.6); /* Overlay to darken the image slightly */
-  z-index: -1; /* Ensures it’s behind the text but above the background image */
+  background-color: rgba(13, 13, 77,0.6); 
+  z-index: -1; 
 }
 
 .picked{
@@ -194,7 +188,7 @@ nav .bold-link {
 
 .show-nav {
     display: none;
-    animation: slideInTop 0.3s ease-in-out; /* Adjust as needed */
+    animation: slideInTop 0.3s ease-in-out; 
 
 }
 .show-search-input{
@@ -215,28 +209,28 @@ nav .bold-link {
   }
 
 .show-nav .nav-link:nth-of-type(1){
-    animation: slideInLeft 0.3s ease-in-out; /* Adjust as needed */
-    opacity: 1; /* Ensure full opacity when visible */
+    animation: slideInLeft 0.3s ease-in-out; 
+    opacity: 1; 
   }
   .show-nav .nav-link:nth-of-type(2){
-    animation: slideInLeft 0.5s ease-in-out; /* Adjust as needed */
-    opacity: 1; /* Ensure full opacity when visible */
+    animation: slideInLeft 0.5s ease-in-out; 
+    opacity: 1; 
   }
   .show-nav .nav-link:nth-of-type(3){
-    animation: slideInLeft 0.7s ease-in-out; /* Adjust as needed */
-    opacity: 1; /* Ensure full opacity when visible */
+    animation: slideInLeft 0.7s ease-in-out; 
+    opacity: 1; 
   }
   .show-nav .nav-link:nth-of-type(4){
-    animation: slideInLeft 0.9s ease-in-out; /* Adjust as needed */
-    opacity: 1; /* Ensure full opacity when visible */
+    animation: slideInLeft 0.9s ease-in-out; 
+    opacity: 1; 
   }
   .show-nav .nav-link:nth-of-type(5){
-    animation: slideInLeft 1s ease-in-out; /* Adjust as needed */
-    opacity: 1; /* Ensure full opacity when visible */
+    animation: slideInLeft 1s ease-in-out; 
+    opacity: 1; 
   }
   .show-nav .nav-link:nth-of-type(6){
-    animation: slideInLeft 1.2s ease-in-out; /* Adjust as needed */
-    opacity: 1; /* Ensure full opacity when visible */
+    animation: slideInLeft 1.2s ease-in-out; 
+    opacity: 1; 
   }
   
   @keyframes slideInLeft {
@@ -250,18 +244,18 @@ nav .bold-link {
     }
   }
   .links-slide-out:nth-of-type(1) {
-    animation: slide-out 0.3s ease-in-out ; /* Trigger animation on class */
+    animation: slide-out 0.3s ease-in-out ; 
   }
   .links-slide-out:nth-of-type(2) {
-    animation: slide-out 0.5s ease-in-out; /* Trigger animation on class */
+    animation: slide-out 0.5s ease-in-out; 
   }  .links-slide-out:nth-of-type(3) {
-    animation: slide-out 0.7s ease-in-out; /* Trigger animation on class */
+    animation: slide-out 0.7s ease-in-out; 
   }  .links-slide-out:nth-of-type(4) {
-    animation: slide-out 0.9s ease-in-out; /* Trigger animation on class */
+    animation: slide-out 0.9s ease-in-out; 
   }  .links-slide-out:nth-of-type(5) {
-    animation: slide-out 1.1s ease-in-out; /* Trigger animation on class */
+    animation: slide-out 1.1s ease-in-out; 
   }  .links-slide-out:nth-of-type(6) {
-    animation: slide-out 1.3s ease-in-out; /* Trigger animation on class */
+    animation: slide-out 1.3s ease-in-out; 
   }
   @keyframes slide-out {
     from {

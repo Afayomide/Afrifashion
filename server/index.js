@@ -7,9 +7,13 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt'); 
 require('dotenv').config();
-const session = require("express-session")
 const app = express();
 const redis = require('redis');
+const verifyToken = require('./verifyToken');
+const cookieParser = require('cookie-parser');
+const paymentRouter = require('./routes/payments');
+const nodemailer = require("nodemailer")
+
 
 const client = redis.createClient({
     password: process.env.REDIS_PASSWORD,
@@ -20,11 +24,20 @@ const client = redis.createClient({
 });
 
 const corsOptions = {
-  origin: ['http://localhost:3006', 'https://coolafristyles.web.app']
+  origin: ['http://localhost:5000', 'https://coolafristyles.web.app'],  
+  credentials: true,
+  // methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  // allowedHeaders: ['Content-Type', 'Authorization'],
 }
 
-app.use(cors());
-
+app.use(cors(corsOptions));
+app.use(cookieParser());
+app.use(bodyParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.raw());
+app.use(bodyParser.text());
+app.use('/api', paymentRouter)
 
 const dburl = process.env.dburl
 
@@ -32,10 +45,7 @@ const dburl = process.env.dburl
 
 app.use(express.json());
 
-// const client = redis.createClient({
-//   url:process.env.REDIS_URL,
-//   password: process.env.REDIS_PASSWORD
-// });
+
 
 (async () => {
   try {
@@ -78,38 +88,11 @@ connectToMongo(dburl)
     console.error('Fatal error:', error.message);
   });
 
-app.use(bodyParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.raw());
-app.use(bodyParser.text());
+
 
   const targetURL = 'https://github.com/Afayomide';
 
-  function verifyToken(req, res, next) {
-    const authHeader = req.headers.authorization;
-  
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-  
-    const token = authHeader.split(' ')[1];
-  
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = decoded; 
-      const now = Date.now() / 1000; 
-      if (decoded.exp < now) {
-        console.warn('JWT has expired!');
-        return res.status(401).json({ message: 'Your session has expired. Please log in again.' });
-      }
-      else{
-      }
-      next();
-    } catch (error) {
-      return res.status(403).json({ message: 'Invalid token' });
-    }
-  }
+
 
 
   
@@ -126,19 +109,44 @@ app.get("/api", (req,res) =>{
 })
 
 
+app.get('/api/checkAuth', verifyToken, async (req, res) => {
+ try {
+    const user = await Customer.findById(req.user.userId).select('-password'); // Exclude password field
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+    res.json({error})
+    
+  }
+});
+
+
+
 
 app.post('/api/login', async (req, res) => {
-  const { username, password } = req.body;
-
+  const { email, password } = req.body;
+    
   try {
-    const customer = await Customer.findOne({ username });
+    const user = await Customer.findOne({ email });
+    console.log(user)
 
-    if (!customer || !bcrypt.compareSync(password, customer.password)) {
-      return res.json({ success: false, message: 'Invalid username or password' });
+    if (!user || !bcrypt.compareSync(password, user.password)) {
+      return res.json({ success: false, message: 'Invalid email or password' });
     }
 
-    const token = jwt.sign({ userId: customer._id }, process.env.JWT_SECRET, { expiresIn: '4d' });
-    res.json({ success: true, token });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '4d' });
+    res.cookie('token', token, {
+      httpOnly: true,   
+      secure: process.env.NODE_ENV === 'production',  
+      // sameSite: process.env.SAME_SITE,  
+      maxAge: 4 * 24 * 60 * 60 * 1000 
+    });
+    console.log(res.cookie)
+    res.json({success: true, user});
+
   } catch (error) {
     console.error('Error:', error.message);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -149,38 +157,78 @@ app.post('/api/login', async (req, res) => {
 
 app.post('/api/signup', async (req, res) => {
   const { fullname, username, email, password } = req.body;
-
-  if (!username || !password || !fullname || !email) {
-    res.json({ success: false, message: 'All Fields are required' });
-  }
-
-  try {
-    const existingUser = await Customer.findOne({ username });
-
-    if (existingUser) {
-      return res.json({ success: false, message: 'Username already exists' });
+  
+    if (!username || !password || !fullname || !email) {
+      return res.json({ success: false, message: 'All fields are required' }); // Use return to prevent further execution
     }
-
-    const hashedPassword = bcrypt.hashSync(password, 10);
-    const customer = new Customer({
-      fullname,
-      username,
-      email,
-      password: hashedPassword,
-    });
-    await customer.save();
-    res.json({ success: true });
-  } 
-  catch (error) {
-    console.error('Error:', error.message);
-    res.json({ success: false, message: 'Internal server error' });
-  }
+  
+    try {
+      const existingUser = await Customer.findOne({ username });
+  
+      if (existingUser) {
+        return res.json({ success: false, message: 'Username already exists' }); // Use return to prevent further execution
+      }
+  
+      const saltRounds = 10;
+      const hashedPassword = bcrypt.hashSync(password, saltRounds);
+      
+      const newUser = new User({
+        fullname,
+        username,
+        email,
+        password: hashedPassword,
+      });
+  
+      await newUser.save();
+      return res.json({ success: true });
+    } catch (error) {
+      console.error('Error:', error.message);
+      return res.json({ success: false, message: 'Internal server error' });
+    }
 });
 
+app.post('/api/logout', async (req, res) => {
+  res.cookie('token', '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // Set to true in production for HTTPS
+    // sameSite: process.env.SAME_SITE,
+    maxAge: 0 
+  });
+
+  return res.status(200).json({ success: true, message: 'Logged out successfully' });
+});
+
+app.post("/api/contactUs",async (req,res) => {
+  const {email, fullName, message, subject} = req.body
+  try{
+    const transporter = nodemailer.createTransport({
+      service: 'gmail', 
+      auth: {
+          user: process.env.EMAIL_USER, 
+          pass: process.env.EMAIL_PASS, 
+      },
+      tls: {
+          rejectUnauthorized: false 
+      }
+  });
+
+  const mailOptions = {
+      from: process.env.EMAIL_USER, 
+      to: process.env.EMAIL_USER, 
+      subject: subject,
+      text: `full Name: ${fullName} \n Email: ${email} \n ${message} `,
+  };
+  await transporter.sendMail(mailOptions);
+  res.json({success: true})
+  }
+  catch (error){
+    console.error(error)
+    res.json(error)
+  }
+})
 
 app.get("/api/cart", verifyToken, async(req,res) => {
   const id = req.user.userId; 
- console.log(id)
   try {
     const customer = await Customer.findById(id);
     if (customer) {
@@ -230,53 +278,11 @@ app.get("/api/cart", verifyToken, async(req,res) => {
      });
 
     
-
-// app.get("/api/clothespreview", async (req, res) => {
-//   try {
-//     const cachedPreview = await client.get('preview'); 
-//     if(cachedPreview){
-
-//     }
-// else{
-//     const promises = [
-//       Clothes.find({ type: 'ankara' }).limit(5),
-//       Clothes.find({ type: 'aso-oke' }).limit(5),
-//       Clothes.find({ type: 'dansiki' }).limit(5), 
-//       Clothes.find({ type: 'gele' }).limit(5), 
-//       Clothes.find({ type: 'lace' }).limit(5), 
-//       Clothes.find({ type: 'bogolanfini' }).limit(5), 
-//       Clothes.find({ type: 'kente' }).limit(5), 
-//       Clothes.find({ type: 'senufoCloth' }).limit(5), 
-//       Clothes.find({ type: 'shweshwe' }).limit(5), 
-
-//     ];
-
-//     const [
-//       ankara,
-//       asoOke,
-//       dansiki,
-//       gele,
-//       lace,
-//       bogolanfini,
-//       kente,
-//       senufoCLoth,
-//       shweshwe] = await Promise.all(promises);
-
-//     res.json({ ankara,asoOke, dansiki, gele, lace, bogolanfini,kente, senufoCLoth,shweshwe});
-//     console.log("found 5")
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Internal server error' });
-//   }
-// });
-
 app.get("/api/clothespreview", async (req, res) => {
   try {
     const cachedPreview = await client.get('preview');
 
     if (cachedPreview) {
-      console.log("Using cached preview data");
       return res.json({previewData: JSON.parse(cachedPreview)});
     }
 
@@ -311,8 +317,6 @@ app.get("/api/clothespreview", async (req, res) => {
     await client.set('preview', JSON.stringify(previewData));
     await client.expire('preview', 60 * 30); // One hour expiration
 
-    console.log("Fetched cloth preview data from database");
-    console.log(previewData)
     res.json({previewData});
   } catch (error) {
     console.error(error);
@@ -384,31 +388,6 @@ app.get("/api/clothespreview", async (req, res) => {
     });
 
 
-
-    // app.post('/api/search', async (req, res) => {  
-    //   const { searchTerm } = req.body; 
-    //  console.log(req.query)
-    //  console.log(req.params)
-    //  console.log(req.body)
-    //  try {
-    //         const allProducts = await Clothes.find()
-    //         const result = allProducts.filter(product =>
-    //           product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //           product.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //           product.color.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //           product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //           product.price.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //           product.tribe.toLowerCase().includes(searchTerm.toLowerCase()) 
-    //         );
-    //     res.json({result});
-    //     console.log(result)
-    //   } catch (error) {
-    //     console.error(error);
-    //     res.status(500).json({ message: 'Error retrieving products' });
-    //   }
-    // });
-
-
     app.post('/api/search', async (req, res) => {  
       const { searchTerm } = req.body; 
      console.log(req.query)
@@ -477,7 +456,7 @@ app.get("/api/clothespreview", async (req, res) => {
 
 
 
-const PORT = 3001;
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

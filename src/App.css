@@ -8,9 +8,11 @@
   --color-secondary: #ffcb03;
   --homebuttons: 2rem;
   --bgbuttons: rgb(29, 29, 97);
-  --bgcolor: rgba(41,41,92,0.1);
+  --bgcolor: rgba(188, 188, 223, 0.1);
   --buttonscolor: #fff;
   --footerBackground: rgb(13, 13, 77);
+  --success: green
+
 }
 .playmusic{
   position: fixed;
@@ -31,11 +33,12 @@ html,body{
   font-optical-sizing: auto;
   font-style: normal;
   font-weight: 500;
+  background-color: var(--bgcolor);
+
 }
 .topmargin{
   padding-top: 10vh;
   padding-bottom: 20vh;
-  background-color: var(--bgcolor);
 }
 
 .fade-in {

@@ -6,29 +6,48 @@ import { BsEyeSlashFill } from 'react-icons/bs';
 import axios from 'axios';
 import formbg from '../../assets/formbg.webp'
 import { ProductContext } from '../productContext';
-    const authToken = localStorage.getItem("authToken");
-
-
+import {toast} from 'react-hot-toast';
 
 
 
 export default function Login () {
     const [check, setCheck] = useState(false)
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const {authenticated, setAuthenticated, setShouldFetchCart, setLocalCartLength} = useContext(ProductContext)
     const navigate = useNavigate();
     const [err, setErr] = useState("")
     const [changePassword, setChangePassword] = useState(true);
+    const apiUrl = process.env.REACT_APP_API_URL
 
-    useEffect(
-      () => {
-        const authToken = localStorage.getItem('authToken')
-        if(authToken){
-          navigate("/");
+
+    useEffect(() => {
+      const checkAuth = async () => {
+        try {
+          const response = await axios.get(`${apiUrl}/api/checkAuth`, {
+            withCredentials: true
+          });
+  
+          if (response.status === 200) {
+            setAuthenticated(true)
+            toast("You are already logged in");
+            navigate("../")
+          } else {
+            setAuthenticated(false)
+          }
+        } catch (error) {
+          setAuthenticated(false);
+          console.log(error)
         }
-      },[authenticated]
-    )
+      };
+  
+      checkAuth();
+    }, []);
+
+    if (authenticated === null) {
+      return <p>Loading...</p>; // Or a spinner/loading component
+    }
+  
 
     const fetchData = async (Token) => {
       const headers = {
@@ -70,15 +89,11 @@ export default function Login () {
 
     }
 
-
- 
-    
-
           function handlePassword() {
-              if(changePassword == true){
+              if(changePassword === true){
                 setChangePassword(false)
               }
-             if(changePassword == false) {
+             if(changePassword === false) {
               setChangePassword(true)
              }
           }    
@@ -91,28 +106,36 @@ export default function Login () {
         setCheck(false);
       }, 3000);
     }
-        try {
-          callCheck()
-          const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/login`, {
-            username,
-            password,
-          });
-          const token = response.data.token
-          const { success } = response.data;
+    const loginPromise = async () => {
+      callCheck()
+      const response = await axios.post(`${apiUrl}/api/login`, {
+        email,
+        password
+      });
 
-        if (success) {         
-          localStorage.setItem('authToken', token); 
-          setErr(success)
-          fetchData(token)
+      return response;
+    };
+
+    toast.promise(loginPromise(), {
+      loading: 'Logging in...',
+      success: (response) => {
+        console.log(response);
+        const { success } = response.data;
+
+        if (success) {
+           fetchData()
+          setAuthenticated(true);
+          navigate('/');
+          return 'Login successful!';          
         } else {
-          console.error('Login failed:', response.data.message);
-   setErr(response.data.message)
+          throw new Error(response.data.message);
         }
-      } 
-  
-      catch (error) {
-        console.error('Error:', error.message);
+      },
+      error: (error) => {
+        console.error('Login failed:', error);
+        return error.message || 'An error occurred';
       }
+    });
     };
   
     return (
@@ -120,14 +143,14 @@ export default function Login () {
    <img src={formbg} alt='login background' className='auth-bg-image'/>
       <form className='auth-form' onSubmit={handleLogin}>
       <h3>Login</h3> 
-      <div className='orange'>{check == true ? "checking your details....." : ""}</div>
+      <div className='orange'>{check === true ? "checking your details....." : ""}</div>
       <div className='error'>{err} </div>
       <div className='auth-form-input'>
     
-          <input className='input-field' type="text" id='username' value={username} onChange={(e) => {
+          <input className='input-field' type="text" id='email' value={email} onChange={(e) => {
             setErr("")
-            setUsername(e.target.value)}} 
-             placeholder='username'   
+            setEmail(e.target.value)}} 
+             placeholder='email'   
             /> 
       </div>
         

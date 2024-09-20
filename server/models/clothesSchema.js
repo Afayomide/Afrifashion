@@ -33,6 +33,9 @@ const ClothesSchema = new mongoose.Schema(
        },
        reviews: {
         type: [String]
+       },
+       outOfStock: {
+        type: Boolean
        }
     }
 )
