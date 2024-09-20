@@ -58,7 +58,7 @@ if(localName){
         email,
         amount : total,
         clothesData, 
-        redirectUrl : "http://localhost:5000/verify"
+        redirectUrl : `${REACT_APP_URL}/verify`
       });
 
       if (response.data.status === 'success') {
