@@ -58,7 +58,7 @@ if(localName){
         email,
         amount : total,
         clothesData, 
-        redirectUrl : `${REACT_APP_URL}/verify`
+        redirectUrl : `${process.env.REACT_APP_URL}/verify`
       });
 
       if (response.data.status === 'success') {
@@ -80,10 +80,11 @@ return(
                 <div className='checkout-container'>
 <div className='checkout-form-container'>
  <form className='checkout-form' onSubmit={handlePayment}>      
-  <h3 className="cart-total"><span>Your Total: </span>${total}</h3>
-     <small>Working with DHL<span><CiDeliveryTruck/></span>,  No matter where you are, we can ship to you.</small>
-      <h3>Enter Your details for delivery</h3> 
-
+  <div className='checkout-form-details'>
+    <h5 className="checkout-total">Your Total: <span>${total}</span></h5>
+     <small>Working with DHL<span><CiDeliveryTruck/></span>,  no matter where you are, we can ship to you.</small>
+      <h3>Enter your details for delivery</h3> 
+  </div>
       <div className='checkout-form-input'>
           <input className={`input-field`} 
           type="text"
@@ -118,7 +119,7 @@ return(
       </div>
         
        <div className='checkout-form-input'>
-          <textarea className={`input-field`} 
+          <textarea className={`input-field text-area`} 
           placeholder='address'
           onChange={(e) => setAddress(e.target.value)}
           value={address}
@@ -148,7 +149,7 @@ return(
               
               {initialItems[index]?.name == "fabric" ? (initialItems[index]?.newquantity == 1 ? (<small>yard</small>) : <small>yards</small>) : "" }
               </div> 
-              <p><span className="description-header">Total price:</span> ${item.price}</p>
+              <p><span className="description-header">Total:</span> ${item.price}</p>
               </div>
               </div>
               

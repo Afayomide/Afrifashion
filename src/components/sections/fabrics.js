@@ -133,55 +133,57 @@ function localClickedList(fabric) {
 
 
     return (
-        <div className="product-list-container">
-                  {/* <img className="fabrics-bg-image" src={bgImage} alt="backgroundImage"/> */}
-      {isLoading ? (
-        <div className="message">
-          <div className="loader-container">
-          <div className="spinner"></div>
-      </div>
-                    <p className="loading-message">....Getting all fabrics</p>
+      <div className="product-list-container">
+        {isLoading ? (
+          <div className="message">
+            <div className="loader-container">
+              <div className="spinner"></div>
+            </div>
+            <p className="loading-message">....Getting all fabrics</p>
           </div>
-      ) 
-      : 
-      error ? 
-      (
-        <div className="message">
-        <img src={formbg} alt='login background' className='auth-bg-image'/>
-
-        <img className="error-image" src={formbg}/>
-        <p className="error-message">Error: {error}</p>
-        </div>
-      ) : (
-        fabricsList.length > 0 ? (      
-     <div className="product-list-container">
-            {fabricsList.map((fabric, index) => ( 
-              <div className="product-list" key={fabric._id}>   
-               <Link onClick={()=> localClickedList(fabric)} className="product-link" to={`/${fabric._id}`}>   
-                <img src={fabric.image} alt={fabric.name} />
-                <div className="product-link-texts">
-                  <p>{fabric.type}</p>  
-                   <p>{fabric.description}</p>
-                   <p><span>${fabric.price}</span> per yard</p>
-                   <p><span>{fabric.quantity} yards</span> left</p>
-                </div>
-                 </Link>      
-        
-                 {cartList.some((cartItem) => cartItem._id === fabric._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === fabric._id) ? (
-<button className="cart-button already-in-cart"><Link className="already-link" to={`/${fabric._id}`}> Added To Cart</Link></button>
-) : (
-    <button className="cart-button add-to-cart" onClick={() => handleAddToCart(fabric)}>Add to Cart</button>
-)}</div>         
-            ))} 
-            </div>   
+        ) : error ? (
+          <div className="message">
+            <img src={formbg} alt="login background" className="auth-bg-image" />
+            <img className="error-image" src={formbg} alt="error background" />
+            <p className="error-message">Error: {error}</p>
+          </div>
+        ) : fabricsList.length > 0 ? (
+          <div className="product-list-container">
+            {fabricsList.map((fabric, index) => (
+              <div className={`product-list ${fabric.outOfStock ? 'out-of-stock' : ''}`} key={fabric._id}>
+                <Link
+                  onClick={() => !fabric.outOfStock && localClickedList(fabric)}
+                  className={`product-link ${fabric.outOfStock ? 'disabled-link' : ''}`}
+                  to={!fabric.outOfStock ? `/${fabric._id}` : '#'}
+                >
+                  <img src={fabric.image} alt={fabric.name} className={fabric.outOfStock ? 'out-of-stock-img' : ''} />
+                  <div className="product-link-texts">
+                    <p>{fabric.type}</p>
+                    <p><span>${fabric.price}</span> per yard</p>
+                    <p><span>{fabric.quantity} yards</span> left</p>
+                  </div>
+                </Link>
+    
+                {cartList.some((cartItem) => cartItem._id === fabric._id) ||
+                (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === fabric._id) ? (
+                  <button className="cart-button already-in-cart">
+                    <Link className="already-link" to={`/${fabric._id}`}> Added To Cart</Link>
+                  </button>
+                ) : !fabric.outOfStock ? (
+                  <button className="cart-button add-to-cart" onClick={() => handleAddToCart(fabric)}>Add to Cart</button>
+                ) :(  <button className="cart-button out-of-stock-button">Out Of Stock</button>
+              ) }
+              </div>
+            ))}
+          </div>
         ) : (
           <div className="message">
-                    <p className="loading-message">no fabric Found</p>
+            <p className="loading-message">No fabric found</p>
           </div>
-        )
-      )}
-        </div>
-    )
+        )}
+      </div>
+    );
+    
 })
 
 export default Fabrics;

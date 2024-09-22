@@ -93,9 +93,9 @@ router.post('/pay', verifyToken, async (req, res) => {
                 if (fabricItem) {
                     fabricItem.quantity -= fabric.quantity;
                     
-                    if (fabricItem.quantity < 0) {
+                    if (fabricItem.quantity <= 0) {
                         fabricItem.quantity = 0;
-                        fabric.outOfStock = true
+                        fabricItem.outOfStock = true
                     }        
                     await fabricItem.save();
                 }

@@ -24,7 +24,7 @@ const client = redis.createClient({
 });
 
 const corsOptions = {
-  origin: ['http://localhost:5000', 'https://coolafristyles.web.app'],  
+  origin: ['http://localhost:5000', 'https://coolafristyles.web.app','https://afrifashion.vercel.app'],  
   credentials: true,
   // methods: ['GET', 'POST', 'PUT', 'DELETE'],
   // allowedHeaders: ['Content-Type', 'Authorization'],
@@ -122,8 +122,6 @@ app.get('/api/checkAuth', verifyToken, async (req, res) => {
     
   }
 });
-
-
 
 
 app.post('/api/login', async (req, res) => {
@@ -249,13 +247,13 @@ app.get("/api/cart", verifyToken, async(req,res) => {
     app.get("/api/fabrics",async(req,res) => {
   
       try {
-        const cachedFabrics = await client.get('fabrics');
+        // const cachedFabrics = await client.get('fabrics');
 
-        if (cachedFabrics) {
-          console.log("using cached")
-          return res.json({fabrics : JSON.parse(cachedFabrics)});
-        } 
-        else{
+        // if (cachedFabrics) {
+        //   console.log("using cached")
+        //   return res.json({fabrics : JSON.parse(cachedFabrics)});
+        // } 
+        // else{
 
        const fabrics = await Clothes.find();
          if(fabrics) {      
@@ -267,7 +265,7 @@ app.get("/api/cart", verifyToken, async(req,res) => {
          else {
            return res.status(404).json({ message: 'no fabric found' });
          }
-        }
+        // }
                    
  
      
@@ -280,11 +278,11 @@ app.get("/api/cart", verifyToken, async(req,res) => {
     
 app.get("/api/clothespreview", async (req, res) => {
   try {
-    const cachedPreview = await client.get('preview');
+    // const cachedPreview = await client.get('preview');
 
-    if (cachedPreview) {
-      return res.json({previewData: JSON.parse(cachedPreview)});
-    }
+    // if (cachedPreview) {
+    //   return res.json({previewData: JSON.parse(cachedPreview)});
+    // }
 
     const promises = [
       Clothes.find({ type: 'ankara' }).limit(5),
@@ -452,6 +450,42 @@ app.get("/api/clothespreview", async (req, res) => {
       }
     });
     
+    // async function getAll () {
+    //   const allFabs = await Clothes.find()
+
+    //   for (var fab of allFabs) {
+    //     if(fab.quantity === 0) {
+    //       fab.quantity = 10; // Update quantity to 10
+    //       await fab.save();  // Save the updated fabric
+    //     }
+    //   }
+    // }
+    // async function updateOutOfStockStatus() {
+    //   const allFabs = await Clothes.find(); // Fetch all clothes
+    
+    //   for (var fab of allFabs) {
+    //     if (fab.quantity === 0) {
+    //       fab.outOfStock = true; // Mark as out of stock
+    //     } else {
+    //       fab.outOfStock = false; // In stock
+    //     }
+    //     await fab.save();  // Save the updated fabric
+    //   }
+    // }
+
+    // updateOutOfStockStatus()
+
+    // async function updateOutOfStockStatus() {
+    //   const allFabs = await Clothes.find(); // Fetch all clothes
+    
+    //   for (var fab of allFabs) {
+    //     fab.description = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"]
+    //     await fab.save();  // Save the updated fabric
+    //   }
+    // }
+
+    
+    // updateOutOfStockStatus()
 
 
 

@@ -11,7 +11,8 @@
   --bgcolor: rgba(188, 188, 223, 0.1);
   --buttonscolor: #fff;
   --footerBackground: rgb(13, 13, 77);
-  --success: green
+  --success: green;
+  --out-of-stock: rgba(188, 188, 223, 0.4);
 
 }
 .playmusic{

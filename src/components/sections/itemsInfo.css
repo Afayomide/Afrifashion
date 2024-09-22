@@ -2,11 +2,14 @@
     display: flex;
     justify-content: space-evenly;
     margin-bottom: 5rem;
-    gap: 20px;
-     width: 100vw;    
+    gap: 10vw;
+     width: 100%;
+     margin-top: 2vh;
+    
 }
 .item-details {
     flex: 1; /* Make this take up equal space */
+    margin-right: 10%;
   }
   .item-details p{
   margin: 0.5rem 0

@@ -83,27 +83,55 @@ function Home () {
 fetchData()
 }, [])
 
+function localClickedList(fabric) {
+  const clickedList = JSON.parse(localStorage.getItem('localClickedList')) || [];
+  const clickedItemId = clickedList.find(item => item._id === fabric._id); // Assuming 'id' is unique for each fabric
+  if (clickedItemId) {
+      console.log("already in")
+  } else {
+      const clickedItem = { ...fabric, newquantity: 1 }; 
+      clickedList.push(clickedItem);
+      console.log(clickedItem)
+      console.log("not in")
+  }
+  localStorage.setItem('localClickedList', JSON.stringify(clickedList));
+  console.log(clickedList);
+}
+
+
 
      function Card (props){
-return(
-              <div className="home-product-list"  key={props._id}>   
-               <Link className="home-product-link" to={`/${props._id}`}>   
-                <img src={props.image} alt={props.name} />
-                <div className="home-product-link-texts">
-                  <p>{props.type}</p>  
-                   <p>{props.description}</p>
-                 <p>$<span>{props.price}</span> per yard</p>  
-                 <p><span>{props.quantity}</span> yards left</p>
-                </div>
-                 </Link>      
-        
-
-                 {(JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === props._id) ? (
-    <Link to={`/${props._id}`}><button onClick={() => navigate(`/${props.id}`)} className="home-cart-button already-in-cart">Added To Cart</button></Link>
-) : (
-    <button className="home-cart-button add-to-cart" onClick={() => handleAddToCart(props)}>Add to Cart</button>
-)}</div>         
-)
+      return (
+        <div className={`home-product-list ${props.outOfStock ? 'out-of-stock' : ''}`} key={props._id}>
+          <Link
+            onClick={() => !props.outOfStock && localClickedList(props)}
+            className={`home-product-link ${props.outOfStock ? 'disabled-link' : ''}`}
+            to={!props.outOfStock ? `/${props._id}` : '#'}
+          >
+            <img src={props.image} alt={props.name} className={props.outOfStock ? 'out-of-stock-img' : ''} />
+            <div className="home-product-link-texts">
+              <p>{props.type}</p>
+              <p>$<span>{props.price}</span> per yard</p>
+              <p><span>{props.quantity}</span> yards left</p>
+            </div>
+          </Link>
+      
+          {(JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === props._id) ? (
+            <Link to={`/${props._id}`}>
+              <button onClick={() => navigate(`/${props._id}`)} className="home-cart-button already-in-cart">
+                Added To Cart
+              </button>
+            </Link>
+          ) : !props.outOfStock ? (
+            <button className="home-cart-button add-to-cart" onClick={() => handleAddToCart(props)}>
+              Add to Cart
+            </button>
+          ) : (  <button className="home-cart-button out-of-stock-button">
+          Out Of Stock
+        </button>)}
+        </div>
+      );
+      
 }
     return(
         <div className="home-container">
@@ -115,7 +143,7 @@ return(
 
 
         <div className="home-fabric-section">
-                <h3><Link className="home-section-link" to="/search?q=asoOke">Ankara</Link></h3>
+                <h3><Link className="home-section-link" to="/search?q=aso-oke">Ankara</Link></h3>
                 {
               !isLoading ?(<div className="home-product-list-container">
                   {ankara.map(Card)}  

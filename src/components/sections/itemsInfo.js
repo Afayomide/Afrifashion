@@ -7,7 +7,7 @@ import { ProductContext } from "../productContext"
 export default function ItemsInfo() {
     const [item, setItem] = useState([])
     const [error, setError] = useState("")
-    const {allClickedList,setAllClickedList, cartList, setCartList, setInitialItems, initialItems, setLocalCartLength, setShouldFetchCart, setCartNo, authenticated} = useContext(ProductContext)
+    const {cartList, setCartList, setInitialItems, initialItems, setLocalCartLength, setShouldFetchCart, setCartNo, authenticated} = useContext(ProductContext)
     const {id} = useParams()
     const [selectedQuantity, setSelectedQuantity] = useState(() => {
       const storedQuantity = JSON.parse(localStorage.getItem(`selectedQuantity-${id}`));
@@ -32,6 +32,19 @@ export default function ItemsInfo() {
 
 const handleQuantityChange = (id, newQuantity, price) => {
 
+  function  updateClickedList() {
+    console.log("Item found in clickedList");
+
+    const updatedClickedList = [...clickedList];
+    const clickedItemToUpdate = updatedClickedList.find((clickedItem) => clickedItem._id === id);
+    clickedItemToUpdate.newquantity = newQuantity;
+    clickedItemToUpdate.newprice = newQuantity * clickedItemToUpdate.price;
+
+    localStorage.setItem("localClickedList", JSON.stringify(updatedClickedList));
+
+    console.log("Updated clickedCartList:", updatedClickedList);
+  }
+
   setSelectedQuantity(newQuantity); 
 
   localStorage.setItem(`selectedQuantity-${id}`, JSON.stringify(newQuantity));
@@ -42,7 +55,8 @@ const handleQuantityChange = (id, newQuantity, price) => {
 
     if (!matchingCartItem) {
       console.error("Item with id", id, "not found in cartList");
-      return; 
+      console.log("cartlist:", cartList)
+      return updateClickedList()
     }
 
     const updatedCartList = [...cartList];
@@ -53,13 +67,13 @@ const handleQuantityChange = (id, newQuantity, price) => {
 
     if (!matchingInitialItem) {
       console.error("Item with id", id, "not found in initialItems");
-      return; 
+      console.log("initialItem:", initialItems)
+      return updateClickedList()
     }
 
     const updatedInitialItems = [...initialItems];
     updatedInitialItems.find((initialItem) => initialItem._id === id).newquantity = newQuantity;
     updatedInitialItems.find((initialItem) => initialItem._id === id).price = newQuantity * item.price;
-
 
     setCartList(updatedCartList);
     setInitialItems(updatedInitialItems);  
@@ -67,8 +81,9 @@ const handleQuantityChange = (id, newQuantity, price) => {
     localStorage.setItem("localCartList", JSON.stringify(updatedInitialItems));
     console.log(updatedCartList);
     console.log(updatedInitialItems);
-  } else if (Array.isArray(clickedList) && clickedList.find((item) => item._id === id)) {
-    console.log("Item found in clickedList");
+  } 
+  if (Array.isArray(clickedList) && clickedList.find((item) => item._id === id)) {
+   updateClickedList()
   }
 };
 
@@ -106,40 +121,54 @@ const handleQuantityChange = (id, newQuantity, price) => {
 
   const handleAddToCart = async (fabric) => {
     const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
-      const fabricWithQuantity = { ...fabric, newquantity: 1 }; 
+    const clickedCartList = JSON.parse(localStorage.getItem('localClickedList')) || [];
+    
+    const clickedItem = clickedCartList.find(item => item._id === fabric._id);
+    const fabricWithQuantity = { ...fabric, 
+      newquantity: clickedItem ? clickedItem.newquantity : 1,
+      price: clickedItem ? clickedItem.newprice : fabric.price,
+    };
+  
+    // Check if the item already exists in the local cart
+    const existingItemIndex = storedCartList.findIndex(item => item._id === fabric._id);
+    if (existingItemIndex > -1) {
+      // Update quantity if item exists
+      storedCartList[existingItemIndex].newquantity = fabricWithQuantity.newquantity;
+    } else {
+      // Add new item if it doesn't exist
       storedCartList.push(fabricWithQuantity);
-      localStorage.setItem('localCartList', JSON.stringify(storedCartList));
-      console.log('Added fabric to local cart:', fabric);
-  
-      setLocalCartLength(storedCartList.length);
-      setCartNo(storedCartList.length)
-
-      if (authenticated){
-    try {
-      if (!authenticated) {
-        throw new Error("User not authenticated");
-      }
-  
-      const productId = fabric._id;
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/cart/add`,
-        { productId }, 
-      );
-  
-      console.log('Added fabric to server cart:', response.data);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      setError('An error occurred while adding to cart.');
-  
-      const updatedCartList = storedCartList.filter(item => item._id !== fabric._id);
-      localStorage.setItem('localCartList', JSON.stringify(updatedCartList));
-      console.log('Removed fabric from local cart:', fabric);
-      setLocalCartLength(updatedCartList.length);
-    } finally {
-      setShouldFetchCart(true); 
     }
-  }
+  
+    localStorage.setItem('localCartList', JSON.stringify(storedCartList));
+    console.log('Updated local cart:', storedCartList);
+  
+    setLocalCartLength(storedCartList.length);
+    setCartNo(storedCartList.length);
+  
+    if (authenticated) {
+      try {
+        const productId = fabric._id;
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/cart/add`,
+          { productId },
+        );
+  
+        console.log('Added fabric to server cart:', response.data);
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        setError('An error occurred while adding to cart.');
+  
+        // If there's an error, remove the item from local storage
+        const updatedCartList = storedCartList.filter(item => item._id !== fabric._id);
+        localStorage.setItem('localCartList', JSON.stringify(updatedCartList));
+        console.log('Removed fabric from local cart:', fabric);
+        setLocalCartLength(updatedCartList.length);
+      } finally {
+        setShouldFetchCart(true);
+      }
+    }
   };
+  
 
 
   
@@ -173,14 +202,11 @@ const handleQuantityChange = (id, newQuantity, price) => {
   onChange={(e) => handleQuantityChange(id, parseInt(e.target.value))}
   value={
     (Array.isArray(initialItems) && initialItems.find((item) => item._id == id)?.newquantity) ||
-    (Array.isArray(clickedList) && clickedList.find((clickedItem) => clickedItem._id == id)?.newquantity) ||
-    1
+    (Array.isArray(clickedList) && clickedList.find((item) => item._id == id)?.newquantity)
   }
 >
   {Array.from({
-    length:
-
-      item.quantity
+    length: item.quantity
   }, (_, i) => i + 1).map((optionValue) => (
     <option key={optionValue} value={optionValue}>
       {optionValue}
@@ -189,7 +215,8 @@ const handleQuantityChange = (id, newQuantity, price) => {
 </select>            
 
       </div>
-      <p>Your Total Price: {initialItems.find((item) => item._id == id)?.price}</p>
+      <p>Your Total Price: ${clickedList.find((clickedItem) => clickedItem._id === id)?.newprice || initialItems.find((item) => item._id == id)?.price || item.price }</p>
+      <p>Description: {item.description}</p>
 </div>
 
 

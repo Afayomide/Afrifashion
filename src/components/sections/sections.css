@@ -153,6 +153,23 @@ width: 50%;
 
     text-decoration: underline;
 }
+.disabled-link {   
+     z-index: -10;
+    pointer-events: none;
+    text-decoration: line-through; /* Strike-through for disabled link */
+    color: grey; /* Make it appear disabled */
+  }
+  
+  /* Optional: You can style out-of-stock images differently */
+  .out-of-stock-img {
+    filter: grayscale(60%); /* Apply a greyscale filter */
+    opacity: 0.6;
+  }
+  .out-of-stock-button{
+    background-color: var(--out-of-stock);
+    border: none;
+    cursor: auto;
+  }
 @keyframes spin-anim {
     0% {
         transform: rotate(0deg);

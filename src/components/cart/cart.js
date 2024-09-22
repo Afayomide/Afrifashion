@@ -8,9 +8,9 @@ import "./cart.css";
 
 
 function Cart () {
-  const [cartList, setCartList] = useState([]);
+  // const [] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const {authenticated, initialItems, setInitialItems, shouldFetchCart, setShouldFetchCart, mainLoading, setMainLoading, setLocalCartLength, total, setTotal } = useContext(ProductContext);
+  const {cartList, setCartList,authenticated, initialItems, setInitialItems, shouldFetchCart, setShouldFetchCart, mainLoading, setMainLoading, setLocalCartLength, total, setTotal } = useContext(ProductContext);
   const [error, setError] = useState(null);
 
 
@@ -74,23 +74,34 @@ function arraysHaveSameItemsById(arr1, arr2) {
 
   
 
-  const handleQuantityChange = (itemIndex, newQuantity, price) => {
+  const handleQuantityChange = (id,itemIndex, newQuantity, price) => {
     const updatedCart = [...cartList];
     updatedCart[itemIndex].quantity = newQuantity;
     setCartList(updatedCart);
-  
+
     const updatedInitialItems = [...initialItems];
     updatedInitialItems[itemIndex].newquantity = newQuantity;
-    
     updatedInitialItems[itemIndex].price = updatedCart[itemIndex].price * newQuantity;
-    
     setInitialItems(updatedInitialItems);
+
+    localStorage.setItem("localCartList", JSON.stringify(updatedInitialItems));      
+    const clickedList = JSON.parse(localStorage.getItem('localClickedList')) || []
+
+    if (Array.isArray(clickedList) && clickedList.find((item) => item._id === id)) {
+      console.log("Item found in clickedList");
+
+      const updatedClickedList = [...clickedList];
+      const clickedItemToUpdate = updatedClickedList.find((clickedItem) => clickedItem._id === id);
+      clickedItemToUpdate.newquantity = newQuantity;
+      clickedItemToUpdate.newprice = newQuantity * clickedItemToUpdate.price;
   
-    localStorage.setItem("localCartList", JSON.stringify(updatedInitialItems));
+      localStorage.setItem("localClickedList", JSON.stringify(updatedClickedList));
+  
+      console.log("Updated clickedCartList:", updatedClickedList);
+    }
   };
 
   const handleDelete = async (item) => {
-    const token = localStorage.getItem("authToken");
     const productId = item._id;
     try {
       // Update localCartList without resetting it
@@ -104,10 +115,6 @@ function arraysHaveSameItemsById(arr1, arr2) {
       // Update server cart
       const fetchUrl = `${process.env.REACT_APP_API_URL}/api/cart/delete`;
       await axios.delete(fetchUrl, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
         data: { productId }
       });
   
@@ -174,7 +181,7 @@ function arraysHaveSameItemsById(arr1, arr2) {
               <p><span className="description-header">Quantity:</span></p>
               <select
                 className="quantity-input"
-                onChange={(e) => handleQuantityChange(index, parseInt(e.target.value))}
+                onChange={(e) => handleQuantityChange(item._id,index, parseInt(e.target.value))}
                 value={initialItems[index]?.newquantity || 1}
               >
                 {Array.from({ length: initialItems[index].quantity }, (_, i) => i + 1).map((optionValue) => (

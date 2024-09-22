@@ -2,8 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import Header from './components/header/header';
 import Home from './components/home/home';
-import Females from './components/sections/females';
-import Males from './components/sections/males';
 import Fabrics from './components/sections/fabrics';
 import Footer from './components/footer/footer';
 import Signup from './components/forms/signup';
@@ -27,8 +25,6 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
 {element : <Home/>, path: "/" },
-{element : <Females/>, path: "/femalestyles" },
-{element : <Males/>, path: "/malestyles" },
 {element : <Fabrics/>, path: "/fabrics" },
 {element : <Signup/>, path: "/signup" },
 {element : <Login/>, path: "/login" },

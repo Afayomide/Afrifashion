@@ -91,56 +91,59 @@ function SearchResults() {
       };
       
 
-    return (
-      <div className="product-list-container">
-                          {/* <img className="fabrics-bg-image" src={bgImage} alt="backgroundImage"/> */}
-      {isLoading ? (
-        <div className="message">
-          <div className="loader-container">
-          <div className="spinner"></div>
-      </div>
-                    <p className="loading-message">....searching</p>
-          </div>
-      ) : error ? (
-        <div className="message">
-        <img src={formbg} alt='login background' className='auth-bg-image'/>
-
-        <img className="error-image" src={formbg}/>
-        <p className="error-message">Error: {error}</p>
-        </div>
-      ) : (
-        searchResult.length > 0 ? ( 
-          <div>
-            <h3 className="search-header">Search Results</h3>
-     <div className="product-list-container">
-            {searchResult.map((result, index) => ( 
-              <div className="product-list" key={result._id}>   
-               <Link className="product-link" to={`/${result._id}`}>   
-                <img src={result.image} alt={result.name} />
-                <div className="product-link-texts">
-                  <p><span>type:</span>{result.type}</p>  
-                   <p>{result.description}</p>
-                   <p><span>Qty:</span>{result.quantity} yards</p>
-                   <p><span>Price:</span>{result.price} per yard</p>
-                </div>
-                 </Link>      
-        
-                 {cartList.some((cartItem) => cartItem._id === result._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === result._id) ? (
-    <button className="cart-button already-in-cart">Added To Cart</button>
-) : (
-    <button className="cart-button add-to-cart" onClick={() => handleAddToCart(result)}>Add to Cart</button>
-)}</div>         
-            ))} 
-            </div>   
+      return (
+        <div className="product-list-container">
+          {isLoading ? (
+            <div className="message">
+              <div className="loader-container">
+                <div className="spinner"></div>
+              </div>
+              <p className="loading-message">....searching</p>
             </div>
-        ) : (
-          <div className="message">
-                    <p className="loading-message">we found nothing</p>
-          </div>
-        )
-      )}
+          ) : error ? (
+            <div className="message">
+              <img src={formbg} alt='login background' className='auth-bg-image' />
+              <img className="error-image" src={formbg} />
+              <p className="error-message">Error: {error}</p>
+            </div>
+          ) : (
+            searchResult.length > 0 ? (
+              <div>
+                <h3 className="search-header">Search Results</h3>
+                <div className="product-list-container">
+                  {searchResult.map((result, index) => (
+                    <div className={`product-list ${result.outOfStock ? 'out-of-stock' : ''}`} key={result._id}>
+                      <Link
+                        className={`product-link ${result.outOfStock ? 'disabled-link' : ''}`}
+                        to={!result.outOfStock ? `/${result._id}` : '#'}
+                      >
+                        <img src={result.image} alt={result.name} className={result.outOfStock ? 'out-of-stock-img' : ''} />
+                        <div className="product-link-texts">
+                          <p><span>Type:</span> {result.type}</p>
+                          <p><span>Qty:</span> {result.quantity} yards</p>
+                          <p><span>Price:</span> ${result.price} per yard</p>
+                        </div>
+                      </Link>
+      
+                      {(cartList.some((cartItem) => cartItem._id === result._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === result._id)) ? (
+                        <button className="cart-button already-in-cart">Added To Cart</button>
+                      ) : !result.outOfStock ? (
+                        <button className="cart-button add-to-cart" onClick={() => handleAddToCart(result)}>Add to Cart</button>
+                      ): (<button className="cart-button out-of-stock-button">Out of Stock</button>
+                    )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="message">
+                <p className="loading-message">We found nothing</p>
+              </div>
+            )
+          )}
         </div>
-    );
+      );
+      
   }
   
   export default SearchResults;
