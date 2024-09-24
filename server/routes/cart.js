@@ -1,12 +1,10 @@
 const express = require("express");
 const router = express.Router()
-const axios = require('axios')
 require('dotenv').config();
 const verifyToken = require("../verifyToken")
 const Customer =  require("../models/customer");
 const Clothes = require("../models/clothesSchema")
-const Payment = require("../models/payment")
-const nodemailer = require("nodemailer")
+
 
 
 router.get('/list', verifyToken, async (req, res) => {
