@@ -48,7 +48,7 @@
 }
 .product-list img{
     width: 20rem;
-    height: 15rem;
+    /* height: 15rem; */
 }
 .product-link-texts{
     text-align: center;
@@ -181,13 +181,13 @@ width: 50%;
 @media (max-width: 950px){
     .product-list img{
         width: 12rem;
-        height: 8rem;
+        /* height: 8rem; */
     }
 }
 @media (max-width: 1600px) {
     .product-list img{
         width: 15rem;
-        height: 10rem;
+        /* height: 10rem; */
     }
 }
 @media (max-width: 800px) {
@@ -196,7 +196,7 @@ width: 50%;
      }
      .product-list img{
         width: 10rem;
-        height: 6rem;
+        /* height: 6rem; */
     }
     .product-list p{
         font-size: 14px;
@@ -218,7 +218,7 @@ width: 50%;
     }
     .product-list img{
         width: 10rem;
-        height: 10rem;
+        /* height: 10rem; */
     }
     .faq-list li{
         width: 90%;

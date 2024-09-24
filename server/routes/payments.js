@@ -11,7 +11,7 @@ const PAYSTACK_SECRET_KEY = process.env.paystack_secret_key;
 
 
 router.post('/pay', verifyToken, async (req, res) => {
-    const { email, amount,clothesData, redirectUrl } = req.body;
+    const { email,fullName, amount,clothesData, redirectUrl, selectedCountry, selectedState, address } = req.body;
   
     if (!Array.isArray(clothesData)) {
         var arrayClothesData = [clothesData];
@@ -26,7 +26,12 @@ router.post('/pay', verifyToken, async (req, res) => {
             email: email,
             amount: amount * 100,
             metadata: {
-                clothesData: arrayClothesData,
+                clothesData: arrayClothesData,                
+                email,
+                name: fullName,
+                country: selectedCountry, 
+                state: selectedState, 
+                address
             },
             callback_url: redirectUrl
         }, 
@@ -42,6 +47,7 @@ router.post('/pay', verifyToken, async (req, res) => {
             message: 'Payment initialized successfully',
             data: response.data.data
         });
+        console.log(response)
   
     } catch (error) {
         res.status(500).json({
@@ -67,7 +73,9 @@ router.post('/pay', verifyToken, async (req, res) => {
             }
         });
         const { status, data } = response.data;
+        const metaData = data.metadata 
         const clothesData = data.metadata.clothesData;
+        console.log(clothesData)
 
         if (status && data.status === 'success') {
             const fabrics = clothesData.map(data=> ({
@@ -77,6 +85,11 @@ router.post('/pay', verifyToken, async (req, res) => {
             }))
             const newPayment = new Payment({
                 user: userId,
+                email: metaData.email,
+                name: metaData.name,
+                country: metaData.country.label,
+                state: metaData.state.label,
+                address: metaData.address,
                 clothes: fabrics,
                 totalAmount: data.amount / 100, 
                 paymentReference: reference,

@@ -54,7 +54,6 @@
 .checkout-form small{
     color: green;
     font-size: 1rem;
-    width: 60%;
 }
 
 .checkout-form button:hover {
@@ -133,6 +132,7 @@
     .checkout-form {
         width: 100%;
         border-radius: 0;
+        align-items: start;
     }
     .check{
         font-size: 6rem;   

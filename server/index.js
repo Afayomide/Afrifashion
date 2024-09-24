@@ -12,6 +12,7 @@ const redis = require('redis');
 const verifyToken = require('./verifyToken');
 const cookieParser = require('cookie-parser');
 const paymentRouter = require('./routes/payments');
+const cartRouter = require('./routes/cart')
 const nodemailer = require("nodemailer")
 
 
@@ -37,6 +38,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.raw());
 app.use(bodyParser.text());
+app.use("/api/cart", cartRouter)
 app.use('/api', paymentRouter)
 
 const dburl = process.env.dburl
@@ -225,24 +227,7 @@ app.post("/api/contactUs",async (req,res) => {
   }
 })
 
-app.get("/api/cart", verifyToken, async(req,res) => {
-  const id = req.user.userId; 
-  try {
-    const customer = await Customer.findById(id);
-    if (customer) {
-      const cartLength = customer.cart.length;
-      const fullName = customer.fullname
-      const email = customer.email
-      res.json({ cartLength, fullName, email });
-    } else {
-      return res.status(404).json({ message: 'User not found' });
-        }
-                  
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-      }
-    });
+
 
     app.get("/api/fabrics",async(req,res) => {
   
@@ -326,65 +311,7 @@ app.get("/api/clothespreview", async (req, res) => {
 
 
 
-
-
-    app.post('/api/cart/add', verifyToken, async (req, res) => {
-      const userId = req.user.userId;
-      try {
-        const { productId } = req.body;
-        if (!productId) {
-          return res.status(400).json({ message: 'Missing product ID' });
-        }
-    
-        const product = await Clothes.findById(productId);
-        if (!product) {
-          return res.status(404).json({ message: 'Product not found' });
-        }
-    
-        const customer = await Customer.findById(userId);
-        if (customer) {
-          const existingProduct = customer.cart.find(item => item._id.toString() === productId);
-          if (existingProduct) {        
-                console.log("already in cart")
-            return res.status(400).json({ message: 'Product already in cart' });
-          }
-          else{
-             customer.cart.push(product);
-          await customer.save();
-          }
-         
-        }
-        res.json({ message: 'Product added to cart successfully' });
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-      }
-    });
-
-
-    app.get('/api/cart/list', verifyToken, async (req, res) => {
-      const id = req.user.userId; 
-    
-      try {
-        const customer = await Customer.findById(id);
-    
-        if (customer) {
-          const cartItems = customer.cart.map(async (itemId) => {
-            const item = await Clothes.findById(itemId); 
-            return item;
-          });
-    
-          const resolvedCartItems = await Promise.all(cartItems);
-          res.json({ cartItems: resolvedCartItems, initialItems: resolvedCartItems});
-        } else {
-          return res.status(404).json({ message: 'User not found' });
-        }
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-      }
-    });
-
+ 
 
     app.post('/api/search', async (req, res) => {  
       const { searchTerm } = req.body; 
@@ -427,29 +354,7 @@ app.get("/api/clothespreview", async (req, res) => {
 
 
 
-    app.delete('/api/cart/delete', verifyToken, async (req, res) => {
-      const userId = req.user.userId;
-      const { productId } = req.body;
-    
-      try {
-        const customer = await Customer.findById(userId);
-    
-        if (!customer) {
-          return res.status(404).json({ message: 'Customer not found' });
-        }
-    
-        const updatedCart = customer.cart.filter(item => item._id.toString() !== productId.toString());
-        customer.cart = updatedCart;
-    
-        await customer.save();
-    
-        res.json({ message: 'Item deleted from cart successfully' });
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-      }
-    });
-    
+
     // async function getAll () {
     //   const allFabs = await Clothes.find()
 

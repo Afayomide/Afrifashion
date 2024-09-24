@@ -131,7 +131,7 @@ text-align: center;
   }
   .home-product-list img{
       width: 10rem;
-      height: 10rem;
+      /* height: 10rem; */
   }
   .home-product-link-texts p {
     font-size: 12px;
@@ -140,6 +140,6 @@ text-align: center;
 @media (max-width: 400px) {
   .home-product-list img{
     width: 8rem;
-    height: 8rem;
+    /* height: 8rem; */
 }
 }

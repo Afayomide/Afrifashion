@@ -6,7 +6,8 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import "./checkout.css"
 import { CiDeliveryTruck } from "react-icons/ci";
-
+import Select from 'react-select';
+import { Country, State } from 'country-state-city';  // Import functions to fetch countries and states
 
 
 function CheckoutPage(){
@@ -17,6 +18,14 @@ const { total, setTotal, authenticated, initialItems} = useContext(ProductContex
   const [phone, setPhone] = useState("")
   const [address, setAddress] = useState("")
   const apiUrl = process.env.REACT_APP_API_URL
+  const countries = Country.getAllCountries().map((country) => ({
+  label: country.name,
+  value: country.isoCode,
+}));
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [states, setStates] = useState([]);
+  const [selectedState, setSelectedState] = useState(null);
+
 
 
 useEffect(()=>{
@@ -40,6 +49,22 @@ if(localName){
 
 
 
+// Handle country selection and fetch states for the selected country
+const handleCountryChange = (selectedOption) => {
+  setSelectedCountry(selectedOption);
+  const countryIsoCode = selectedOption.value;
+  const statesList = State.getStatesOfCountry(countryIsoCode).map((state) => ({
+    label: state.name,
+    value: state.isoCode,
+  }));
+  setStates(statesList);  // Populate states based on country
+  setSelectedState(null);  // Reset state when country changes
+};
+
+// Handle state selection
+const handleStateChange = (selectedOption) => {
+  setSelectedState(selectedOption);
+};
 
 
 
@@ -56,9 +81,13 @@ if(localName){
     try {
       const response = await axios.post(`${apiUrl}/api/pay`, {
         email,
+        fullName,
         amount : total,
         clothesData, 
-        redirectUrl : `${process.env.REACT_APP_URL}/verify`
+        redirectUrl : `${process.env.REACT_APP_URL}/verify`,
+        selectedCountry, 
+        selectedState,
+        address
       });
 
       if (response.data.status === 'success') {
@@ -117,8 +146,35 @@ return(
              required 
             /> <br/>
       </div>
+
+      <div className='checkout-form-input'>
+        <label>Select Country</label>
+      <Select
+        options={countries}
+        value={selectedCountry}
+        onChange={handleCountryChange}
+        placeholder="Select a country"
+        isSearchable
+        required
+      />
+    </div>
+
+
+<div className='checkout-form-input'>
+<label>Select State</label>
+      <Select
+        options={states}
+        value={selectedState}
+        onChange={handleStateChange}
+        placeholder="Select a state/province"
+        isSearchable
+        isDisabled={!selectedCountry}
+        required
+      />
+</div>
         
        <div className='checkout-form-input'>
+       <label>Delivery Address</label>
           <textarea className={`input-field text-area`} 
           placeholder='address'
           onChange={(e) => setAddress(e.target.value)}
@@ -152,6 +208,7 @@ return(
               <p><span className="description-header">Total:</span> ${item.price}</p>
               </div>
               </div>
+              
               
             </div>
           ))}                 

@@ -7,6 +7,18 @@ const PaymentSchema = new Schema({
         ref: 'User', // Reference to the User model
         required: true
     },
+    name: {
+        type: String,
+        required: false
+    },
+    country: {
+        type: String,
+        required: false
+    },
+    state: {
+        type: String,
+        required: false
+    },
     clothes: [
         {
             fabricId: {

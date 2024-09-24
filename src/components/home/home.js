@@ -8,6 +8,9 @@ import logo from "../../assets/logo.png"
 
 
 
+
+
+
 function Home () {
   const navigate = useNavigate()
     const [lace, setLace ] = useState([])
