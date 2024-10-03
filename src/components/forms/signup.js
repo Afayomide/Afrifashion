@@ -80,7 +80,7 @@ export default function Signup () {
   
     return (
       <div >
-         <img className='auth-bg-image' src={formbg} alt='login background'/>
+         {/* <img className='auth-bg-image' src={formbg} alt='login background'/> */}
 
         <form className='auth-form' onSubmit={handleSignup}>
           <h3>Signup</h3>

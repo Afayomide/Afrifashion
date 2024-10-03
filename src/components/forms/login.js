@@ -140,7 +140,7 @@ export default function Login () {
   
     return (
       <div >
-   <img src={formbg} alt='login background' className='auth-bg-image'/>
+   {/* <img src={formbg} alt='login background' className='auth-bg-image'/> */}
       <form className='auth-form' onSubmit={handleLogin}>
       <h3>Login</h3> 
       <div className='orange'>{check === true ? "checking your details....." : ""}</div>

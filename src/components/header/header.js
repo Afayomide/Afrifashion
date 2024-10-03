@@ -53,14 +53,12 @@ function Header() {
 
         if (response.status === 200) {
           setAuthenticated(true)
-          console.log(response)
         } else {
           setAuthenticated(false)
           
         }
       } catch (error) {
         setAuthenticated(false);
-        console.log(error)
       }
     };
 
@@ -119,7 +117,6 @@ useEffect(() => {
           setMainLoading(false);
         }
         setError(error.message || 'An error occurred.');
-        console.error('Error:', error);
       }
     }
   };
@@ -148,13 +145,10 @@ useEffect(() => {
           }
             catch (error) {
               if (error.response && error.response.status === 403) {
-                console.error('Error (403 Forbidden):', error.message);
                 localStorage.removeItem('authToken');
                 setAuthenticated(false);
               } 
-              else {
-                console.error('Other Error:', error);
-            }
+           
             if (error.response && error.response.status === 500) {
               setMainLoading(false)
             }
@@ -200,9 +194,7 @@ useEffect(() => {
           setLocalCartLength(0);
           window.location.reload();
         }
-      }).catch(error => {
-        console.error("Logout error:", error);
-      });
+      })
     };
     return(
       <div>
