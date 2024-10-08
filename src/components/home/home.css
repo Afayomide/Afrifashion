@@ -124,6 +124,10 @@ text-align: center;
   }
 
 @media (max-width: 470px) {
+  .welcome{
+   margin-right: 10vw;
+   margin-bottom: 0;
+  }
   .home-product-list{
       margin-left: .1rem;
       margin-right: .1rem;

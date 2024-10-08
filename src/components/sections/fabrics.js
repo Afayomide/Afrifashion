@@ -143,7 +143,6 @@ function localClickedList(fabric) {
           </div>
         ) : error ? (
           <div className="message">
-            <img src={formbg} alt="login background" className="auth-bg-image" />
             <img className="error-image" src={formbg} alt="error background" />
             <p className="error-message">Error: {error}</p>
           </div>

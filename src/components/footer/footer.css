@@ -17,7 +17,7 @@ footer::before {
     background-image: url('../../assets/background-header.webp'); /* Replace with your image path */
     background-size: cover;
     background-position: center;
-    opacity: 0.4; /* Adjust opacity to suit your design */
+    opacity: 0.6; /* Adjust opacity to suit your design */
     z-index: -1; /* Ensures the background image is behind the footer content */
 }
 

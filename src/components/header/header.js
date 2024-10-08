@@ -49,7 +49,7 @@ function Header() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/checkAuth`);
+        const response = await axios.get(`${apiUrl}/api/auth/customer/checkAuth`);
 
         if (response.status === 200) {
           setAuthenticated(true)

@@ -250,7 +250,6 @@ function localClickedList(fabric) {
 
         </div>
         </div>
-
         </div>
     )
 }

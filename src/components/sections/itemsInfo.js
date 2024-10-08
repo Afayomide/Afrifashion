@@ -1,11 +1,12 @@
-import { useContext, useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useContext, useEffect, useState, useRef} from "react"
+import { useParams,Link } from "react-router-dom"
 import axios from "axios"
 import "./itemsInfo.css"
 import { ProductContext } from "../productContext"
 
 export default function ItemsInfo() {
     const [item, setItem] = useState([])
+    const [relatedItems, setRelatedItems] = useState([])
     const [error, setError] = useState("")
     const {cartList, setCartList, setInitialItems, initialItems, setLocalCartLength, setShouldFetchCart, setCartNo, authenticated} = useContext(ProductContext)
     const {id} = useParams()
@@ -16,12 +17,12 @@ export default function ItemsInfo() {
 
     useEffect(()=>{
   async function fetchData(){
-       const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/aboutItem`, {
-        id
-     })
-        setItem(response.data.item)
+       const ItemInfo = await axios.post(`${process.env.REACT_APP_API_URL}/api/aboutItem`, {id})
+     const relatedResponse = await axios.get(`${process.env.REACT_APP_API_URL}/api/related-Items/${id}`)
+     console.log(relatedResponse)
+        setItem(ItemInfo.data.item)
+        setRelatedItems(relatedResponse.data.relatedItems)
   } 
-
   fetchData()
  }, [])
 
@@ -168,12 +169,22 @@ const handleQuantityChange = (id, newQuantity, price) => {
       }
     }
   };
+  function localClickedList(fabric) {
+    const clickedList = JSON.parse(localStorage.getItem('localClickedList')) || [];
+    const clickedItemId = clickedList.find(item => item._id === fabric._id); // Assuming 'id' is unique for each fabric
+    if (clickedItemId) {
+    } else {
+        const clickedItem = { ...fabric, newquantity: 1 }; 
+        clickedList.push(clickedItem);
+    
+    }
+    localStorage.setItem('localClickedList', JSON.stringify(clickedList));
+  }
   
-
-
   
 
     return(
+      <div>
         <div className="item-info">
         <div className="item-info-img-container">
            {item.image ? (
@@ -192,12 +203,11 @@ const handleQuantityChange = (id, newQuantity, price) => {
  (<button onClick={()=> (handleAddToCart(item))} className="add-to-cart">Add To Cart</button>)}
       </div>
   <div className="item-details">
-            <p className="description">{item.type}</p>      
-            <p className="type">{item.type}</p>
-            <p className="material">{item?.material}</p>
+            <p className="type">{item.type}</p>      
             <p className="price">${item.price}</p>
+            <p className="material"><span>Material:</span>{item.material}</p>
       <div>
-        Quantity in yards: <select
+        <span>Quantity:</span> <select
   className="quantity-input"
   onChange={(e) => handleQuantityChange(id, parseInt(e.target.value))}
   value={
@@ -215,10 +225,40 @@ const handleQuantityChange = (id, newQuantity, price) => {
 </select>            
 
       </div>
-      <p>Your Total Price: ${clickedList.find((clickedItem) => clickedItem._id === id)?.newprice || initialItems.find((item) => item._id == id)?.price || item.price }</p>
-      <p>Description: {item.description}</p>
+      <p><span>Total Price:</span> ${clickedList.find((clickedItem) => clickedItem._id === id)?.newprice || initialItems.find((item) => item._id == id)?.price || item.price }</p>
+      <p><span>Description:</span> {item.description}</p>
+      <p>
+        You want to make a special order? <a href="">Contact our wholesales team</a> or call <a href="tel:+234-8142360551 ">+234-8142360551 </a>
+      </p>
+      <p><span>Instructions: </span>{item.instruction}</p>
 </div>
 
+
+
+        </div>
+        <div className="related-items">
+  <h4>more like this..</h4>
+  <div className="related-container">
+  {relatedItems?.map((item, index) => (
+  <div 
+  className={`home-product-list ${item.outOfStock ? 'out-of-stock' : ''}`} 
+  key={item._id}
+>
+  <Link
+    onClick={() => !item.outOfStock && localClickedList(item)}
+    className={`home-product-link ${item.outOfStock ? 'disabled-link' : ''}`}
+    to={!item.outOfStock ? `/${item._id}` : '#'}
+  >
+    <img src={item.image} alt={item.name} className={item.outOfStock ? 'out-of-stock-img' : ''} />
+    <div className="home-product-link-texts">
+      <p>{item.type}</p>
+      <p>$<span>{item.price}</span> per yard</p>
+      <p><span>{item.quantity}</span> yards left</p>
+    </div>
+  </Link>
+</div>  ))}
+</div>
+</div>
 
         </div>
     )

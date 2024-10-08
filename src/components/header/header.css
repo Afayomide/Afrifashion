@@ -26,7 +26,7 @@ nav::before {
   background-image: url('../../assets/background-header.webp');
   background-size: cover;
   background-position: center;
-  opacity: 0.4;
+  opacity: 0.6;
   z-index: -1; 
 }
 nav::after {
@@ -36,7 +36,7 @@ nav::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(13, 13, 77,0.6); /* Overlay to darken the image slightly */
+  background-color: rgba(13, 13, 77,0.6); 
   z-index: -1;
 }
 
@@ -125,7 +125,7 @@ nav .bold-link {
   background-image: url('../../assets/background-header.webp');
   background-size: cover;
   background-position: center;
-  opacity: 0.8;
+  opacity: 0.6;
   z-index: -1; 
 }
 .small-nav-links::after {

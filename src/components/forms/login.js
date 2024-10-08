@@ -24,7 +24,7 @@ export default function Login () {
     useEffect(() => {
       const checkAuth = async () => {
         try {
-          const response = await axios.get(`${apiUrl}/api/checkAuth`, {
+          const response = await axios.get(`${apiUrl}/api/auth/customer/checkAuth`, {
             withCredentials: true
           });
   
@@ -108,7 +108,7 @@ export default function Login () {
     }
     const loginPromise = async () => {
       callCheck()
-      const response = await axios.post(`${apiUrl}/api/login`, {
+      const response = await axios.post(`${apiUrl}/api/auth/customer/login`, {
         email,
         password
       });

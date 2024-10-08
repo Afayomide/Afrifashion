@@ -1,10 +1,9 @@
 .item-info{
     display: flex;
     justify-content: space-evenly;
-    margin-bottom: 5rem;
     gap: 10vw;
      width: 100%;
-     margin-top: 2vh;
+     margin-top: 8vh;
     
 }
 .item-details {
@@ -13,6 +12,10 @@
   }
   .item-details p{
   margin: 0.5rem 0
+  }
+  .item-details span{
+    color: var(--bgbuttons);
+    font-weight: 700;
   }
   .item-details .description{
 font-size: 2rem;
@@ -58,14 +61,27 @@ font-size: 2rem;
     border-radius: 50%;
     animation: spin-anim 1.2s linear infinite;
 }
+.related-container{
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 5rem;
+}
+.related-items{
+   width: 90vw;
+    margin: auto ; 
+}
+.related-items h4{
+    font-weight: 700;
+    font-size: 2rem;
+}
 
 @media (max-width: 800px) {
     .item-info{
         flex-direction: column;
         justify-content: center;
-        width: 90vw;
+        width: 90%;
         margin: auto;
-          margin-bottom: 5rem;
 
     }
     .item-info-img{
@@ -88,5 +104,11 @@ font-size: 2rem;
 @media (max-width: 500px) {
     .item-info{
         margin-top: 1rem;
+    }
+    .related-items{
+        width: 80vw;
+     }
+     .related-container{
+     justify-content: space-between;
     }
 }

@@ -52,7 +52,7 @@ export default function Signup () {
         }, 3000);
       }
   
-      const serverUrl = `${process.env.REACT_APP_API_URL}/api/signup`;
+      const serverUrl = `${process.env.REACT_APP_API_URL}/api/auth/customer/signup`;
   
       try {
         callCheck()
