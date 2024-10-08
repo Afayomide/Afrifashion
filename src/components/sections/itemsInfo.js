@@ -89,6 +89,14 @@ const handleQuantityChange = (id, newQuantity, price) => {
 };
 
 
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0, // Scroll to the top of the page
+      behavior: 'smooth' // Optional: smooth scrolling
+    });
+  };
+
  const handleDelete = async (item) => {
   const productId = item._id;
 
@@ -178,6 +186,7 @@ const handleQuantityChange = (id, newQuantity, price) => {
         clickedList.push(clickedItem);
     
     }
+    scrollToTop()
     localStorage.setItem('localClickedList', JSON.stringify(clickedList));
   }
   
