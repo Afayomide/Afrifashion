@@ -36,6 +36,7 @@ router.post('/login', async (req, res) => {
       res.cookie('token', token, {
         httpOnly: true,   
         secure: process.env.NODE_ENV === 'production',  
+        // remove in test
         sameSite: process.env.SAME_SITE,  
         maxAge: 4 * 24 * 60 * 60 * 1000 
       });
