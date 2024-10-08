@@ -1,0 +1,79 @@
+const express = require("express")
+const router = express.Router()
+const jwt = require("jsonwebtoken")
+const Admin = require("../models/admin")
+const bcrypt = require('bcrypt'); 
+const {verifyAdminToken} = require("./auth/verifyToken")
+
+
+
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+      
+    try {
+      const admin = await Admin.findOne({ email });
+  
+      if (!admin || !bcrypt.compareSync(password, admin.password)) {
+        return res.json({ success: false, message: 'Invalid email or password' });
+      }
+  
+      const token = jwt.sign({ adminId: admin._id }, process.env.JWT_SECRET, { expiresIn: '4d' });
+      res.cookie('token', token, {
+        httpOnly: true,   
+        secure: process.env.NODE_ENV === 'production',  
+        sameSite: process.env.SAME_SITE,  
+        maxAge: 4 * 24 * 60 * 60 * 1000 
+      });
+      console.log(res.cookie)
+      res.json({success: true, admin});
+  
+    } catch (error) {
+      console.error('Error:', error.message);
+      res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+  });
+
+  router.post('/signup', async (req, res) => {
+    const { fullname, username, email, password } = req.body;
+    
+      if (!username || !password || !fullname || !email) {
+        return res.json({ success: false, message: 'All fields are required' }); // Use return to prevent further execution
+      }
+    
+      try {
+        const existingAdmin = await Admin.findOne({ username });
+    
+        if (existingAdmin) {
+          return res.json({ success: false, message: 'Username already exists' }); // Use return to prevent further execution
+        }
+    
+        const saltRounds = 10;
+        const hashedPassword = bcrypt.hashSync(password, saltRounds);
+        
+        const newAdmin = new Admin({
+          fullname,
+          username,
+          email,
+          password: hashedPassword,
+        });
+    
+        await newAdmin.save();
+        return res.json({ success: true });
+      } catch (error) {
+        console.error('Error:', error.message);
+        return res.json({ success: false, message: 'Internal server error' });
+      }
+  });
+  
+  router.post('/api/logout', async (req, res) => {
+    res.cookie('token', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Set to true in production for HTTPS
+      sameSite: process.env.SAME_SITE,
+      maxAge: 0 
+    });
+  
+    return res.status(200).json({ success: true, message: 'Logged out successfully' });
+  });
+
+  module.exports = router

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router()
 const axios = require('axios')
 require('dotenv').config();
-const verifyToken = require("../verifyToken")
+const {verifyToken} = require("./auth/verifyToken")
 const Customer =  require("../models/customer");
 const Clothes = require("../models/clothesSchema")
 const Payment = require("../models/payment")
@@ -60,7 +60,7 @@ router.post('/pay', verifyToken, async (req, res) => {
 
 
   
-  router.get('/verify/:reference', verifyToken, async (req, res) => {
+router.get('/verify/:reference', verifyToken, async (req, res) => {
     const { reference } = req.params;
     const userId = req.user.userId;
           const user = await Customer.findById(userId)

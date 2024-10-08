@@ -2,18 +2,17 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const Clothes = require("./models/clothesSchema")
-const Customer = require('./models/customer');
 const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt'); 
 require('dotenv').config();
 const app = express();
 const redis = require('redis');
-const verifyToken = require('./verifyToken');
 const cookieParser = require('cookie-parser');
 const paymentRouter = require('./routes/payments');
 const cartRouter = require('./routes/cart')
 const nodemailer = require("nodemailer")
+const adminAuthRouter = require("./routes/admin")
+const adminRouter = require("./routes/admin")
+const customerAuthRouter = require("./routes/auth/customerAuth")
 
 
 const client = redis.createClient({
@@ -40,6 +39,9 @@ app.use(bodyParser.raw());
 app.use(bodyParser.text());
 app.use("/api/cart", cartRouter)
 app.use('/api', paymentRouter)
+app.use("/api/admin", adminRouter)
+app.use("/api/auth/customer", customerAuthRouter)
+app.use("/api/auth/admin", adminAuthRouter)
 
 const dburl = process.env.dburl
 
@@ -95,12 +97,6 @@ connectToMongo(dburl)
   const targetURL = 'https://github.com/Afayomide';
 
 
-
-
-  
-  
-
-
 app.get('/', (req, res) => {
   res.send("welcome");
 
@@ -110,93 +106,6 @@ app.get("/api", (req,res) =>{
   res.redirect(targetURL);
 })
 
-
-app.get('/api/checkAuth', verifyToken, async (req, res) => {
- try {
-    const user = await Customer.findById(req.user.userId).select('-password'); // Exclude password field
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.json({ user });
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
-    res.json({error})
-    
-  }
-});
-
-
-app.post('/api/login', async (req, res) => {
-  const { email, password } = req.body;
-    
-  try {
-    const user = await Customer.findOne({ email });
-    console.log(user)
-
-    if (!user || !bcrypt.compareSync(password, user.password)) {
-      return res.json({ success: false, message: 'Invalid email or password' });
-    }
-
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '4d' });
-    res.cookie('token', token, {
-      httpOnly: true,   
-      secure: process.env.NODE_ENV === 'production',  
-      sameSite: process.env.SAME_SITE,  
-      maxAge: 4 * 24 * 60 * 60 * 1000 
-    });
-    console.log(res.cookie)
-    res.json({success: true, user});
-
-  } catch (error) {
-    console.error('Error:', error.message);
-    res.status(500).json({ success: false, message: 'Internal server error' });
-  }
-});
-
-
-
-app.post('/api/signup', async (req, res) => {
-  const { fullname, username, email, password } = req.body;
-  
-    if (!username || !password || !fullname || !email) {
-      return res.json({ success: false, message: 'All fields are required' }); // Use return to prevent further execution
-    }
-  
-    try {
-      const existingUser = await Customer.findOne({ username });
-  
-      if (existingUser) {
-        return res.json({ success: false, message: 'Username already exists' }); // Use return to prevent further execution
-      }
-  
-      const saltRounds = 10;
-      const hashedPassword = bcrypt.hashSync(password, saltRounds);
-      
-      const newUser = new User({
-        fullname,
-        username,
-        email,
-        password: hashedPassword,
-      });
-  
-      await newUser.save();
-      return res.json({ success: true });
-    } catch (error) {
-      console.error('Error:', error.message);
-      return res.json({ success: false, message: 'Internal server error' });
-    }
-});
-
-app.post('/api/logout', async (req, res) => {
-  res.cookie('token', '', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // Set to true in production for HTTPS
-    sameSite: process.env.SAME_SITE,
-    maxAge: 0 
-  });
-
-  return res.status(200).json({ success: true, message: 'Logged out successfully' });
-});
 
 app.post("/api/contactUs",async (req,res) => {
   const {email, fullName, message, subject} = req.body
@@ -229,9 +138,9 @@ app.post("/api/contactUs",async (req,res) => {
 
 
 
-    app.get("/api/fabrics",async(req,res) => {
+app.get("/api/fabrics",async(req,res) => {
   
-      try {
+    try {
         // const cachedFabrics = await client.get('fabrics');
 
         // if (cachedFabrics) {
@@ -352,7 +261,31 @@ app.get("/api/clothespreview", async (req, res) => {
             }
     })
 
+    app.get("/api/related-items/:fabricId", async(req,res)=>{
+      try {
+        const { fabricId } = req.params;
 
+        // Find the fabric by ID
+        const fabric = await Clothes.findById(fabricId);
+        if (!fabric) {
+            return res.status(404).json({ message: 'Fabric not found' });
+        }
+
+        // Find related items based on color, fabricType, or pattern
+        const relatedItems = await Clothes.find({
+            _id: { $ne: fabric._id },  // Exclude the current fabric
+            $or: [
+                { color: fabric.color },
+                { type: fabric.fabricType },
+                { pattern: fabric.pattern }
+            ]
+        }).limit(8);
+
+        res.status(200).json({success: true, relatedItems});
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred', error });
+    }
+    })
 
 
     // async function getAll () {

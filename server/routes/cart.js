@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router()
 require('dotenv').config();
-const verifyToken = require("../verifyToken")
+const {verifyToken} = require("./auth/verifyToken")
 const Customer =  require("../models/customer");
 const Clothes = require("../models/clothesSchema")
 
@@ -104,6 +104,7 @@ router.delete('/delete', verifyToken, async (req, res) => {
           res.status(500).json({ message: 'Internal server error' });
         }
       });
+
       
 
 module.exports = router;
