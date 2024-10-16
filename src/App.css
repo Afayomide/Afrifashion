@@ -2,9 +2,9 @@
 :root {
   /* --navcolor: rgb(41, 41, 92); */
   --navcolor: rgb(13, 13, 77);
-  --fadenavcolor: rgba(41, 41, 92,0.4);
+  --fadenavcolor: rgba(41, 41, 92, 0.4);
   --fontcolor: #fff;
-  --color-primary: rgba(0, 0, 128,0.3);
+  --color-primary: rgba(0, 0, 128, 0.3);
   --color-secondary: #ffcb03;
   --homebuttons: 2rem;
   --bgbuttons: rgb(29, 29, 97);
@@ -13,9 +13,8 @@
   --footerBackground: rgb(13, 13, 77);
   --success: green;
   --out-of-stock: rgba(188, 188, 223, 0.4);
-
 }
-.playmusic{
+.playmusic {
   position: fixed;
   bottom: 2vh;
   color: var(--color-secondary);
@@ -24,8 +23,8 @@
   z-index: 100;
 }
 
-
-html,body{
+html,
+body {
   position: relative;
   min-height: 100vh;
   margin: 0;
@@ -35,37 +34,35 @@ html,body{
   font-style: normal;
   font-weight: 500;
   background-color: var(--bgcolor);
-
 }
-.topmargin{
+.topmargin {
   padding-top: 10vh;
   padding-bottom: 20vh;
 }
 
 .fade-in {
-  opacity: 0; 
-  transition: opacity 0.5s ease-in-out; 
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .fade-in.visible {
-  opacity: 1; 
+  opacity: 1;
 }
-@media (max-width:900px) {
-  .topmargin{
+@media (max-width: 900px) {
+  .topmargin {
     padding-top: 10vh;
   }
 }
-.error{
+.error {
   color: red;
   margin-bottom: 1rem;
 }
-.orange{
-  color: orange
+.orange {
+  color: orange;
 }
 
-
-@media (max-width:500px) {
-  .topmargin{
+@media (max-width: 500px) {
+  .topmargin {
     padding-top: 7vh;
   }
 }

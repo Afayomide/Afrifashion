@@ -1,0 +1,171 @@
+import { Request, Response } from "express";
+import {
+  aboutItem,
+  allFabrics,
+  contactUs,
+  previewed,
+  relatedItems,
+  search,
+} from "./controllers";
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+require("dotenv").config();
+const app = express();
+const redis = require("redis");
+const cookieParser = require("cookie-parser");
+const paymentRouter = require("./routes/customer/payments");
+const cartRouter = require("./routes/customer/cart");
+const adminAuthRouter = require("./routes/admin/auth");
+const customerAuthRouter = require("./routes/customer/auth");
+
+const corsOptions = {
+  origin: [
+    "http://localhost:5000",
+    "https://coolafristyles.web.app",
+    "https://afrifashion.vercel.app",
+  ],
+  credentials: true,
+  // methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  // allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
+app.use(cookieParser());
+app.use(bodyParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.raw());
+app.use(bodyParser.text());
+app.use("/api/cart", cartRouter);
+app.use("/api", paymentRouter);
+app.use("/api/auth/customer", customerAuthRouter);
+app.use("/api/auth/admin", adminAuthRouter);
+
+const dburl = process.env.dburl || "";
+
+app.use(express.json());
+
+const client = redis.createClient({
+  password: process.env.REDIS_PASSWORD,
+  socket: {
+    host: process.env.REDIS_URL,
+    port: 10755,
+  },
+});
+
+(async () => {
+  try {
+    await client.connect();
+    console.log("Connected to Redis server successfully!");
+  } catch (error) {
+    console.log("Error connecting to Redis:", error);
+  }
+})();
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any; // or you can specify a type for `user`, e.g., `User`
+      file?: any;
+      admin?: any;
+      cookies: { [key: string]: string };
+    }
+  }
+}
+
+async function connectToMongo(dburl: string) {
+  const retryAttempts = 3;
+  const connectTimeoutMS = 20000;
+
+  for (let attempt = 1; attempt <= retryAttempts; attempt++) {
+    try {
+      await mongoose.connect(dburl, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        connectTimeoutMS,
+      });
+      console.log("Connected to Database");
+      return;
+    } catch (error: any) {
+      console.error(`Connection attempt ${attempt} failed:`, error.message);
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.min(attempt * 2000, 10000))
+      );
+    }
+  }
+
+  throw new Error("Failed to connect to MongoDB Atlas after retries");
+}
+
+connectToMongo(dburl)
+  .then(() => {
+    console.log("connection succesful");
+  })
+  .catch((error) => {
+    console.error("Fatal error:", error.message);
+  });
+
+const targetURL = "https://github.com/Afayomide";
+
+app.get("/", (req: Request, res: Response) => {
+  res.send("welcome");
+});
+
+app.get("/api", (req: Request, res: Response) => {
+  res.redirect(targetURL);
+});
+
+app.route("/api/contactUs").post(contactUs);
+
+app.route("/api/fabrics").get(allFabrics);
+app.route("/api/clothespreview").get(previewed);
+
+app.route("/api/search").post(search);
+
+app.route("/api/aboutItem/:fabricId").get(aboutItem);
+
+app.route("/api/related-items/:fabricId").get(relatedItems);
+
+// async function getAll () {
+//   const allFabs = await Clothes.find()
+
+//   for (var fab of allFabs) {
+//     if(fab.quantity === 0) {
+//       fab.quantity = 10; // Update quantity to 10
+//       await fab.save();  // Save the updated fabric
+//     }
+//   }
+// }
+// async function updateOutOfStockStatus() {
+//   const allFabs = await Clothes.find(); // Fetch all clothes
+
+//   for (var fab of allFabs) {
+//     if (fab.quantity === 0) {
+//       fab.outOfStock = true; // Mark as out of stock
+//     } else {
+//       fab.outOfStock = false; // In stock
+//     }
+//     await fab.save();  // Save the updated fabric
+//   }
+// }
+
+// updateOutOfStockStatus()
+
+// async function updateOutOfStockStatus() {
+//   const allFabs = await Clothes.find(); // Fetch all clothes
+
+//   for (var fab of allFabs) {
+//     fab.description = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"]
+//     await fab.save();  // Save the updated fabric
+//   }
+// }
+
+// updateOutOfStockStatus()
+
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

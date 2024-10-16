@@ -1,16 +1,13 @@
-const express = require("express");
-const router = express.Router()
 const axios = require('axios')
 require('dotenv').config();
-const {verifyToken} = require("./auth/verifyToken")
-const Customer =  require("../models/customer");
-const Clothes = require("../models/clothesSchema")
-const Payment = require("../models/payment")
+const Customer =  require("../../models/customer");
+const Clothes = require("../../models/clothesSchema")
+const Payment = require("../../models/payment")
 const nodemailer = require("nodemailer")
 const PAYSTACK_SECRET_KEY = process.env.paystack_secret_key;
+import { Request,Response } from "express";
 
-
-router.post('/pay', verifyToken, async (req, res) => {
+export const pay = async (req:Request, res:Response) => {
     const { email,fullName, amount,clothesData, redirectUrl, selectedCountry, selectedState, address } = req.body;
   
     if (!Array.isArray(clothesData)) {
@@ -49,18 +46,17 @@ router.post('/pay', verifyToken, async (req, res) => {
         });
         console.log(response)
   
-    } catch (error) {
+    } catch (error:any) {
         res.status(500).json({
             status: 'error',
             message: 'An error occurred while initializing payment',
             error: error.message
         });
     }
-  });
+  }
 
 
-  
-router.get('/verify/:reference', verifyToken, async (req, res) => {
+export const verifyPayment = async (req:Request, res:Response) => {
     const { reference } = req.params;
     const userId = req.user.userId;
           const user = await Customer.findById(userId)
@@ -78,7 +74,7 @@ router.get('/verify/:reference', verifyToken, async (req, res) => {
         console.log(clothesData)
 
         if (status && data.status === 'success') {
-            const fabrics = clothesData.map(data=> ({
+            const fabrics = clothesData.map((data:any)=> ({
                 fabricId: data.clothesId,
                 quantity: data.quantity,
                 price: data.amount 
@@ -157,7 +153,7 @@ router.get('/verify/:reference', verifyToken, async (req, res) => {
             });
         }
   
-    } catch (error) {
+    } catch (error:any) {
         console.log(error)
         res.status(500).json({
             status: 'error',
@@ -165,6 +161,4 @@ router.get('/verify/:reference', verifyToken, async (req, res) => {
             error: error.message
         });
     }
-  });
-
-  module.exports = router;
+  }

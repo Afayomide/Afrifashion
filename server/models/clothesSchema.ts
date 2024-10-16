@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose"
 const ClothesSchema = new mongoose.Schema(
     {
        name: {

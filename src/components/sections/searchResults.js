@@ -1,150 +1,181 @@
 import { ProductContext } from "../productContext";
-import { useContext,useEffect,useState } from 'react';
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios"
+import axios from "axios";
 import { useLocation } from "react-router-dom";
-import formbg from "../../assets/formbg.webp"
-import bgImage from "../../assets/fabricsbg.jpeg"
-
-
-
-
+import formbg from "../../assets/formbg.webp";
+import bgImage from "../../assets/fabricsbg.jpeg";
 
 function SearchResults() {
-    const [error, setError] = useState(null); // Track errors
-    const [isLoading, setIsLoading] = useState(true); 
-    const [searchResult, setSearchResult] = useState([])
-        const { shouldSearch,setShouldSearch, setShouldFetchCart} = useContext(ProductContext);
-        const location = useLocation(); // Get the current location object
-        const searchTerm = new URLSearchParams(location.search).get('q'); // Extract search term
-        const { cartNo, setCartNo,mainLoading, setMainLoading, setLocalCartLength, cartList, setCartList } = useContext(ProductContext);
+  const [error, setError] = useState(null); // Track errors
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchResult, setSearchResult] = useState([]);
+  const { shouldSearch, setShouldSearch, setShouldFetchCart } =
+    useContext(ProductContext);
+  const location = useLocation(); // Get the current location object
+  const searchTerm = new URLSearchParams(location.search).get("q"); // Extract search term
+  const {
+    cartNo,
+    setCartNo,
+    mainLoading,
+    setMainLoading,
+    setLocalCartLength,
+    cartList,
+    setCartList,
+  } = useContext(ProductContext);
 
-      
-      
-      useEffect(()=> {
-        async function handleSearch (e) {
-              try {
-                const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/search`, {
-                  searchTerm,
-                });
-          
-               setSearchResult(response.data.result);
-                console.log(response)
-                setShouldSearch(false)
-            }
-            catch (error) {
-              console.error('Error:', error.message);
-            }
-            finally{
-              setIsLoading(false)
-            }
+  useEffect(() => {
+    async function handleSearch(e) {
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/search`,
+          {
+            searchTerm,
           }
+        );
 
-          handleSearch()
-      }, [shouldSearch])  
-
-      const handleAddToCart = async (fabric) => {
-        const storedCartList = JSON.parse(localStorage.getItem('localCartList')) || [];
-          const fabricWithQuantity = { ...fabric, newquantity: 1 }; // Add newQuantity field with default value 1
-          storedCartList.push(fabricWithQuantity);
-          localStorage.setItem('localCartList', JSON.stringify(storedCartList));
-          console.log('Added fabric to local cart:', fabric);
-      
-          setLocalCartLength(storedCartList.length);
-          setCartNo(storedCartList.length)
-      
-          const token = localStorage.getItem("authToken");
-      
-          if (token){
-        try {
-       
-      
-          const token = localStorage.getItem("authToken");
-          if (token) {}
-          const headers = {
-            Authorization: `Bearer ${token}`,
-          };
-      
-          if (!token) {
-            throw new Error("User not authenticated");
-          }
-      
-          const productId = fabric._id;
-          const response = await axios.post(
-            `${process.env.REACT_APP_API_URL}/api/cart/add`,
-            { productId }, 
-            { headers }
-          );
-      
-          console.log('Added fabric to server cart:', response.data);
-        } catch (error) {
-          console.error('Error adding to cart:', error);
-          setError('An error occurred while adding to cart.');
-      
-          const updatedCartList = storedCartList.filter(item => item._id !== fabric._id);
-          localStorage.setItem('localCartList', JSON.stringify(updatedCartList));
-          console.log('Removed fabric from local cart:', fabric);
-        } finally {
-          setShouldFetchCart(true); 
-        }
+        setSearchResult(response.data.result);
+        console.log(response);
+        setShouldSearch(false);
+      } catch (error) {
+        console.error("Error:", error.message);
+      } finally {
+        setIsLoading(false);
       }
-      };
-      
+    }
 
-      return (
-        <div className="product-list-container">
-          {isLoading ? (
-            <div className="message">
-              <div className="loader-container">
-                <div className="spinner"></div>
-              </div>
-              <p className="loading-message">....searching</p>
-            </div>
-          ) : error ? (
-            <div className="message">
-              <img src={formbg} alt='login background' className='auth-bg-image' />
-              <img className="error-image" src={formbg} />
-              <p className="error-message">Error: {error}</p>
-            </div>
-          ) : (
-            searchResult.length > 0 ? (
-              <div>
-                <h3 className="search-header">Search Results</h3>
-                <div className="product-list-container">
-                  {searchResult.map((result, index) => (
-                    <div className={`product-list ${result.outOfStock ? 'out-of-stock' : ''}`} key={result._id}>
-                      <Link
-                        className={`product-link ${result.outOfStock ? 'disabled-link' : ''}`}
-                        to={!result.outOfStock ? `/${result._id}` : '#'}
-                      >
-                        <img src={result.image} alt={result.name} className={result.outOfStock ? 'out-of-stock-img' : ''} />
-                        <div className="product-link-texts">
-                          <p><span>Type:</span> {result.type}</p>
-                          <p><span>Qty:</span> {result.quantity} yards</p>
-                          <p><span>Price:</span> ${result.price} per yard</p>
-                        </div>
-                      </Link>
-      
-                      {(cartList.some((cartItem) => cartItem._id === result._id) || (JSON.parse(localStorage.getItem('localCartList')) || []).some((storedCartItem) => storedCartItem._id === result._id)) ? (
-                        <button className="cart-button already-in-cart">Added To Cart</button>
-                      ) : !result.outOfStock ? (
-                        <button className="cart-button add-to-cart" onClick={() => handleAddToCart(result)}>Add to Cart</button>
-                      ): (<button className="cart-button out-of-stock-button">Out of Stock</button>
-                    )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="message">
-                <p className="loading-message">We found nothing</p>
-              </div>
-            )
-          )}
+    handleSearch();
+  }, [shouldSearch]);
+
+  const handleAddToCart = async (fabric) => {
+    const storedCartList =
+      JSON.parse(localStorage.getItem("localCartList")) || [];
+    const fabricWithQuantity = { ...fabric, newquantity: 1 }; // Add newQuantity field with default value 1
+    storedCartList.push(fabricWithQuantity);
+    localStorage.setItem("localCartList", JSON.stringify(storedCartList));
+    console.log("Added fabric to local cart:", fabric);
+
+    setLocalCartLength(storedCartList.length);
+    setCartNo(storedCartList.length);
+
+    const token = localStorage.getItem("authToken");
+
+    if (token) {
+      try {
+        const token = localStorage.getItem("authToken");
+        if (token) {
+        }
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+
+        if (!token) {
+          throw new Error("User not authenticated");
+        }
+
+        const productId = fabric._id;
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/cart/add`,
+          { productId },
+          { headers }
+        );
+
+        console.log("Added fabric to server cart:", response.data);
+      } catch (error) {
+        console.error("Error adding to cart:", error);
+        setError("An error occurred while adding to cart.");
+
+        const updatedCartList = storedCartList.filter(
+          (item) => item._id !== fabric._id
+        );
+        localStorage.setItem("localCartList", JSON.stringify(updatedCartList));
+        console.log("Removed fabric from local cart:", fabric);
+      } finally {
+        setShouldFetchCart(true);
+      }
+    }
+  };
+
+  return (
+    <div className="product-list-container">
+      {isLoading ? (
+        <div className="message">
+          <div className="loader-container">
+            <div className="spinner"></div>
+          </div>
+          <p className="loading-message">....searching</p>
         </div>
-      );
-      
-  }
-  
-  export default SearchResults;
- 
+      ) : error ? (
+        <div className="message">
+          <img src={formbg} alt="login background" className="auth-bg-image" />
+          <img className="error-image" src={formbg} />
+          <p className="error-message">Error: {error}</p>
+        </div>
+      ) : searchResult.length > 0 ? (
+        <div>
+          <h3 className="search-header">Search Results</h3>
+          <div className="product-list-container">
+            {searchResult.map((result, index) => (
+              <div
+                className={`product-list ${
+                  result.outOfStock ? "out-of-stock" : ""
+                }`}
+                key={result._id}
+              >
+                <Link
+                  className={`product-link ${
+                    result.outOfStock ? "disabled-link" : ""
+                  }`}
+                  to={!result.outOfStock ? `/${result._id}` : "#"}
+                >
+                  <img
+                    src={result.image}
+                    alt={result.name}
+                    className={result.outOfStock ? "out-of-stock-img" : ""}
+                  />
+                  <div className="product-link-texts">
+                    <p>
+                      <span>Type:</span> {result.type}
+                    </p>
+                    <p>
+                      <span>Qty:</span> {result.quantity} yards
+                    </p>
+                    <p>
+                      <span>Price:</span> ${result.price} per yard
+                    </p>
+                  </div>
+                </Link>
+
+                {cartList.some((cartItem) => cartItem._id === result._id) ||
+                (JSON.parse(localStorage.getItem("localCartList")) || []).some(
+                  (storedCartItem) => storedCartItem._id === result._id
+                ) ? (
+                  <button className="cart-button already-in-cart">
+                    Added To Cart
+                  </button>
+                ) : !result.outOfStock ? (
+                  <button
+                    className="cart-button add-to-cart"
+                    onClick={() => handleAddToCart(result)}
+                  >
+                    Add to Cart
+                  </button>
+                ) : (
+                  <button className="cart-button out-of-stock-button">
+                    Out of Stock
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="message">
+          <p className="loading-message">We found nothing</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default SearchResults;

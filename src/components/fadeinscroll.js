@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 
 function FadeInOnScroll({ children }) {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(entries => {
+    const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && !isVisible) {
         setIsVisible(true);
       }
@@ -23,7 +23,7 @@ function FadeInOnScroll({ children }) {
   }, [ref, isVisible]);
 
   return (
-    <div ref={ref} className={isVisible ? 'fade-in' : ''}>
+    <div ref={ref} className={isVisible ? "fade-in" : ""}>
       {children}
     </div>
   );

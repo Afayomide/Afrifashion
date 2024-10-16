@@ -1,7 +1,3 @@
-export default function Upload () {
-    return (
-        <div>
-
-        </div>
-    )
+export default function Upload() {
+  return <div></div>;
 }
