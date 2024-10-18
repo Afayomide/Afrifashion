@@ -22,14 +22,14 @@ const adminAuthRouter = require("./routes/admin/auth");
 const customerAuthRouter = require("./routes/customer/auth");
 
 const corsOptions = {
-  origin: [
+  origin: [    
+    "https://afrifashion.vercel.app",
     "http://localhost:5000",
     "https://coolafristyles.web.app",
-    "https://afrifashion.vercel.app",
   ],
   credentials: true,
-  // methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  // allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 app.use(cors(corsOptions));
