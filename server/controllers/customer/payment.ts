@@ -1,3 +1,4 @@
+import {Request, Response} from "express";
 const axios = require('axios')
 require('dotenv').config();
 const Customer =  require("../../models/customer");
@@ -5,7 +6,6 @@ const Clothes = require("../../models/clothesSchema")
 const Payment = require("../../models/payment")
 const nodemailer = require("nodemailer")
 const PAYSTACK_SECRET_KEY = process.env.paystack_secret_key;
-import { Request,Response } from "express";
 
 export const pay = async (req:Request, res:Response) => {
     const { email,fullName, amount,clothesData, redirectUrl, selectedCountry, selectedState, address } = req.body;
