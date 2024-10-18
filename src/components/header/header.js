@@ -14,10 +14,14 @@ import { ProductContext } from '../productContext';
 import { BsSearch } from "react-icons/bs";
 import { GiCrown } from "react-icons/gi";
 import { GrCircleQuestion } from "react-icons/gr";
+import { useLocation } from 'react-router-dom';
+
 
 
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation()
+  const [userLocation, setUserLocation] = useState({})
   const [displayNav, SetDisplayNav] = useState(false)
   const {authenticated, setAuthenticated} = useContext(ProductContext)
   const [slideout, setSlideOut] = useState("")
@@ -44,6 +48,62 @@ function Header() {
   
     return true;
   }
+
+useEffect( () => {
+  const call  = async () => {
+    try {
+      const localUserLocation = JSON.parse(localStorage.getItem("localUserLocation"));
+    
+      if (!localUserLocation || (localUserLocation && Object.keys(localUserLocation).length === 0)) {
+        const response = await fetch('https://geolocation-db.com/json/');
+        const data = await response.json();
+        console.log("Fetching API");
+    
+        setUserLocation({
+          ipaddress: data.IPv4,
+          country: data.country_name,
+        });
+    
+        localStorage.setItem("localUserLocation", JSON.stringify({
+          ipaddress: data.IPv4,
+          country: data.country_name,
+        }));
+    
+        await axios.post(`${apiUrl}/api/visitor`, {
+          route: location.pathname,
+          userLocation: {
+            ipaddress: data.IPv4, 
+            country: data.country_name,
+          },
+        });
+    
+        console.log("User Location Sent to Backend:", {
+          ipaddress: data.IPv4,
+          country: data.country_name,
+        });
+    
+      } else {
+        setUserLocation(localUserLocation);
+    
+        await axios.post(`${apiUrl}/api/visitor`, {
+          route: location.pathname,
+          userLocation: {
+            ipaddress: localUserLocation.ipaddress,
+            country: localUserLocation.country,
+          },
+        });
+    
+        console.log("User Location Sent to Backend:", localUserLocation);
+      }
+      
+    }
+     catch (error) {
+    console.error(error)
+  }
+  }
+  call()
+  
+},[location.pathname])
 
 
   useEffect(() => {

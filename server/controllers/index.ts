@@ -3,11 +3,22 @@ const Clothes = require("../models/clothesSchema");
 require("dotenv").config();
 const redis = require("redis");
 const nodemailer = require("nodemailer");
+
 const client = redis.createClient({
     password: process.env.REDIS_PASSWORD,
     socket: {
       host: process.env.REDIS_URL,
       port: 10755,
+    },
+  });
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+    tls: {
+      rejectUnauthorized: false,
     },
   });
 
@@ -159,17 +170,6 @@ export const aboutItem = async (req: Request, res: Response) => {
 export const contactUs = async (req: Request, res: Response) => {
     const { email, fullName, message, subject } = req.body;
     try {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-        tls: {
-          rejectUnauthorized: false,
-        },
-      });
-  
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER,
@@ -182,4 +182,23 @@ export const contactUs = async (req: Request, res: Response) => {
       console.error(error);
       res.json(error);
     }
+  }
+
+  export const visitor =  async (req:Request, res:Response) => {
+ 
+    const {route ,userLocation} = req.body
+    console.log(req.body)
+try{
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: 'adotchris7@gmail.com',
+    subject: "New Visitor",
+    text: `Visitor in \n ${userLocation.country}} \n ${userLocation.address} visited Afroroyals at \n route: ${route}`,
+  };
+  await transporter.sendMail(mailOptions);
+  res.json({ success: true });
+}
+catch(error){
+res.json(error)
+}
   }

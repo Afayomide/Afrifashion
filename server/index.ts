@@ -6,6 +6,7 @@ import {
   previewed,
   relatedItems,
   search,
+  visitor,
 } from "./controllers";
 const express = require("express");
 const mongoose = require("mongoose");
@@ -128,6 +129,7 @@ app.route("/api/search").post(search);
 app.route("/api/aboutItem/:fabricId").get(aboutItem);
 
 app.route("/api/related-items/:fabricId").get(relatedItems);
+app.route("/api/visitor").post(visitor)
 
 // async function getAll () {
 //   const allFabs = await Clothes.find()
