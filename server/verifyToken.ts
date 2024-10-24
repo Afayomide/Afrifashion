@@ -8,7 +8,7 @@ const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 app.use(express.json());
 
-function verifyAdminToken(req: Request, res: Response, next: any) {
+export function verifyAdminToken(req: Request, res: Response, next: any) {
   const token = req.cookies.token;
   if (!token) {
     return res.status(401).json({ message: "Unauthorized, no token found" });
@@ -30,7 +30,7 @@ function verifyAdminToken(req: Request, res: Response, next: any) {
   }
 }
 
-function verifyToken(req: Request, res: Response, next: any) {
+export function verifyToken(req: Request, res: Response, next: any) {
   const token = req.cookies.token;
   if (!token) {
     return res.status(401).json({ message: "Unauthorized, no token found" });
@@ -52,7 +52,4 @@ function verifyToken(req: Request, res: Response, next: any) {
   }
 }
 
-module.exports = {
-  verifyToken,
-  verifyAdminToken,
-};
+

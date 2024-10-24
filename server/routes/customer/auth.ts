@@ -1,4 +1,5 @@
 import { checkAuth, login, logOut, signUp } from "../../controllers/customer/auth";
+import {verifyToken} from "../../verifyToken"
 
 const express = require("express");
 const router = express.Router()
@@ -7,7 +8,7 @@ const router = express.Router()
 
 
 
-router.route('/checkAuth').get(checkAuth);
+router.route('/checkAuth').get(verifyToken, checkAuth);
    
 router.route('/login').post(login);
   

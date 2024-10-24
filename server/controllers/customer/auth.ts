@@ -20,6 +20,7 @@ export const checkAuth = async (req:Request, res:Response) => {
        }
        res.json({ user });
      } catch (error) {
+      console.error(error)
        res.status(500).json({ message: 'Internal server error' });
      }
    };
@@ -39,7 +40,6 @@ export const login =  async (req:Request, res:Response) => {
       res.cookie('token', token, {
         httpOnly: true,   
         secure: process.env.NODE_ENV === 'production',  
-        // remove in test
         sameSite: sameSiteValue,  
         maxAge: 4 * 24 * 60 * 60 * 1000 
       });
