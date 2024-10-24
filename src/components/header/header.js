@@ -238,7 +238,7 @@ useEffect(() => {
     
     const handleLogout = async () => {
       toast.promise(
-        axios.post(`${apiUrl}/api/logout`),
+        axios.post(`${apiUrl}/api/auth/customer/logout`),
         {
           loading: 'Logging out...',
           success: 'Bye for now!',
