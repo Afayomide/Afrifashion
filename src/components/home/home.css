@@ -59,9 +59,17 @@
 .home-fabric-section {
   margin: 2rem 0;
 }
-.home-product-link img {
+.home-product-link img, .home-product-link .preloader-image-container {
   width: 15rem;
   border-radius: 0.5rem;
+}
+.preloader-image-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.home-product-link .preloader-image{
+width: 40%;
 }
 .home-section-products {
   display: flex;
@@ -129,7 +137,7 @@
     margin-left: 0.1rem;
     margin-right: 0.1rem;
   }
-  .home-product-list img {
+  .home-product-list img, .home-product-list .preloader-image-container {
     width: 10rem;
     /* height: 10rem; */
   }
@@ -138,7 +146,7 @@
   }
 }
 @media (max-width: 400px) {
-  .home-product-list img {
+  .home-product-list img, .home-product-list .preloader-image-container {
     width: 8rem;
     /* height: 8rem; */
   }

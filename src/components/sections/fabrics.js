@@ -5,6 +5,7 @@ import { ProductContext } from "../productContext";
 import { Link } from "react-router-dom";
 import "./sections.css";
 import formbg from "../../assets/formbg.webp";
+import Preloader from "../../preloader";
 
 const Fabrics = memo(() => {
   const [fabricsList, setFabricsList] = useState([]);
@@ -128,6 +129,66 @@ const Fabrics = memo(() => {
     }
   }, []);
 
+  function Card(props) {
+    const [isImageLoaded, setIsImageLoaded] = useState(false);
+ console.log(props)
+    const handleImageLoad = () => {
+      setIsImageLoaded(true);
+    };
+    return (
+      <div
+        className={`product-list ${props.outOfStock ? "out-of-stock" : ""}`}
+        key={props._id}
+      >
+        <Link
+          onClick={() => !props.outOfStock && localClickedList(props)}
+          className={`product-link ${props.outOfStock ? "disabled-link" : ""}`}
+          to={!props.outOfStock ? `/${props._id}` : "#"}
+        >
+          {!isImageLoaded && <Preloader />}
+          <img
+            src={props.image}
+            alt={props.name}
+            className={props.outOfStock ? "out-of-stock-img" : ""}
+            onLoad={handleImageLoad}
+          />
+          <div className="product-link-texts">
+            <p>{props.type}</p>
+            <p>
+              <span>${props.price}</span> per yard
+            </p>
+            <p>
+              <span>{props.quantity} yards</span> left
+            </p>
+          </div>
+        </Link>
+
+        {cartList.some((cartItem) => cartItem._id === props._id) ||
+        (JSON.parse(localStorage.getItem("localCartList")) || []).some(
+          (storedCartItem) => storedCartItem._id === props._id
+        ) ? (
+          <button className="cart-button already-in-cart">
+            <Link className="already-link" to={`/${props._id}`}>
+              {" "}
+              Added To Cart
+            </Link>
+          </button>
+        ) : !props.outOfStock ? (
+          <button
+            className="cart-button add-to-cart"
+            onClick={() => handleAddToCart(props)}
+          >
+            Add to Cart
+          </button>
+        ) : (
+          <button className="cart-button out-of-stock-button">
+            Out Of Stock
+          </button>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="product-list-container">
       {isLoading ? (
@@ -144,61 +205,9 @@ const Fabrics = memo(() => {
         </div>
       ) : fabricsList.length > 0 ? (
         <div className="product-list-container">
-          {fabricsList.map((fabric, index) => (
-            <div
-              className={`product-list ${
-                fabric.outOfStock ? "out-of-stock" : ""
-              }`}
-              key={fabric._id}
-            >
-              <Link
-                onClick={() => !fabric.outOfStock && localClickedList(fabric)}
-                className={`product-link ${
-                  fabric.outOfStock ? "disabled-link" : ""
-                }`}
-                to={!fabric.outOfStock ? `/${fabric._id}` : "#"}
-              >
-                <img
-                  src={fabric.image}
-                  alt={fabric.name}
-                  className={fabric.outOfStock ? "out-of-stock-img" : ""}
-                />
-                <div className="product-link-texts">
-                  <p>{fabric.type}</p>
-                  <p>
-                    <span>${fabric.price}</span> per yard
-                  </p>
-                  <p>
-                    <span>{fabric.quantity} yards</span> left
-                  </p>
-                </div>
-              </Link>
-
-              {cartList.some((cartItem) => cartItem._id === fabric._id) ||
-              (JSON.parse(localStorage.getItem("localCartList")) || []).some(
-                (storedCartItem) => storedCartItem._id === fabric._id
-              ) ? (
-                <button className="cart-button already-in-cart">
-                  <Link className="already-link" to={`/${fabric._id}`}>
-                    {" "}
-                    Added To Cart
-                  </Link>
-                </button>
-              ) : !fabric.outOfStock ? (
-                <button
-                  className="cart-button add-to-cart"
-                  onClick={() => handleAddToCart(fabric)}
-                >
-                  Add to Cart
-                </button>
-              ) : (
-                <button className="cart-button out-of-stock-button">
-                  Out Of Stock
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
+          {fabricsList.map((item)=> {
+         return <Card {...item}/>
+        })}</div>
       ) : (
         <div className="message">
           <p className="loading-message">No fabric found</p>

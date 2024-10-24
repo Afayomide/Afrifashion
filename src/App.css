@@ -29,10 +29,10 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  font-family: "EB Garamond", serif;
+  font-family: "EB Garamond";
   font-optical-sizing: auto;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   background-color: var(--bgcolor);
 }
 .topmargin {

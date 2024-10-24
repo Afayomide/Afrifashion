@@ -31,6 +31,9 @@ const ClothesSchema = new mongoose.Schema(
        description:{
         type: [String]
        },
+       instructions:{
+        type: [String]
+       },
        reviews: {
         type: [String]
        },

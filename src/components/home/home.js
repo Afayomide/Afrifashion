@@ -5,6 +5,7 @@ import "./home.css";
 import asooke from "../../assets/asooke.jpg";
 import { ProductContext } from "../productContext";
 import logo from "../../assets/logo.png";
+import Preloader from "../../preloader";
 
 function Home() {
   const navigate = useNavigate();
@@ -122,6 +123,12 @@ function Home() {
   }
 
   function Card(props) {
+    const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+    const handleImageLoad = () => {
+      setIsImageLoaded(true);
+    };
+
     return (
       <div
         ref={(el) => (itemRefs.current[props.index] = el)}
@@ -137,10 +144,15 @@ function Home() {
           }`}
           to={!props.outOfStock ? `/${props._id}` : "#"}
         >
+          {!isImageLoaded && <Preloader />}
+
           <img
             src={props.image}
             alt={props.name}
-            className={props.outOfStock ? "out-of-stock-img" : ""}
+            className={`${props.outOfStock ? "out-of-stock-img" : ""} ${
+              !isImageLoaded ? "hidden" : ""
+            }`}
+            onLoad={handleImageLoad}
           />
           <div className="home-product-link-texts">
             <p>{props.type}</p>
