@@ -3,13 +3,11 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import "./itemsInfo.scss";
 import { ProductContext } from "../productContext";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css/bundle';
-import { Navigation, A11y, Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css/bundle";
+import { Navigation, A11y, Pagination } from "swiper/modules";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import { MdOutlineNavigateBefore } from "react-icons/md";
-
-
 
 export default function ItemsInfo() {
   const [item, setItem] = useState([]);
@@ -35,10 +33,9 @@ export default function ItemsInfo() {
 
   useEffect(() => {
     async function fetchData() {
-
-      console.log(id)
+      console.log(id);
       const ItemInfo = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/aboutItem/${id}`,
+        `${process.env.REACT_APP_API_URL}/api/aboutItem/${id}`
       );
       const relatedResponse = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/related-Items/${id}`
@@ -272,11 +269,13 @@ export default function ItemsInfo() {
           <p className="type">{item.type}</p>
           <p className="price">${item.price}</p>
           <p className="material">
-            <span>Material</span><br/> 
+            <span>Material</span>
+            <br />
             {item.material}
           </p>
           <div>
-            <span>Quantity</span><br/> 
+            <span>Quantity</span>
+            <br />
             <select
               className="quantity-input"
               onChange={(e) =>
@@ -302,14 +301,15 @@ export default function ItemsInfo() {
             </select>
           </div>
           <p>
-            <span>Total Price</span> <br/> $
+            <span>Total Price</span> <br /> $
             {clickedList.find((clickedItem) => clickedItem._id === id)
               ?.newprice ||
               initialItems.find((item) => item._id == id)?.price ||
               item.price}
           </p>
           <p className="description">
-            <span>Description</span><br/> {item.description}
+            <span>Description</span>
+            <br /> {item.description}
           </p>
           <p>
             You want to make a special order?{" "}
@@ -318,7 +318,7 @@ export default function ItemsInfo() {
           </p>
           <p>
             <span>Instructions</span>
-            <br/>
+            <br />
             {item.instructions}
           </p>
         </div>
@@ -326,73 +326,76 @@ export default function ItemsInfo() {
       <div className="related-items">
         <h4>more like this..</h4>
         <div className="related-container">
-        <Swiper
-      modules={[Navigation,Pagination, A11y]}
-      navigation={{
-        nextEl: ".swiper-button-next-custom",
-        prevEl: ".swiper-button-prev-custom",
-      }}
-      spaceBetween={5}
-      slidesPerView={4}
-      loop={true}
-      breakpoints={{
-        // Breakpoints for responsive design
-        320: {
-          slidesPerView: 2, // When window width is >= 320px
-          spaceBetween: 10,
-        },
-        480: {
-          slidesPerView: 2, // When window width is >= 480px
-          spaceBetween: 10,
-        },
-        768: {
-          slidesPerView: 3, // When window width is >= 768px
-          spaceBetween: 15,
-        },
-        1024: {
-          slidesPerView: 4, // When window width is >= 1024px
-          spaceBetween: 20,
-        },
-      }}
-      // pagination={{ clickable: true }}
-      // scrollbar={{ draggable: true }}
-    >
-          {relatedItems?.map((item, index) => (
-          <SwiperSlide>
-            <div
-              className={`related-product-list ${
-                item.outOfStock ? "out-of-stock" : ""
-              }`}
-              key={item._id}
-            >
-              <Link
-                onClick={() => !item.outOfStock && localClickedList(item)}
-                className={`related-product-link ${
-                  item.outOfStock ? "disabled-link" : ""
-                }`}
-                to={!item.outOfStock ? `/${item._id}` : "#"}
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className={item.outOfStock ? "out-of-stock-img" : ""}
-                />
-                <div className="related-product-link-texts">
-                  <p>{item.type}</p>
-                  <p>
-                    $<span>{item.price}</span> per yard
-                  </p>
-                  <p>
-                    <span>{item.quantity}</span> yards left
-                  </p>
+          <Swiper
+            modules={[Navigation, Pagination, A11y]}
+            navigation={{
+              nextEl: ".swiper-button-next-custom",
+              prevEl: ".swiper-button-prev-custom",
+            }}
+            spaceBetween={5}
+            slidesPerView={4}
+            loop={true}
+            breakpoints={{
+              320: {
+                slidesPerView: 2,
+                spaceBetween: 10,
+              },
+              480: {
+                slidesPerView: 2,
+                spaceBetween: 10,
+              },
+              768: {
+                slidesPerView: 3,
+                spaceBetween: 15,
+              },
+              1024: {
+                slidesPerView: 4,
+                spaceBetween: 20,
+              },
+            }}
+            // pagination={{ clickable: true }}
+            // scrollbar={{ draggable: true }}
+          >
+            {relatedItems?.map((item, index) => (
+              <SwiperSlide>
+                <div
+                  className={`related-product-list ${
+                    item.outOfStock ? "out-of-stock" : ""
+                  }`}
+                  key={item._id}
+                >
+                  <Link
+                    onClick={() => !item.outOfStock && localClickedList(item)}
+                    className={`related-product-link ${
+                      item.outOfStock ? "disabled-link" : ""
+                    }`}
+                    to={!item.outOfStock ? `/${item._id}` : "#"}
+                  >
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className={item.outOfStock ? "out-of-stock-img" : ""}
+                    />
+                    <div className="related-product-link-texts">
+                      <p>{item.type}</p>
+                      <p>
+                        $<span>{item.price}</span> per yard
+                      </p>
+                      <p>
+                        <span>{item.quantity}</span> yards left
+                      </p>
+                    </div>
+                  </Link>
                 </div>
-              </Link>
+              </SwiperSlide>
+            ))}
+            <div className="swiper-button-prev-custom">
+              <MdOutlineNavigateBefore />
             </div>
-            </SwiperSlide>
-          ))}
-                 <div className="swiper-button-prev-custom"><MdOutlineNavigateBefore /></div>
-                 <div className="swiper-button-next-custom"><MdOutlineNavigateNext />                 </div>
-              </Swiper>
+            <div className="swiper-button-next-custom">
+              <MdOutlineNavigateNext />{" "}
+            </div>
+          </Swiper>
         </div>
       </div>
     </div>

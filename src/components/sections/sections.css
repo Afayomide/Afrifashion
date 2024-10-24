@@ -23,10 +23,33 @@
   z-index: -1;
 }
 .add-to-cart {
+  position: relative;
   background-color: var(--bgbuttons);
   color: #fff;
   border: none;
+  transition: background-color 0.7s ease, color 0.4s ease; /* Transition for text color */
+  z-index: 1;
+  overflow: hidden;
 }
+.add-to-cart::before{
+  content: "";
+  position: absolute;
+  background-color: var(--out-of-stock);
+  top: 50%; /* Start at the middle vertically */
+  left: 50%; /* Start at the middle horizontally */
+  width: 0%; /* Start with zero width */
+  height: 300%; /* Make height bigger to ensure the button is fully covered */
+  transform: translate(-50%, -50%); /* Center the starting point */
+  z-index: -1;
+  transition: width 0.7s ease, height 0.7s ease; /* Smooth left transition */
+
+}
+.add-to-cart:hover::before {
+  width: 300%; /* Expand width to cover the entire button */
+  height: 300%; /* Ensure height remains big to cover the button */}
+
+
+
 .search-header {
   text-align: center;
   margin: 0;
@@ -168,6 +191,12 @@
   border: none;
   cursor: auto;
 }
+
+
+
+
+
+
 @keyframes spin-anim {
   0% {
     transform: rotate(0deg);

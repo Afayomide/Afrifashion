@@ -25,15 +25,36 @@
   text-decoration: none;
   color: var(--buttonscolor);
   background-color: var(--navcolor);
+  position: relative;
   padding: 1rem 1.5rem;
   border-radius: 0.5rem;
   width: 8rem;
   margin-top: 2rem;
   text-align: center;
+  transition: background-color 0.7s ease, color 0.4s ease; /* Transition for text color */
+  z-index: 1;
+  overflow: hidden;
 }
-.home-link:hover {
-  background-color: var(--buttonscolor);
-  color: var(--bgbuttons);
+
+.home-link::before{
+  content: "";
+  position: absolute;
+  background-color: white;  
+  top: 50%; /* Start at the middle vertically */
+  left: 50%; /* Start at the middle horizontally */
+  width: 0%; /* Start with zero width */
+  height: 300%; /* Make height bigger to ensure the button is fully covered */
+  transform: translate(-50%, -50%); /* Center the starting point */
+  z-index: -1;
+  transition: width 0.7s ease, height 0.7s ease;
+}
+
+.home-link:hover::before {
+  width: 300%; /* Expand width to cover the entire button */
+  height: 300%;
+}
+.home-link:hover{
+    color: var(--bgbuttons);
 }
 .home-section-link {
   text-decoration: none;
