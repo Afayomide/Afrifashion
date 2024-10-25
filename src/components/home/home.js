@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useRef } from "react";
+import { useEffect, useState, useContext, useRef, useMemo } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "./home.css";
@@ -46,6 +46,27 @@ function Home() {
     fetchData();
   }, []);
 
+
+  const renderedAnkara = useMemo(() => (
+    ankara.map((item, index) => <Card key={item._id} {...item} index={index} />)
+  ), [ankara]);
+
+  const renderedAsoOke = useMemo(() => (
+    asoOke.map((item, index) => <Card key={item._id} {...item} index={index} />)
+  ), [asoOke]);
+
+  const renderedDansiki = useMemo(() => (
+    dansiki.map((item, index) => <Card key={item._id} {...item} index={index} />)
+  ), [dansiki]);
+
+  const renderedGele = useMemo(() => (
+    gele.map((item, index) => <Card key={item._id} {...item} index={index} />)
+  ), [gele]);
+
+  const renderedLace = useMemo(() => (
+    lace.map((item, index) => <Card key={item._id} {...item} index={index} />)
+  ), [lace]);
+
  
 
 
@@ -67,9 +88,7 @@ function Home() {
             </h3>
             {!isLoading ? (
               <div className="home-product-list-container">
-                {ankara.map((item, index) => (
-                  <Card key={item._id} {...item} index={index} />
-                ))}
+               {renderedAnkara}
               </div>
             ) : (
               <div className="home-product-list-container">
@@ -94,9 +113,7 @@ function Home() {
             </h3>
             {!isLoading ? (
               <div className="home-product-list-container">
-                {asoOke.map((item, index) => (
-                  <Card key={item._id} {...item} index={index} />
-                ))}
+              {renderedAsoOke}
               </div>
             ) : (
               <div className="home-product-list-container">
@@ -121,9 +138,7 @@ function Home() {
             </h3>
             {!isLoading ? (
               <div className="home-product-list-container">
-                {dansiki.map((item, index) => (
-                  <Card key={item._id} {...item} index={index} />
-                ))}
+              {renderedDansiki}
               </div>
             ) : (
               <div className="home-product-list-container">
@@ -148,9 +163,7 @@ function Home() {
             </h3>
             {!isLoading ? (
               <div className="home-product-list-container">
-                {gele.map((item, index) => (
-                  <Card key={item._id} {...item} index={index} />
-                ))}
+               {renderedGele}
               </div>
             ) : (
               <div className="home-product-list-container">
@@ -175,9 +188,7 @@ function Home() {
             </h3>
             {!isLoading ? (
               <div className="home-product-list-container">
-                {lace.map((item, index) => (
-                  <Card key={item._id} {...item} index={index} />
-                ))}
+                {renderedLace}
               </div>
             ) : (
               <div className="home-product-list-container">

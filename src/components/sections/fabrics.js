@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState, memo,useMemo } from "react";
 import axios from "axios";
 import { useContext } from "react";
 import { ProductContext } from "../productContext";
@@ -63,6 +63,11 @@ const Fabrics = memo(() => {
     }
   }, []);
 
+
+  const renderedCards = useMemo(() => {
+    return fabricsList.map((item) => <Card key={item._id} {...item} />);
+  }, [fabricsList]); // Only recompute when fabricsList changes
+
   return (
     <div className="product-list-container">
       {isLoading ? (
@@ -79,9 +84,7 @@ const Fabrics = memo(() => {
         </div>
       ) : fabricsList.length > 0 ? (
         <div className="product-list-container">
-          {fabricsList.map((item) => {
-            return <Card {...item} />;
-          })}
+      {renderedCards}
         </div>
       ) : (
         <div className="message">

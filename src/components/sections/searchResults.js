@@ -1,5 +1,5 @@
 import { ProductContext } from "../productContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState,useMemo } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import formbg from "../../assets/formbg.webp";
@@ -38,6 +38,10 @@ function SearchResults() {
     handleSearch();
   }, [shouldSearch]);
 
+  const renderedCards = useMemo(() => {
+    return searchResult.map((item) => <Card key={item._id} {...item} />);
+  }, [searchResult]); // Only recompute when fabricsList changes
+
   return (
     <div className="product-list-container">
       {isLoading ? (
@@ -57,9 +61,7 @@ function SearchResults() {
         <div>
           <h3 className="search-header">Search Results</h3>
           <div className="product-list-container">
-            {searchResult.map((result, index) => {
-              return <Card {...result} />;
-            })}
+           {renderedCards}
           </div>
         </div>
       ) : (

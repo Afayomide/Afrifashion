@@ -76,12 +76,6 @@ useEffect( () => {
             country: data.country_name,
           },
         });
-    
-        console.log("User Location Sent to Backend:", {
-          ipaddress: data.IPv4,
-          country: data.country_name,
-        });
-    
       } else {
         setUserLocation(localUserLocation);
     

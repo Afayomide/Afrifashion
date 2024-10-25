@@ -34,7 +34,7 @@
 .add-to-cart::before{
   content: "";
   position: absolute;
-  background-color: var(--out-of-stock);
+  background-color: white;
   top: 50%; /* Start at the middle vertically */
   left: 50%; /* Start at the middle horizontally */
   width: 0%; /* Start with zero width */
@@ -47,6 +47,10 @@
 .add-to-cart:hover::before {
   width: 300%; /* Expand width to cover the entire button */
   height: 300%; /* Ensure height remains big to cover the button */}
+
+.add-to-cart:hover{
+  color: var(--bgbuttons)
+}
 
 
 
