@@ -135,7 +135,7 @@ nav .bold-link {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(13, 13, 77,0.6); 
+  background-color: var(--header-footer-bg); 
   z-index: -1; 
 }
 
@@ -329,4 +329,5 @@ nav .bold-link {
   .small-screen-nav{
     padding: 0rem 1rem;
   }
+
 }

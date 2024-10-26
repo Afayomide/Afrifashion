@@ -103,11 +103,14 @@
     text-align: center;
     justify-content: center;
     align-items: center;
-    color: var(--color-secondary)
+    color: var(--color-navbar)
 }
 .no-cart p{
     font-size: 2vw;
     font-weight: 700;
+}
+.no-cart p a{
+    color: var(--color-secondary);
 }
 .empty-cart{
     text-align: center;
@@ -145,4 +148,8 @@
         width: 10rem;
         height: 15vh;
     }
+    .no-cart p {
+        font-size: 1.5rem;
+      }
+   
 }
