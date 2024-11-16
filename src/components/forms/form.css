@@ -31,6 +31,9 @@
     position: relative;
     z-index: 1;
 }
+.red{
+    color: red
+}
  
 .eye{
  color: var(--color-primary);
