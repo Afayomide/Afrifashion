@@ -63,6 +63,7 @@
   text-decoration: none;
   width: auto;
 }
+
 .logo {
   width: 2rem;
   border-radius: 5rem;
@@ -131,6 +132,7 @@ width: 40%;
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
+  margin-top: 2rem;
 }
 @media (max-width: 1200px) {
   .home-product-list {

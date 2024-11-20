@@ -30,7 +30,6 @@ export const login =  async (req:Request, res:Response) => {
       
     try {
       const user = await Customer.findOne({ email });
-      console.log(user)
   
       if (!user || !bcrypt.compareSync(password, user.password)) {
         return res.json({ success: false, message: 'Invalid email or password' });
@@ -43,7 +42,6 @@ export const login =  async (req:Request, res:Response) => {
         sameSite: sameSiteValue,  
         maxAge: 4 * 24 * 60 * 60 * 1000 
       });
-      console.log(res.cookie)
       res.json({success: true, user});
   
     } catch (error:any) {

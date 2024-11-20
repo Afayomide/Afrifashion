@@ -155,7 +155,7 @@ function Home() {
             </p>
           </div>
 
-          <div className="home-fabric-section">
+          {/* <div className="home-fabric-section">
             <h3>
               <Link className="home-section-link" to="/search?q=aso-oke">
                 Gele
@@ -178,7 +178,7 @@ function Home() {
                 gele.....
               </Link>
             </p>
-          </div>
+          </div> */}
 
           <div className="home-fabric-section">
             <h3>
