@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useContext, useRef, useMemo } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -5,6 +6,7 @@ import "./home.css";
 import asooke from "../../assets/asooke.jpg";
 import logo from "../../assets/logo.png";
 import Card from "../cards/homeCard";
+import hero from "../../assets/hero.png"
 
 function Home() {
   const [lace, setLace] = useState([]);
@@ -75,6 +77,9 @@ function Home() {
       <h3 className="welcome">
         Welcome To AfroRoyals <img src={logo} className="logo" />
       </h3>
+      <div className="hero-image">
+        <img src={hero}/>
+      </div>
       <div className="home-links">
         <Link to="/fabrics" className="home-link">
           View All Fabrics
@@ -98,10 +103,10 @@ function Home() {
               </div>
             )}
             <p>
-              <Link to="search?q=ankara" className="home-see-all-link">
+              {/* <Link to="search?q=ankara" className="home-see-all-link">
                 {!isLoading ? <span>see all</span> : <span>fetching</span>}{" "}
                 Ankara.....
-              </Link>
+              </Link> */}
             </p>
           </div>
 
@@ -123,10 +128,10 @@ function Home() {
               </div>
             )}
             <p>
-              <Link to="search?q=aso-oke" className="home-see-all-link">
+              {/* <Link to="search?q=aso-oke" className="home-see-all-link">
                 {!isLoading ? <span>see all</span> : <span>fetching</span>} Aso
                 Oke.....
-              </Link>
+              </Link> */}
             </p>
           </div>
 
@@ -148,10 +153,10 @@ function Home() {
               </div>
             )}
             <p>
-              <Link to="search?q=dansiki" className="home-see-all-link">
+              {/* <Link to="search?q=dansiki" className="home-see-all-link">
                 {!isLoading ? <span>see all</span> : <span>fetching</span>}{" "}
                 dansiki.....
-              </Link>
+              </Link> */}
             </p>
           </div>
 
@@ -198,10 +203,10 @@ function Home() {
               </div>
             )}
             <p>
-              <Link to="search?q=lace" className="home-see-all-link">
+              {/* <Link to="search?q=lace" className="home-see-all-link">
                 {!isLoading ? <span>see all</span> : <span>fetching</span>}{" "}
                 lace.....
-              </Link>
+              </Link> */}
             </p>
           </div>
         </div>

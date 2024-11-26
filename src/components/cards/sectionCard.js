@@ -88,12 +88,13 @@ export function Card(props) {
       >
         {!isImageLoaded && <Preloader />}
         <div className={`image-wrapper ${props.outOfStock ? "out-of-stock" : ""}`}>
+        <div className="section-fab-image-container">
           <img
             src={props.image}
             alt={props.name}
             className={props.outOfStock ? "out-of-stock-img" : ""}
             onLoad={handleImageLoad}
-          />
+          /></div>
           {props.outOfStock && (
             <div className="out-of-stock-overlay">Out Of Stock</div>
           )}

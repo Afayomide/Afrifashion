@@ -133,6 +133,32 @@ app.route("/api/aboutItem/:fabricId").get(aboutItem);
 app.route("/api/related-items/:fabricId").get(relatedItems);
 app.route("/api/visitor").post(visitor)
 
+app.post("/api/changeFab", async (req:Request,res:Response) =>{
+ var clothes = await Clothes.find()
+ const imageUrls = [
+  "https://www.dropbox.com/scl/fi/kqwc9t4mq1oicmpjwlyle/VL-8070_large.png?rlkey=1xogn72vn161urqqitgkfov01&st=sogx2kbk&raw=1",
+  "https://www.dropbox.com/scl/fi/xouzlfudehty2l6vgq3zj/VL-8053_large.png?rlkey=t7phcqbcc2y8wqxx85f4aqs6f&st=57eduw3s&raw=1",
+  "https://www.dropbox.com/scl/fi/33f0n6djkow6oetj8r25u/VL-8047_c03ee297-8594-4a67-9f36-de12f0901de7_large.png?rlkey=je7tq3quvaxq70o8pssnkfgrp&st=4tmo857s&raw=1",
+  "https://www.dropbox.com/scl/fi/kk0bi8kgyyi79njve3ajh/SP-8004_large.png?rlkey=rz0trpb0pcb0jxnvrty7m0347&st=0r8gigzg&raw=1",
+  "https://www.dropbox.com/scl/fi/aiy13l7a0jvskrbw1ntox/OT-3021_large.png?rlkey=bqzomsmhw6kct9h2sw896iuf8&st=c1n709cp&raw=1",
+  "https://www.dropbox.com/scl/fi/4ev0ch9rpn9p8rq7s97qv/OT-3005-2_large.png?rlkey=0dj6mnpyd4xj8v8p7hcbgxsk3&st=wtt5eiuu&raw=1",
+  "https://www.dropbox.com/scl/fi/so6zcjiki4cp3pb2yq4lq/KT-3120_large.png?rlkey=0n6g5u1wwnjign2rwe5sw4pvy&st=kl07b2cg&raw=1",
+  "https://www.dropbox.com/scl/fi/996aeqmhgo03cpbz3wywx/KT-3117_large.png?rlkey=pgxaw7lmkup9tlghby8kjqeqh&st=j6bn4vhm&raw=1",
+  "https://www.dropbox.com/scl/fi/h48ae4frblbn1zsxbbaxg/AF-4045_large.png?rlkey=pjyctyltyc4ye46qadz4lm65a&st=12vyxlb8&raw=1",
+  "https://www.dropbox.com/scl/fi/hfqoqmc41gv1atnjrq5ru/AF-4034_large.png?rlkey=qgylnpqdgokm8ug601l4cqyry&st=8d35fqcz&raw=1",
+  "https://www.dropbox.com/scl/fi/fephm8azriwp74jds8hne/AF-3994_large.png?rlkey=vjntpzp1mloxztjnw9hcv69r0&st=j0pme8do&raw=1",
+  "https://www.dropbox.com/scl/fi/kqwc9t4mq1oicmpjwlyle/VL-8070_large.png?rlkey=1xogn72vn161urqqitgkfov01&st=1d915eyx&raw=1",
+  "https://www.dropbox.com/scl/fi/xouzlfudehty2l6vgq3zj/VL-8053_large.webp?rlkey=t7phcqbcc2y8wqxx85f4aqs6f&st=5zsfm951&raw=1",
+  "https://www.dropbox.com/scl/fi/466c3fgcxa0gqwcl80dij/VL-8043_large.webp?rlkey=vhrwtxmwfd8jzi9en86xg2p2z&st=u27n6kf1&raw=1"
+];
+
+for (var i = 0; i < clothes.length; i++){
+  clothes[i].image = imageUrls[i]  
+  await clothes[i].save()
+}
+
+ return res.json({clothes})
+})
 // async function getAll () {
 //   const allFabs = await Clothes.find()
 

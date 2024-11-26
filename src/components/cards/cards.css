@@ -26,5 +26,18 @@
   .out-of-stock-img {
     opacity: 0.5; /* Optionally make the image semi-transparent */
   }
+  .fab-image-container, .section-fab-image-container{
+    height: 16rem;
+  }
+  @media (max-width: 800px) {
+    .section-fab-image-container{
+      height: 12rem;
+    }
+  }
   
+  @media (max-width: 500px) {
+    .fab-image-container{
+      height: 11rem;
+    }
+  }
   

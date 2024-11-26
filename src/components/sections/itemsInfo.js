@@ -45,7 +45,7 @@ export default function ItemsInfo() {
       setRelatedItems(relatedResponse.data.relatedItems);
     }
     fetchData();
-  }, []);
+  }, [id]);
 
   const clickedList =
     JSON.parse(localStorage.getItem("localClickedList")) || [];
