@@ -29,6 +29,9 @@
   .fab-image-container, .section-fab-image-container{
     height: 16rem;
   }
+  .home-product-link-texts{
+    margin-bottom: 1rem;
+  }
   @media (max-width: 800px) {
     .section-fab-image-container{
       height: 12rem;
@@ -38,6 +41,12 @@
   @media (max-width: 500px) {
     .fab-image-container{
       height: 11rem;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .fab-image-container{
+      height: 8rem;
     }
   }
   
