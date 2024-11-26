@@ -70,30 +70,30 @@ function Header() {
           !localUserLocation ||
           (localUserLocation && Object.keys(localUserLocation).length === 0)
         ) {
-          // const response = await fetch("https://geolocation-db.com/json/");
-          // const data = await response.json();
-          // console.log("Fetching API");
+          const response = await fetch("https://geolocation-db.com/json/");
+          const data = await response.json();
+          console.log("Fetching API");
 
-          // setUserLocation({
-          //   ipaddress: data.IPv4,
-          //   country: data.country_name,
-          // });
+          setUserLocation({
+            ipaddress: data.IPv4,
+            country: data.country_name,
+          });
 
-          // localStorage.setItem(
-          //   "localUserLocation",
-          //   JSON.stringify({
-          //     ipaddress: data.IPv4,
-          //     country: data.country_name,
-          //   })
-          // );
+          localStorage.setItem(
+            "localUserLocation",
+            JSON.stringify({
+              ipaddress: data.IPv4,
+              country: data.country_name,
+            })
+          );
 
-          // await axios.post(`${apiUrl}/api/visitor`, {
-          //   route: location.pathname,
-          //   userLocation: {
-          //     ipaddress: data.IPv4,
-          //     country: data.country_name,
-          //   },
-          // });
+          await axios.post(`${apiUrl}/api/visitor`, {
+            route: location.pathname,
+            userLocation: {
+              ipaddress: data.IPv4,
+              country: data.country_name,
+            },
+          });
         } else {
           setUserLocation(localUserLocation);
 
