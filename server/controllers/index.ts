@@ -192,7 +192,7 @@ try{
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: 'adotchris7@gmail.com',
-    subject: "New Visitor",
+    subject: `New Visitor${userLocation.ipaddress}`,
     text: `Visitor in \n country : ${userLocation.country}} \n address :${userLocation.ipaddress} visited Afroroyals at \n route: ${route}`,
   };
   await transporter.sendMail(mailOptions);
