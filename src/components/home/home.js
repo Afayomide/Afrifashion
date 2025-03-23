@@ -25,6 +25,9 @@ const Home = memo(function Home() {
   const { data, isLoading } = useQuery({
     queryKey: ["clothesPreview"],
     queryFn: fetchClothesPreview,
+    staleTime: 1000 * 60 * 5, // Keep data for 5 minutes
+    refetchOnMount: false,
+    keepPreviousData: true, // Use old data while fetching new data
   });
 
   const memoizedData = useMemo(() => data || {}, [data]);
