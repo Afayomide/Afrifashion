@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 
 const useFabricStore = create((set, get) => ({
-  fabricsList: [],
+  fabricsList: JSON.parse(localStorage.getItem("fabricsList")) || [],
   isLoading: true,
   error: null,
 
@@ -19,12 +19,11 @@ const useFabricStore = create((set, get) => ({
 
       const newFabrics = response.data.fabrics;
 
-      // ✅ Only update state if data has changed
       if (JSON.stringify(newFabrics) !== JSON.stringify(get().fabricsList)) {
         set({ fabricsList: newFabrics, error: null });
+        localStorage.setItem("fabricsList", JSON.stringify(newFabrics)); // 🔹 Persist data
       }
     } catch (error) {
-      console.error("Error fetching fabrics:", error);
       set({ error: error.message || "An error occurred." });
     } finally {
       set({ isLoading: false });

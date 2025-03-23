@@ -1,6 +1,6 @@
 import { useEffect, memo, useMemo } from "react";
 import { useContext } from "react";
-import useFabricStore from "./useFabricStore";
+import useFabricStore from "../stores/useFabricStore";
 import { ProductContext } from "../productContext";
 import "./sections.css";
 import formbg from "../../assets/formbg.webp";

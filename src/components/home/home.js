@@ -1,21 +1,19 @@
-import { useEffect } from "react";
-import useFabricStore from "./useHomeStore"; // Import the Zustand store
+import { memo, useEffect } from "react";
+import useFabricStore from "../stores/useHomeStore"; // Import the Zustand store
 import { Link } from "react-router-dom";
 import Card from "../cards/homeCard";
 import "./home.css";
 import logo from "../../assets/logo.png";
 import hero from "../../assets/hero.png";
 
-const Home = () => {
+const Home =memo(() => {
+
   const { lace, asoOke, dansiki, ankara, gele, isLoading, fetchData } =
     useFabricStore();
 
- useEffect(() => {
-   fetchData();
-   const interval = setInterval(fetchData, 30000); // Refresh every 30s
-   return () => clearInterval(interval);
- }, [fetchData]);
-
+  useEffect(() => {
+    fetchData(); // Fetch data only if it's not already stored
+  }, []);
 
   return (
     <div className="home-container">
@@ -61,6 +59,6 @@ const Home = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Home;
