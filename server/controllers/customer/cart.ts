@@ -62,7 +62,6 @@ export const addToCart = async (req:Request, res:Response) => {
       if (customer) {
         const existingProduct = customer.cart.find((item:any) => item._id.toString() === productId);
         if (existingProduct) {        
-              console.log("already in cart")
           return res.status(400).json({ message: 'Product already in cart' });
         }
         else{

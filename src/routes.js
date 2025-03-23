@@ -1,17 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import Header from "./components/header/header";
 import Home from "./components/home/home";
 import Fabrics from "./components/sections/fabrics";
-import Footer from "./components/footer/footer";
 import Signup from "./components/forms/signup";
 import Login from "./components/forms/login";
 import Cart from "./components/cart/cart";
-import { FaPlay } from "react-icons/fa";
-import { FaPause } from "react-icons/fa6";
-import { ProductProvider } from "./components/productContext";
 import ItemsInfo from "./components/sections/itemsInfo";
-import AboutUs from "./components/aboutus/aboutus";
 import SearchResults from "./components/sections/searchResults";
 import CheckoutPage from "./components/checkout/checkout";
 import Faq from "./components/sections/faq";

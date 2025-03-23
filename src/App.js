@@ -11,7 +11,6 @@ import { Toaster } from "react-hot-toast";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 
-// "new stuff"
 
 function App() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -38,7 +37,6 @@ function App() {
           containerClassName=""
           containerStyle={{}}
           toastOptions={{
-            // Define default options
             className: "",
             duration: 5000,
             style: {

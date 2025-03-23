@@ -18,6 +18,7 @@
     opacity: 0; /* Hidden by default */
     transition: opacity 0.3s ease; /* Transition effect */
   }
+
   
   .image-wrapper:hover .out-of-stock-overlay {
     opacity: 1; /* Show the overlay on hover */
@@ -27,7 +28,7 @@
     opacity: 0.5; /* Optionally make the image semi-transparent */
   }
   .fab-image-container, .section-fab-image-container{
-    height: 16rem;
+    height: 15rem;
   }
   .home-product-link-texts{
     margin-bottom: 1rem;

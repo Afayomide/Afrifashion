@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import "./form.css";
 import { BsEyeFill } from "react-icons/bs";
 import { BsEyeSlashFill } from "react-icons/bs";
-import formbg from "../../assets/formbg.webp";
 import { ProductContext } from "../productContext";
 import { toast } from "react-hot-toast";
 

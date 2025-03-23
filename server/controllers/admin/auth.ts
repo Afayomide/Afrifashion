@@ -19,7 +19,6 @@ export const checkAuth = async (req: Request, res: Response) => {
     res.json({ admin });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
-    console.log(sameSiteValue)
   }
 };
 
@@ -42,7 +41,6 @@ export const login = async (req: Request, res: Response) => {
       sameSite: sameSiteValue,
       maxAge: 4 * 24 * 60 * 60 * 1000,
     });
-    console.log(res.cookie);
     res.json({ success: true, admin });
   } catch (error: any) {
     console.error("Error:", error.message);

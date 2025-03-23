@@ -1,17 +1,4 @@
-.home-container {
-}
-/* .home-bg-image{
-  filter: blur(60px);
-  opacity: 0.4;
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  margin: auto;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-} */
+
 .welcome {
   margin-left: 10vw;
   font-size: 2rem;

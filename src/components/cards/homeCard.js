@@ -1,22 +1,14 @@
+import React, { memo } from "react";
 import Preloader from "../../preloader";
 import { ProductContext } from "../productContext";
 import { useEffect, useState, useContext, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function Card(props) {
+const Card = memo(function Card(props) {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const {
-    authenticated,
-    cartNo,
-    setCartNo,
-    setShouldFetchCart,
-    mainLoading,
-    setMainLoading,
-    setLocalCartLength,
-    cartList,
-    setCartList,
-  } = useContext(ProductContext);
+  const { authenticated, setCartNo, setShouldFetchCart, setLocalCartLength } =
+    useContext(ProductContext);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [slideInItems, setSlideInItems] = useState(new Set()); // Track items that have slid in
@@ -107,8 +99,8 @@ function Card(props) {
         }`}
         to={!props.outOfStock ? `/${props._id}` : "#"}
       >
-        {!isImageLoaded && <Preloader />}
         <div className="fab-image-container">
+          {!isImageLoaded && <Preloader />}
           <img
             src={props.image}
             alt={props.name}
@@ -155,6 +147,6 @@ function Card(props) {
       )}
     </div>
   );
-}
+});
 
 export default Card;

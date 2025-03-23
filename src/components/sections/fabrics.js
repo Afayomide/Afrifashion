@@ -1,72 +1,28 @@
-import { useEffect, useState, memo,useMemo } from "react";
-import axios from "axios";
+import { useEffect, memo, useMemo } from "react";
 import { useContext } from "react";
+import useFabricStore from "./useFabricStore";
 import { ProductContext } from "../productContext";
 import "./sections.css";
 import formbg from "../../assets/formbg.webp";
 import { Card } from "../cards/sectionCard";
 
 const Fabrics = memo(() => {
-  const [fabricsList, setFabricsList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { mainLoading, setMainLoading, setCartList } =
-    useContext(ProductContext);
+  const { fabricsList, isLoading, error, fetchFabrics } = useFabricStore();
+  const { mainLoading, setCartList } = useContext(ProductContext);
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/fabrics`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    if (mainLoading) {
+      fetchFabrics();
 
-        setFabricsList(response.data.fabrics);
-
-        if (response.data.fabrics && token) {
-          try {
-            const cartResponse = await axios.get(
-              `${process.env.REACT_APP_API_URL}/api/cart/list`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
-            setCartList(cartResponse.data.cartItems);
-          } catch (error) {
-            console.error("Error fetching cart data:", error);
-          }
-        }
-      } catch (error) {
-        if (error.response && error.response.status === 500) {
-          setMainLoading(false);
-          console.log("empty");
-        }
-        console.error("Error:", error);
-        setError(error.message || "An error occurred.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    if (mainLoading == true) {
-      fetchData();
-    } else {
-      setIsLoading(false);
-      console.log("something is wrong");
-      setError("something is wrong");
+      // ✅ Auto-refresh every 30 seconds
+      const interval = setInterval(fetchFabrics, 30000);
+      return () => clearInterval(interval);
     }
-  }, []);
-
+  }, [mainLoading]); // ✅ Fetch only when `mainLoading` changes
 
   const renderedCards = useMemo(() => {
     return fabricsList.map((item) => <Card key={item._id} {...item} />);
-  }, [fabricsList]); // Only recompute when fabricsList changes
+  }, [fabricsList]); // ✅ Only re-render when fabricsList changes
 
   return (
     <div className="product-list-container">
@@ -83,9 +39,7 @@ const Fabrics = memo(() => {
           <p className="error-message">Error: {error}</p>
         </div>
       ) : fabricsList.length > 0 ? (
-        <div className="product-list-container">
-      {renderedCards}
-        </div>
+        <div className="product-list-container">{renderedCards}</div>
       ) : (
         <div className="message">
           <p className="loading-message">No fabric found</p>

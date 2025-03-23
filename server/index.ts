@@ -26,7 +26,7 @@ const Clothes = require("./models/clothesSchema")
 const corsOptions = {
   origin: [    
     "https://afrifashion.vercel.app",
-    "http://localhost:5000",
+    "http://localhost:3000",
     "https://coolafristyles.web.app",
   ],
   credentials: true,
@@ -196,7 +196,7 @@ for (var i = 0; i < clothes.length; i++){
 
 // updateOutOfStockStatus()
 
-const PORT = 3000;
+const PORT = 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

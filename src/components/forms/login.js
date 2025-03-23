@@ -4,7 +4,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { BsEyeFill } from "react-icons/bs";
 import { BsEyeSlashFill } from "react-icons/bs";
 import axios from "axios";
-import formbg from "../../assets/formbg.webp";
 import { ProductContext } from "../productContext";
 import { toast } from "react-hot-toast";
 

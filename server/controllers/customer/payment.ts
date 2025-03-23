@@ -44,7 +44,6 @@ export const pay = async (req:Request, res:Response) => {
             message: 'Payment initialized successfully',
             data: response.data.data
         });
-        console.log(response)
   
     } catch (error:any) {
         res.status(500).json({
@@ -71,7 +70,6 @@ export const verifyPayment = async (req:Request, res:Response) => {
         const { status, data } = response.data;
         const metaData = data.metadata 
         const clothesData = data.metadata.clothesData;
-        console.log(clothesData)
 
         if (status && data.status === 'success') {
             const fabrics = clothesData.map((data:any)=> ({
@@ -154,7 +152,6 @@ export const verifyPayment = async (req:Request, res:Response) => {
         }
   
     } catch (error:any) {
-        console.log(error)
         res.status(500).json({
             status: 'error',
             message: 'An error occurred while verifying payment',

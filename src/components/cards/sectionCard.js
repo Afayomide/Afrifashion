@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState, memo } from "react";
 import { useContext } from "react";
 import axios from "axios";
-import "./cards.css"
+import "./cards.css";
 
 import { ProductContext } from "../productContext";
 
@@ -40,7 +40,6 @@ export function Card(props) {
     storedCartList.push(fabricWithQuantity);
     localStorage.setItem("localCartList", JSON.stringify(storedCartList));
 
-
     setLocalCartLength(storedCartList.length);
     setCartNo(storedCartList.length);
 
@@ -55,7 +54,6 @@ export function Card(props) {
           `${process.env.REACT_APP_API_URL}/api/cart/add`,
           { productId }
         );
-
       } catch (error) {
         console.error("Error adding to cart:", error);
         setError("An error occurred while adding to cart.");
@@ -86,15 +84,18 @@ export function Card(props) {
         className={`product-link ${props.outOfStock ? "disabled-link" : ""}`}
         to={!props.outOfStock ? `/${props._id}` : "#"}
       >
-        {!isImageLoaded && <Preloader />}
-        <div className={`image-wrapper ${props.outOfStock ? "out-of-stock" : ""}`}>
-        <div className="section-fab-image-container">
-          <img
-            src={props.image}
-            alt={props.name}
-            className={props.outOfStock ? "out-of-stock-img" : ""}
-            onLoad={handleImageLoad}
-          /></div>
+        <div
+          className={`image-wrapper ${props.outOfStock ? "out-of-stock" : ""}`}
+        >
+          <div className="section-fab-image-container">
+            {!isImageLoaded && <Preloader />}
+            <img
+              src={props.image}
+              alt={props.name}
+              className={props.outOfStock ? "out-of-stock-img" : ""}
+              onLoad={handleImageLoad}
+            />
+          </div>
           {props.outOfStock && (
             <div className="out-of-stock-overlay">Out Of Stock</div>
           )}
@@ -109,7 +110,7 @@ export function Card(props) {
           </p>
         </div>
       </Link>
-  
+
       {cartList.some((cartItem) => cartItem._id === props._id) ||
       (JSON.parse(localStorage.getItem("localCartList")) || []).some(
         (storedCartItem) => storedCartItem._id === props._id
@@ -134,5 +135,4 @@ export function Card(props) {
       )}
     </div>
   );
-  
 }
