@@ -9,6 +9,9 @@ import Header from "./components/header/header";
 import AfroSounds from "./assets/afrosounds.mp3";
 import { Toaster } from "react-hot-toast";
 import axios from "axios";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+
 axios.defaults.withCredentials = true;
 
 
@@ -26,8 +29,11 @@ function App() {
       setIsPlaying(!isPlaying);
     }
   };
+  const queryClient = new QueryClient();
+
 
   return (
+        <QueryClientProvider client={queryClient}>
     <ProductProvider>
       <div className="App">
         <Toaster
@@ -63,6 +69,7 @@ function App() {
         <Footer />
       </div>
     </ProductProvider>
+    </QueryClientProvider>
   );
 }
 

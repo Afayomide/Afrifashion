@@ -1,19 +1,33 @@
-import { memo, useEffect } from "react";
-import useFabricStore from "../stores/useHomeStore"; // Import the Zustand store
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import Card from "../cards/homeCard";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import "./home.css";
 import logo from "../../assets/logo.png";
+import Card from "../cards/homeCard";
 import hero from "../../assets/hero.png";
+import React, { memo } from "react";
 
-const Home =memo(() => {
+const fetchClothesPreview = async () => {
+  const token = localStorage.getItem("authToken");
+  const response = await axios.get(
+    `${process.env.REACT_APP_API_URL}/api/clothespreview`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data.previewData;
+};
 
-  const { lace, asoOke, dansiki, ankara, gele, isLoading, fetchData } =
-    useFabricStore();
+const Home = memo(function Home() {
+  const { data, isLoading } = useQuery({
+    queryKey: ["clothesPreview"],
+    queryFn: fetchClothesPreview,
+  });
 
-  useEffect(() => {
-    fetchData(); // Fetch data only if it's not already stored
-  }, []);
+  const memoizedData = useMemo(() => data || {}, [data]);
 
   return (
     <div className="home-container">
@@ -21,28 +35,26 @@ const Home =memo(() => {
         Welcome To AfroRoyals <img src={logo} className="logo" />
       </h3>
       <div className="hero-image">
-        <img src={hero} />
+        <img src={hero} alt="Hero" />
       </div>
       <div className="home-links">
         <Link to="/fabrics" className="home-link">
           View All Fabrics
         </Link>
         <div>
-          {[
-            { title: "Ankara", data: ankara, query: "ankara" },
-            { title: "Aso Oke (Top Cloth)", data: asoOke, query: "aso-oke" },
-            { title: "Dansiki", data: dansiki, query: "dansiki" },
-            { title: "Lace", data: lace, query: "lace" },
-          ].map(({ title, data, query }) => (
-            <div className="home-fabric-section" key={query}>
+          {["ankara", "asoOke", "dansiki", "lace"].map((category) => (
+            <div key={category} className="home-fabric-section">
               <h3>
-                <Link className="home-section-link" to={`/search?q=${query}`}>
-                  {title}
+                <Link
+                  className="home-section-link"
+                  to={`/search?q=${category}`}
+                >
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
                 </Link>
               </h3>
               {!isLoading ? (
                 <div className="home-product-list-container">
-                  {data.map((item, index) => (
+                  {memoizedData[category]?.map((item, index) => (
                     <Card key={item._id} {...item} index={index} />
                   ))}
                 </div>

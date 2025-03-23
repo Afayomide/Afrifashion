@@ -1,28 +1,55 @@
-import { useEffect, memo, useMemo } from "react";
-import { useContext } from "react";
-import useFabricStore from "../stores/useFabricStore";
+import { memo, useContext, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { ProductContext } from "../productContext";
 import "./sections.css";
 import formbg from "../../assets/formbg.webp";
 import { Card } from "../cards/sectionCard";
 
-const Fabrics = memo(() => {
-  const { fabricsList, isLoading, error, fetchFabrics } = useFabricStore();
-  const { mainLoading, setCartList } = useContext(ProductContext);
-
-  useEffect(() => {
-    if (mainLoading) {
-      fetchFabrics();
-
-      // ✅ Auto-refresh every 30 seconds
-      const interval = setInterval(fetchFabrics, 30000);
-      return () => clearInterval(interval);
+const fetchFabrics = async () => {
+  const token = localStorage.getItem("authToken");
+  const { data } = await axios.get(
+    `${process.env.REACT_APP_API_URL}/api/fabrics`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
     }
-  }, [mainLoading]); // ✅ Fetch only when `mainLoading` changes
+  );
+  return data.fabrics;
+};
+
+const fetchCart = async () => {
+  const token = localStorage.getItem("authToken");
+  if (!token) return [];
+  const { data } = await axios.get(
+    `${process.env.REACT_APP_API_URL}/api/cart/list`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return data.cartItems;
+};
+
+const Fabrics = memo(() => {
+  const { setCartList } = useContext(ProductContext);
+
+  const {
+    data: fabricsList,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["fabrics"],
+    queryFn: fetchFabrics,
+  });
+
+  useQuery({
+    queryKey: ["cart"],
+    queryFn: fetchCart,
+    onSuccess: (cartItems) => setCartList(cartItems),
+  });
 
   const renderedCards = useMemo(() => {
-    return fabricsList.map((item) => <Card key={item._id} {...item} />);
-  }, [fabricsList]); // ✅ Only re-render when fabricsList changes
+    return fabricsList?.map((item) => <Card key={item._id} {...item} />);
+  }, [fabricsList]);
 
   return (
     <div className="product-list-container">
@@ -36,9 +63,9 @@ const Fabrics = memo(() => {
       ) : error ? (
         <div className="message">
           <img className="error-image" src={formbg} alt="error background" />
-          <p className="error-message">Error: {error}</p>
+          <p className="error-message">Error: {error.message}</p>
         </div>
-      ) : fabricsList.length > 0 ? (
+      ) : fabricsList?.length > 0 ? (
         <div className="product-list-container">{renderedCards}</div>
       ) : (
         <div className="message">
