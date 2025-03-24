@@ -10,6 +10,7 @@ const useFabricStore = create((set, get) => ({
     const token = localStorage.getItem("authToken");
 
     try {
+      
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/fabrics`,
         {
@@ -18,6 +19,7 @@ const useFabricStore = create((set, get) => ({
       );
 
       const newFabrics = response.data.fabrics;
+      console.log("called")
 
       if (JSON.stringify(newFabrics) !== JSON.stringify(get().fabricsList)) {
         set({ fabricsList: newFabrics, error: null });

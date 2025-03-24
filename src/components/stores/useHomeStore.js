@@ -23,7 +23,6 @@ const useHomeStore = create((set, get) => ({
 
       const newData = response.data.previewData;
 
-      // Compare new data with the existing store to prevent unnecessary updates
       if (
         JSON.stringify(newData.asoOke) !== JSON.stringify(get().asoOke) ||
         JSON.stringify(newData.lace) !== JSON.stringify(get().lace) ||

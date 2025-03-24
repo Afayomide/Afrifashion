@@ -1,46 +1,37 @@
 import { ProductContext } from "../productContext";
-import { useContext, useEffect, useState,useMemo } from "react";
+import { useContext } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import formbg from "../../assets/formbg.webp";
 import { Card } from "../cards/sectionCard";
 
 function SearchResults() {
-  const [error, setError] = useState(null); 
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchResult, setSearchResult] = useState([]);
-  const { shouldSearch, setShouldSearch, setShouldFetchCart } =
-    useContext(ProductContext);
-  const location = useLocation(); 
+  const { shouldSearch, setShouldSearch } = useContext(ProductContext);
+  const location = useLocation();
   const searchTerm = new URLSearchParams(location.search).get("q");
- 
 
-  useEffect(() => {
-    async function handleSearch(e) {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_API_URL}/api/search`,
-          {
-            searchTerm,
-          }
-        );
+  const fetchSearchResults = async () => {
+    if (!searchTerm) return [];
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/search`,
+      { searchTerm }
+    );
+    return response.data.result;
+  };
 
-        setSearchResult(response.data.result);
-        console.log(response);
-        setShouldSearch(false);
-      } catch (error) {
-        console.error("Error:", error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    handleSearch();
-  }, [shouldSearch]);
-
-  const renderedCards = useMemo(() => {
-    return searchResult.map((item) => <Card key={item._id} {...item} />);
-  }, [searchResult]); // Only recompute when fabricsList changes
+  const {
+    data: searchResult = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["searchResults", searchTerm],
+    queryFn: fetchSearchResults,
+    enabled: shouldSearch && !!searchTerm,
+    staleTime: 2 * 60 * 1000,
+    refetchInterval: 2 * 60 * 1000,
+    onSuccess: () => setShouldSearch(false), 
+  });
 
   return (
     <div className="product-list-container">
@@ -55,13 +46,15 @@ function SearchResults() {
         <div className="message">
           <img src={formbg} alt="login background" className="auth-bg-image" />
           <img className="error-image" src={formbg} />
-          <p className="error-message">Error: {error}</p>
+          <p className="error-message">Error: {error.message}</p>
         </div>
       ) : searchResult.length > 0 ? (
         <div>
           <h3 className="search-header">Search Results</h3>
           <div className="product-list-container">
-           {renderedCards}
+            {searchResult.map((item) => (
+              <Card key={item._id} {...item} />
+            ))}
           </div>
         </div>
       ) : (
