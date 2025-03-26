@@ -6,6 +6,7 @@ import "./sections.css";
 import formbg from "../../assets/formbg.webp";
 import { Card } from "../cards/sectionCard";
 
+
 const Fabrics = memo(() => {
   const { fabricsList, isLoading, error, fetchFabrics } = useFabricStore();
   const { mainLoading, setCartList } = useContext(ProductContext);

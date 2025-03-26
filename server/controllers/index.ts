@@ -187,7 +187,6 @@ export const contactUs = async (req: Request, res: Response) => {
   export const visitor =  async (req:Request, res:Response) => {
  
     const {route ,userLocation} = req.body
-    console.log(req.body)
 try{
   const mailOptions = {
     from: process.env.EMAIL_USER,

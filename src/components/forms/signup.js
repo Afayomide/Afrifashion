@@ -1,11 +1,23 @@
-import React, { useState, useContext, useEffect } from "react";
+"use client";
+
+import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "./form.css";
-import { BsEyeFill } from "react-icons/bs";
-import { BsEyeSlashFill } from "react-icons/bs";
 import { ProductContext } from "../productContext";
 import { toast } from "react-hot-toast";
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  User,
+  UserPlus,
+  AlertCircle,
+  CheckCircle,
+  LogIn,
+  Loader,
+} from "lucide-react";
 
 export default function Signup() {
   const [check, setCheck] = useState(false);
@@ -15,8 +27,9 @@ export default function Signup() {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [err, setErr] = useState("");
-  const [specialChar, setNoSpecialChar] = useState(false)
+  const [specialChar, setNoSpecialChar] = useState(false);
   const [changePassword, setChangePassword] = useState(true);
+  const [focused, setFocused] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,15 +46,21 @@ export default function Signup() {
     setChangePassword(!changePassword);
   }
 
+  const handleFocus = (field) => {
+    setFocused(field);
+  };
+
+  const handleBlur = () => {
+    setFocused(null);
+  };
+
   function containsSpecialCharacter(password) {
     // Regex for special characters
     var specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
 
     // Test if the password does not contain a special character
     return specialCharRegex.test(password);
-}
-
-
+  }
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -56,148 +75,203 @@ export default function Signup() {
 
     try {
       callCheck();
-      if (specialChar){
-      const response = await axios.post(serverUrl, {
-        fullname,
-        username,
-        email,
-        password,
-      });
+      if (specialChar) {
+        const response = await axios.post(serverUrl, {
+          fullname,
+          username,
+          email,
+          password,
+        });
 
-      const { success } = response.data;
+        const { success } = response.data;
 
-      if (success) {
-        navigate("/login");
-        console.log(response.data);
-        setErr(response.data.message);
+        if (success) {
+          toast.success("Account created successfully!");
+          navigate("/login");
+          console.log(response.data);
+          setErr(response.data.message);
+        } else {
+          console.error(response.data.message);
+          setErr(response.data.message);
+        }
       } else {
-        console.error(response.data.message);
-        setErr(response.data.message);
+        toast.error("Add special character to password");
       }
-    }
-    else{
-      toast.error("add special character to password")
-    }
     } catch (error) {
       console.error("Error:", error);
+      toast.error(error.response?.data?.message || "Signup failed");
     }
   };
 
   return (
-    <div>
-      {/* <img className='auth-bg-image' src={formbg} alt='login background'/> */}
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="auth-card">
+          <div className="auth-header">
+            <UserPlus className="auth-icon" size={28} />
+            <h2>Create Account</h2>
+            <p>Join our community today</p>
+          </div>
 
-      <form className="auth-form" onSubmit={handleSignup}>
-        <h3>Signup</h3>
-        <div className="orange">
-          {check == true ? "checking your details....." : ""}
-        </div>
-        <div className="error">{err}</div>
+          {check && (
+            <div className="auth-status checking">
+              <Loader size={20} className="spinner" />
+              <span>Checking your details...</span>
+            </div>
+          )}
 
-        <div className="auth-form-input">
-          {/* <label htmlFor="username">
-            Username:
-          </label> */}
-          <input
-            className="input-field"
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => {
-              setErr("");
-              setUsername(e.target.value);
-            }}
-            placeholder="username"
-          />
-        </div>
+          {err && (
+            <div className="auth-status error">
+              <span>{err}</span>
+            </div>
+          )}
 
-        {/* <input className='input-field' type="password" id='password' value={password} onChange={(e) => setPassword(e.target.value)} /> */}
-        <div className="auth-form-input">
-          {/* <label htmlFor="fullname">
-            Fullname:
-          </label> */}
-          <input
-            className="input-field"
-            type="text"
-            id="fullname"
-            value={fullname}
-            onChange={(e) => {
-              setErr("");
-              setFullname(e.target.value);
-            }}
-            placeholder="fulname"
-          />
-        </div>
+          <form className="auth-form" onSubmit={handleSignup}>
+            <div
+              className={`form-group ${
+                focused === "username" ? "focused" : ""
+              } ${username ? "has-value" : ""}`}
+            >
+              <div className="input-icon">
+                <User size={18} />
+              </div>
+              <input
+                className="input-field"
+                type="text"
+                id="username"
+                value={username}
+                onFocus={() => handleFocus("username")}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setErr("");
+                  setUsername(e.target.value);
+                }}
+                required
+              />
+              <label htmlFor="username">Username</label>
+            </div>
 
-        <div className="auth-form-input">
-          {/* <label htmlFor="email">
-            Email:
-          </label> */}
-          <input
-            className="input-field"
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => {
-              setErr("");
-              setEmail(e.target.value);
-            }}
-            placeholder="email"
-          />
-        </div>
+            <div
+              className={`form-group ${
+                focused === "fullname" ? "focused" : ""
+              } ${fullname ? "has-value" : ""}`}
+            >
+              <div className="input-icon">
+                <User size={18} />
+              </div>
+              <input
+                className="input-field"
+                type="text"
+                id="fullname"
+                value={fullname}
+                onFocus={() => handleFocus("fullname")}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setErr("");
+                  setFullname(e.target.value);
+                }}
+                required
+              />
+              <label htmlFor="fullname">Full Name</label>
+            </div>
 
-        <div className="auth-form-input">
-          {/* <label htmlFor="password">
-            Password:
-  
-          </label>         */}            
-          <div>
+            <div
+              className={`form-group ${focused === "email" ? "focused" : ""} ${
+                email ? "has-value" : ""
+              }`}
+            >
+              <div className="input-icon">
+                <Mail size={18} />
+              </div>
+              <input
+                className="input-field"
+                type="email"
+                id="email"
+                value={email}
+                onFocus={() => handleFocus("email")}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setErr("");
+                  setEmail(e.target.value);
+                }}
+                required
+              />
+              <label htmlFor="email">Email Address</label>
+            </div>
 
-          <div className="pwd-input-icons">
-            <div className="pwd-icons" onClick={handlePassword}>
-              {" "}
-              {changePassword ? (
-                <BsEyeFill className="eye" />
+            <div
+              className={`form-group ${
+                focused === "password" ? "focused" : ""
+              } ${password ? "has-value" : ""}`}
+            >
+              <div className="input-icon">
+                <Lock size={18} />
+              </div>
+              <input
+                className="input-field"
+                type={changePassword ? "password" : "text"}
+                id="password"
+                value={password}
+                onFocus={() => handleFocus("password")}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  if (e.target.value.length > 20) {
+                    e.target.value = "";
+                    toast.error("Password is too long");
+                  } else {
+                    setPassword(e.target.value);
+                  }
+                  if (!containsSpecialCharacter(e.target.value)) {
+                    setNoSpecialChar(false);
+                  } else {
+                    setNoSpecialChar(true);
+                  }
+                  setErr("");
+                }}
+                required
+              />
+              <label htmlFor="password">Password</label>
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={handlePassword}
+                aria-label={changePassword ? "Show password" : "Hide password"}
+              >
+                {changePassword ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+            </div>
+
+            <div className="password-requirements">
+              {specialChar ? (
+                <div className="requirement valid">
+                  <CheckCircle size={16} />
+                  <span>Contains special character</span>
+                </div>
               ) : (
-                <BsEyeSlashFill className="eye" />
+                <div className="requirement invalid">
+                  <AlertCircle size={16} />
+                  <span>
+                    Password should contain at least one special character
+                  </span>
+                </div>
               )}
             </div>
-            
-            <input
-              className="pwd-input-field input-field"
-              type={changePassword ? "password" : "text"}
-              id="password"
-              value={password}
-              onChange={(e) => {                
-               if (e.target.value.length > 20) {
-                e.target.value = "" 
-                toast.error("password is too long")
-               } 
-               else{
-                setPassword(e.target.value);
-               };
-               if (!containsSpecialCharacter(e.target.value)) {
-                setNoSpecialChar(false)
-            } else {
-              setNoSpecialChar(true)
-            }
-                setErr("");
-              }}
-              placeholder="password"
-            /> </div> {specialChar ? null : <small className="red">password should contain at least one special character</small>}
 
-          </div>      
+            <button type="submit" className="auth-button">
+              <span>Create Account</span>
+              <UserPlus size={18} />
+            </button>
+
+            <div className="auth-links">
+              <span>Already have an account?</span>
+              <Link to="/login" className="auth-link">
+                <span>Sign In</span>
+                <LogIn size={16} />
+              </Link>
+            </div>
+          </form>
         </div>
-
-        <button type="submit">Submit</button>
-        <small>
-          existing user? {" "}
-          <Link to="/login" className="form-small-link">
-            {" "}
-            login{" "}
-          </Link>
-        </small>
-      </form>
+      </div>
     </div>
   );
 }

@@ -13,7 +13,8 @@
 .home-links {
   display: flex;
   flex-direction: column;
-  margin-left: 10vw;
+  margin-left: 5vw;
+  margin-right:5vw;
 }
 .home-link {
   text-decoration: none;
@@ -49,6 +50,13 @@
 }
 .home-link:hover {
   color: var(--bgbuttons);
+}
+.home-top-section-links{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+    flex-wrap: wrap;
 }
 .home-section-link {
   text-decoration: none;
@@ -142,7 +150,7 @@
     justify-content: space-between;
   }
   .home-link {
-    margin-top: 2rem;
+    width: 5rem;
   }
 }
 
@@ -165,7 +173,13 @@
   .home-product-link-texts p {
     font-size: 12px;
   }
+   .home-link {
+    margin-top: .5rem;
+    padding: .5rem .7rem;
+  }
 }
+
+
 @media (max-width: 400px) {
   .home-product-list img,
   .home-product-list .preloader-image-container {
@@ -177,5 +191,12 @@
   }
   .logo{
     width: 1.5rem
+  }
+   .home-top-section-links{
+    row-gap: .5rem;
+  }
+   .home-link {
+    margin-top: .5rem !important;
+    padding: .5rem .7rem;
   }
 }

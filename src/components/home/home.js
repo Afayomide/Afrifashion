@@ -2,9 +2,10 @@ import { memo, useEffect } from "react";
 import useFabricStore from "../stores/useHomeStore"; // Import the Zustand store
 import { Link } from "react-router-dom";
 import Card from "../cards/homeCard";
-import "./home.css";
+import "./home.scss";
 import logo from "../../assets/logo.png";
 import hero from "../../assets/hero.png";
+import { title } from "../globalPhrases";
 
 const Home = memo(() => {
   const { lace, asoOke, dansiki, ankara, gele, isLoading, fetchData } =
@@ -17,15 +18,26 @@ const Home = memo(() => {
   return (
     <div className="home-container">
       <h3 className="welcome">
-        Welcome To AfroRoyals <img src={logo} className="logo" />
+        Welcome To {title} <img src={logo} className="logo" />
       </h3>
       <div className="hero-image">
         <img src={hero} />
       </div>
       <div className="home-links">
-        <Link to="/fabrics" className="home-link">
-          View All Fabrics
-        </Link>
+        <div className="home-top-section-links">
+          <Link to="/fabrics" className="home-link">
+            All Fabrics
+          </Link>
+          <Link to="/ankara" className="home-link">
+            Ankara
+          </Link>
+          <Link to="/dansiki" className="home-link">
+            Dansiki
+          </Link>
+          <Link to="/lace" className="home-link">
+            lace
+          </Link>
+        </div>
         <div>
           {[
             { title: "Ankara", data: ankara, query: "ankara" },

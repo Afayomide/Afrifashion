@@ -15,6 +15,7 @@ import { BsSearch } from "react-icons/bs";
 import { GiCrown } from "react-icons/gi";
 import { GrCircleQuestion } from "react-icons/gr";
 import { useLocation } from "react-router-dom";
+import { title } from "../globalPhrases";
 
 function Header() {
   const navigate = useNavigate();
@@ -270,7 +271,7 @@ function Header() {
               <div>
                 <NavLink className="h1-link" to="/">
                   <h1>
-                    AfroRoyals
+                    {title}
                     <GiAfrica className="africalogo" />
                     <sup>
                       <GiCrown className="crown" />
@@ -346,7 +347,7 @@ function Header() {
 
                 <NavLink className="h1-link" to="/">
                   <h1>
-                    AfroRoyals
+                    {title}
                     <GiAfrica className="africalogo" />
                     <sup>
                       <GiCrown className="crown" />
@@ -435,7 +436,7 @@ function Header() {
               <div>
                 <NavLink className="h1-link" to="/">
                   <h1>
-                    AfroRoyals
+                    {title}
                     <GiAfrica className="africalogo" />
                     <sup>
                       <GiCrown className="crown" />
@@ -520,7 +521,7 @@ function Header() {
 
                 <NavLink className="h1-link" to="/">
                   <h1>
-                    AfroRoyals
+                    {title}
                     <GiAfrica className="africalogo" />
                     <sup>
                       <GiCrown className="crown" />

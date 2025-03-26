@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState} from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import Preloader from "../../preloader";
 import "./itemsInfo.scss";
 import { ProductContext } from "../productContext";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -11,6 +12,7 @@ import { MdOutlineNavigateBefore } from "react-icons/md";
 
 export default function ItemsInfo() {
   const [item, setItem] = useState([]);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [relatedItems, setRelatedItems] = useState([]);
   const [error, setError] = useState("");
   const {
@@ -232,13 +234,24 @@ export default function ItemsInfo() {
     scrollToTop();
     localStorage.setItem("localClickedList", JSON.stringify(clickedList));
   }
+   const handleImageLoad = () => {
+     setIsImageLoaded(true);
+   };
 
   return (
     <div>
       <div className="item-info">
         <div className="item-info-img-container">
           {item.image ? (
-            <img className="item-info-img" src={item.image} alt={item.name} />
+            <>
+              {!isImageLoaded && <Preloader />}
+              <img
+                className="item-info-img"
+                src={item.image}
+                alt={item.name}
+                onLoad={handleImageLoad}
+              />
+              </>
           ) : (
             <div className="loader">
               <div className="item-image-loader-container">

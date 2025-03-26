@@ -8,7 +8,7 @@ import Cart from "./components/cart/cart";
 import ItemsInfo from "./components/sections/itemsInfo";
 import SearchResults from "./components/sections/searchResults";
 import CheckoutPage from "./components/checkout/checkout";
-import Faq from "./components/sections/faq";
+import Faq from "./components/faq/faq";
 import VerifyPage from "./components/checkout/verify";
 import ContactUs from "./components/contactUs/contactUs";
 

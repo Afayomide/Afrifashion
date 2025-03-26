@@ -1,99 +1,156 @@
-import "./contact.css"
-import { useState, useEffect } from "react"
-import axios from "axios"
-import {toast} from "react-hot-toast"
+"use client";
 
+import { useState } from "react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import "./contactUs.css";
 
-export default function ContactUs () {
-    const [fullName, setFullName] = useState("")
-    const [email, setEmail] = useState("")
-    const [message, setMessage] = useState("")
-    const [subject, setSubject] = useState("")
-    const apiUrl = process.env.REACT_APP_API_URL
+import { Send, User, Mail, MessageSquare, FileText } from "lucide-react";
 
+export default function ContactUs() {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [subject, setSubject] = useState("");
+  const [focused, setFocused] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
+  function sendEmail(e) {
+    e.preventDefault();
+    setSubmitting(true);
 
-    function sendEmail(e) {
-        e.preventDefault();
-    
-        const emailPromise = axios.post(`${apiUrl}/api/contactUs`, {
-            subject,
-            fullName,
-            email,
-            message
-        });
-    
-        toast.promise(
-            emailPromise,
-            {
-                loading: 'Sending message...',
-                success: 'Message sent successfully!',
-                error: 'Error sending email. Please try again.'
-            }
-        );
-    
-        emailPromise.then(() => {
-            setEmail("")
-            setMessage("")
-            setFullName("")
-            setSubject("")
-        });
-    }
+    const emailPromise = axios.post(`${apiUrl}/api/contactUs`, {
+      subject,
+      fullName,
+      email,
+      message,
+    });
 
+    toast.promise(emailPromise, {
+      loading: "Sending message...",
+      success: "Message sent successfully!",
+      error: "Error sending email. Please try again.",
+    });
 
-    return(
-        <div className="contact-us">
-             <form className='contact-us-form' onSubmit={sendEmail}>
-      <h3>Please contact us on any issue or special Order</h3> 
+    emailPromise
+      .then(() => {
+        setEmail("");
+        setMessage("");
+        setFullName("");
+        setSubject("");
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
+  }
 
-      
-      <div className='contact-form-input'>
-          <input className={`input-field`} 
-          type="text"
-           id='subject' 
-           onChange={(e) => setSubject(e.target.value)}
-           value={subject}
-             placeholder='subject'   
-             required
-            /> <br/>
-      </div>
+  const handleFocus = (field) => {
+    setFocused(field);
+  };
 
-      <div className='contact-form-input'>
-          <input className={`input-field`} 
-          type="text"
-           id='username' 
-           onChange={(e) => setFullName(e.target.value)}
-           value={fullName}
-             placeholder='Full Name'   
-             required
-            /> <br/>
-      </div>
-      
-      <div className='contact-form-input'>
-          <input className={`input-field`}
-           type="email" 
-           id='email' 
-           onChange={(e) => setEmail(e.target.value)}
-           value={email}
-             placeholder='email' 
-             required  
-            /> <br/>
-      </div>
+  const handleBlur = () => {
+    setFocused(null);
+  };
 
-        
-       <div className='contact-form-input'>
-          <textarea className={`input-field textarea`} 
-          placeholder='message'
-          onChange={(e) => setMessage(e.target.value)}
-          value={message}
-          required
+  return (
+    <div className="contact-container">
+      <div className="contact-card">
+        <div className="contact-header">
+          <h2>Get in Touch</h2>
+          <p>Please contact us with any questions or special orders</p>
+        </div>
+
+        <form className="contact-form" onSubmit={sendEmail}>
+          <div
+            className={`form-group ${focused === "subject" ? "focused" : ""} ${
+              subject ? "has-value" : ""
+            }`}
           >
-          </textarea><br/>
-        </div>
-        <button type="submit">contact</button>
+            <div className="input-icon">
+              <FileText size={18} />
+            </div>
+            <input
+              type="text"
+              id="subject"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              onFocus={() => handleFocus("subject")}
+              onBlur={handleBlur}
+              required
+            />
+            <label htmlFor="subject">Subject</label>
+          </div>
 
-      </form>
-      
-        </div>
-    )
+          <div
+            className={`form-group ${focused === "fullName" ? "focused" : ""} ${
+              fullName ? "has-value" : ""
+            }`}
+          >
+            <div className="input-icon">
+              <User size={18} />
+            </div>
+            <input
+              type="text"
+              id="fullName"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              onFocus={() => handleFocus("fullName")}
+              onBlur={handleBlur}
+              required
+            />
+            <label htmlFor="fullName">Full Name</label>
+          </div>
+
+          <div
+            className={`form-group ${focused === "email" ? "focused" : ""} ${
+              email ? "has-value" : ""
+            }`}
+          >
+            <div className="input-icon">
+              <Mail size={18} />
+            </div>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onFocus={() => handleFocus("email")}
+              onBlur={handleBlur}
+              required
+            />
+            <label htmlFor="email">Email Address</label>
+          </div>
+
+          <div
+            className={`form-group ${focused === "message" ? "focused" : ""} ${
+              message ? "has-value" : ""
+            }`}
+          >
+            <div className="input-icon textarea-icon">
+              <MessageSquare size={18} />
+            </div>
+            <textarea
+              id="message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onFocus={() => handleFocus("message")}
+              onBlur={handleBlur}
+              required
+            ></textarea>
+            <label htmlFor="message">Your Message</label>
+          </div>
+
+          <button
+            type="submit"
+            className={`submit-button ${submitting ? "submitting" : ""}`}
+            disabled={submitting}
+          >
+            <span className="button-text">Send Message</span>
+            <Send size={18} className="send-icon" />
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 }

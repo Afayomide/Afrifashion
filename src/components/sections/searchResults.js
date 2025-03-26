@@ -17,6 +17,7 @@ function SearchResults() {
       `${process.env.REACT_APP_API_URL}/api/search`,
       { searchTerm }
     );
+    console.log(searchTerm, response.data.result);
     return response.data.result;
   };
 
@@ -27,7 +28,7 @@ function SearchResults() {
   } = useQuery({
     queryKey: ["searchResults", searchTerm],
     queryFn: fetchSearchResults,
-    enabled: shouldSearch && !!searchTerm,
+    enabled: !!searchTerm,
     staleTime: 2 * 60 * 1000,
     refetchInterval: 2 * 60 * 1000,
     onSuccess: () => setShouldSearch(false), 

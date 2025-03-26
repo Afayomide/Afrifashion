@@ -1,16 +1,18 @@
-import React, { useState, useContext, useEffect } from "react";
+"use client";
+
+import { useState, useContext, useEffect } from "react";
 import "./form.css";
 import { useNavigate, Link } from "react-router-dom";
-import { BsEyeFill } from "react-icons/bs";
-import { BsEyeSlashFill } from "react-icons/bs";
 import axios from "axios";
 import { ProductContext } from "../productContext";
 import { toast } from "react-hot-toast";
+import { Eye, EyeOff, Mail, Lock, LogIn, UserPlus, Loader } from "lucide-react";
 
 export default function Login() {
   const [check, setCheck] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [focused, setFocused] = useState(null);
   const {
     authenticated,
     setAuthenticated,
@@ -49,7 +51,12 @@ export default function Login() {
   }, []);
 
   if (authenticated === null) {
-    return <p>Loading...</p>; // Or a spinner/loading component
+    return (
+      <div className="auth-loading">
+        <Loader size={40} className="spinner" />
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   const fetchData = async (Token) => {
@@ -99,13 +106,16 @@ export default function Login() {
   };
 
   function handlePassword() {
-    if (changePassword === true) {
-      setChangePassword(false);
-    }
-    if (changePassword === false) {
-      setChangePassword(true);
-    }
+    setChangePassword(!changePassword);
   }
+
+  const handleFocus = (field) => {
+    setFocused(field);
+  };
+
+  const handleBlur = () => {
+    setFocused(null);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -148,72 +158,104 @@ export default function Login() {
   };
 
   return (
-    <div>
-      {/* <img src={formbg} alt='login background' className='auth-bg-image'/> */}
-      <form className="auth-form" onSubmit={handleLogin}>
-        <h3>Login</h3>
-        <div className="orange">
-          {check === true ? "checking your details....." : ""}
-        </div>
-        <div className="error">{err} </div>
-        <div className="auth-form-input">
-          <div>
-            <input
-              className="input-field"
-              type="text"
-              id="email"
-              value={email}
-              onChange={(e) => {
-                setErr("");
-                setEmail(e.target.value);
-              }}
-              placeholder="email"
-            />{" "}
-            <br />
-            <small>test user: johndoe@gmail.com</small>
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="auth-card">
+          <div className="auth-header">
+            <LogIn className="auth-icon" size={28} />
+            <h2>Welcome Back</h2>
+            <p>Sign in to your account</p>
           </div>
-        </div>
 
-        <div className="auth-form-input">
-          <div>
-            <div className="pwd-input-icons">
+          {check && (
+            <div className="auth-status checking">
+              <Loader size={20} className="spinner" />
+              <span>Checking your details...</span>
+            </div>
+          )}
+
+          {err && (
+            <div className="auth-status error">
+              <span>{err}</span>
+            </div>
+          )}
+
+          <form className="auth-form" onSubmit={handleLogin}>
+            <div
+              className={`form-group ${focused === "email" ? "focused" : ""} ${
+                email ? "has-value" : ""
+              }`}
+            >
+              <div className="input-icon">
+                <Mail size={18} />
+              </div>
               <input
-                className="pwd-input-field input-field"
+                className="input-field"
+                type="text"
+                id="email"
+                value={email}
+                onFocus={() => handleFocus("email")}
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setErr("");
+                  setEmail(e.target.value);
+                }}
+                required
+              />
+              <label htmlFor="email">Email Address</label>
+              <small className="helper-text">
+                test user: johndoe@gmail.com
+              </small>
+            </div>
+
+            <div
+              className={`form-group ${
+                focused === "password" ? "focused" : ""
+              } ${password ? "has-value" : ""}`}
+            >
+              <div className="input-icon">
+                <Lock size={18} />
+              </div>
+              <input
+                className="input-field"
                 type={changePassword ? "password" : "text"}
                 id="password"
                 value={password}
+                onFocus={() => handleFocus("password")}
+                onBlur={handleBlur}
                 onChange={(e) => {
                   setErr("");
                   setPassword(e.target.value);
                 }}
-                placeholder="password"
-              />{" "}
-              <div className="pwd-icons" onClick={handlePassword}>
-                {" "}
-                {changePassword ? (
-                  <BsEyeFill className="eye" />
-                ) : (
-                  <BsEyeSlashFill className="eye" />
-                )}
-              </div>
-              <br/>
-          <small>test password: johndoe12#</small>
-            </div>  
-                
-          </div>
-      
-        
-        </div>
+                required
+              />
+              <label htmlFor="password">Password</label>
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={handlePassword}
+                aria-label={changePassword ? "Show password" : "Hide password"}
+              >
+                {changePassword ? <Eye size={18} /> : <EyeOff size={18} />}
+              </button>
+              <small className="helper-text">test password: johndoe12#</small>
+            </div>
 
-        <br />
-        <button type="submit">submit</button>
-        <small>
-          New user?{" "}
-          <Link className="form-small-link" to="/signup">
-            sign Up
-          </Link>
-        </small>
-      </form>
+            <button type="submit" className="auth-button">
+              <span>Sign In</span>
+              <LogIn size={18} />
+            </button>
+
+            <div className="auth-links">
+              <span>New user?</span>
+              <Link to="/signup" className="auth-link">
+                <span>Create Account</span>
+                <UserPlus size={16} />
+              </Link>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

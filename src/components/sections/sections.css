@@ -10,18 +10,7 @@
   height: 100vh;
   z-index: -1;
 } */
-.faq-bg-image {
-  filter: blur(50px);
-  opacity: 0.3;
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  margin: auto;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-}
+/* Removed .faq-bg-image styles */
 .add-to-cart {
   position: relative;
   background-color: var(--bgbuttons);
@@ -109,8 +98,21 @@
   align-items: flex-start;
   flex-wrap: wrap;
 }
-.faq-list-container {
+/* Reduced .faq-list styles */
+.faq-list {
   display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+.faq-list li {
+  width: 100%; /* Adjusted width */
+}
+.faq-list li p {
+  font-size: 0.9rem; /* Reduced font size */
+}
+.faq-list li p span {
+  font-size: 1rem; /* Reduced font size */
+  text-decoration: none; /* Removed underline */
 }
 .product-link {
   text-decoration: none;
@@ -156,28 +158,7 @@
   border-radius: 50%;
   animation: spin-anim 1.2s linear infinite;
 }
-.faq-list {
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-}
-.faq-list li {
-  width: 50%;
-}
-.faq-list li p {
-  font-weight: 600;
-  font-size: 1rem;
-}
-.faq-list li p span {
-  color: var(--navcolor);
-  font-weight: 800;
-  font-size: 1.2rem;
-
-  text-decoration: underline;
-}
+/* Removed media queries for .faq-list */
 .disabled-link {
   z-index: -10;
   pointer-events: none;
@@ -232,9 +213,6 @@
   .product-list p {
     font-size: 0.7rem;
   }
-  .faq-list li {
-    width: 70%;
-  }
 }
 
 @media (max-width: 470px) {
@@ -250,8 +228,5 @@
   .product-list img {
     width: 10rem;
     /* height: 10rem; */
-  }
-  .faq-list li {
-    width: 90%;
   }
 }
