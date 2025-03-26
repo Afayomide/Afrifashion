@@ -126,7 +126,6 @@ function Cart() {
       Array.isArray(clickedList) &&
       clickedList.find((item) => item._id === id)
     ) {
-      console.log("Item found in clickedList");
 
       const updatedClickedList = [...clickedList];
       const clickedItemToUpdate = updatedClickedList.find(
@@ -140,7 +139,6 @@ function Cart() {
         JSON.stringify(updatedClickedList)
       );
 
-      console.log("Updated clickedCartList:", updatedClickedList);
     }
   };
 

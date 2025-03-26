@@ -130,7 +130,7 @@ export default function Login() {
       const response = await axios.post(`${apiUrl}/api/auth/customer/login`, {
         email,
         password,
-      });
+      },{withCredentials:true});
 
       return response;
     };

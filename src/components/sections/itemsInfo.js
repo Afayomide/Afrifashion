@@ -1,14 +1,27 @@
-import { useContext, useEffect, useState} from "react";
+"use client";
+
+import { useContext, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import Preloader from "../../preloader";
 import "./itemsInfo.scss";
 import { ProductContext } from "../productContext";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
 import { Navigation, A11y, Pagination } from "swiper/modules";
-import { MdOutlineNavigateNext } from "react-icons/md";
-import { MdOutlineNavigateBefore } from "react-icons/md";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ShoppingCart,
+  ShoppingBag,
+  Trash2,
+  Tag,
+  DollarSign,
+  FactoryIcon as Fabric,
+  Info,
+  Phone,
+  MessageSquare,
+  Loader,
+} from "lucide-react";
 
 export default function ItemsInfo() {
   const [item, setItem] = useState([]);
@@ -35,18 +48,23 @@ export default function ItemsInfo() {
 
   useEffect(() => {
     async function fetchData() {
-      console.log(id);
-      const ItemInfo = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/aboutItem/${id}`
-      );
-      const relatedResponse = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/related-Items/${id}`
-      );
-      console.log(relatedResponse);
-      setItem(ItemInfo.data.item);
-      setRelatedItems(relatedResponse.data.relatedItems);
+      try {
+        const ItemInfo = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/aboutItem/${id}`
+        );
+        const relatedResponse = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/related-Items/${id}`
+        );
+        setItem(ItemInfo.data.item);
+        setRelatedItems(relatedResponse.data.relatedItems);
+      } catch (err) {
+        console.error("Error fetching item data:", err);
+        setError("Failed to load product information. Please try again later.");
+      }
     }
     fetchData();
+    // Reset image loaded state when ID changes
+    setIsImageLoaded(false);
   }, [id]);
 
   const clickedList =
@@ -54,8 +72,6 @@ export default function ItemsInfo() {
 
   const handleQuantityChange = (id, newQuantity, price) => {
     function updateClickedList() {
-      console.log("Item found in clickedList");
-
       const updatedClickedList = [...clickedList];
       const clickedItemToUpdate = updatedClickedList.find(
         (clickedItem) => clickedItem._id === id
@@ -67,8 +83,6 @@ export default function ItemsInfo() {
         "localClickedList",
         JSON.stringify(updatedClickedList)
       );
-
-      console.log("Updated clickedCartList:", updatedClickedList);
     }
 
     setSelectedQuantity(newQuantity);
@@ -80,7 +94,6 @@ export default function ItemsInfo() {
 
       if (!matchingCartItem) {
         console.error("Item with id", id, "not found in cartList");
-        console.log("cartlist:", cartList);
         return updateClickedList();
       }
 
@@ -94,7 +107,6 @@ export default function ItemsInfo() {
 
       if (!matchingInitialItem) {
         console.error("Item with id", id, "not found in initialItems");
-        console.log("initialItem:", initialItems);
         return updateClickedList();
       }
 
@@ -112,8 +124,6 @@ export default function ItemsInfo() {
         "localCartList",
         JSON.stringify(updatedInitialItems)
       );
-      console.log(updatedCartList);
-      console.log(updatedInitialItems);
     }
     if (
       Array.isArray(clickedList) &&
@@ -125,8 +135,8 @@ export default function ItemsInfo() {
 
   const scrollToTop = () => {
     window.scrollTo({
-      top: 0, // Scroll to the top of the page
-      behavior: "smooth", // Optional: smooth scrolling
+      top: 0,
+      behavior: "smooth",
     });
   };
 
@@ -159,7 +169,6 @@ export default function ItemsInfo() {
         JSON.parse(localStorage.getItem("localCartList")) || [];
       storedCartList.push(item);
       localStorage.setItem("localCartList", JSON.stringify(storedCartList));
-      console.log("Added item back to local cart:", item);
       setLocalCartLength(storedCartList.length);
       throw error;
     }
@@ -192,8 +201,6 @@ export default function ItemsInfo() {
     }
 
     localStorage.setItem("localCartList", JSON.stringify(storedCartList));
-    console.log("Updated local cart:", storedCartList);
-
     setLocalCartLength(storedCartList.length);
     setCartNo(storedCartList.length);
 
@@ -204,8 +211,6 @@ export default function ItemsInfo() {
           `${process.env.REACT_APP_API_URL}/api/cart/add`,
           { productId }
         );
-
-        console.log("Added fabric to server cart:", response.data);
       } catch (error) {
         console.error("Error adding to cart:", error);
         setError("An error occurred while adding to cart.");
@@ -215,139 +220,209 @@ export default function ItemsInfo() {
           (item) => item._id !== fabric._id
         );
         localStorage.setItem("localCartList", JSON.stringify(updatedCartList));
-        console.log("Removed fabric from local cart:", fabric);
         setLocalCartLength(updatedCartList.length);
       } finally {
         setShouldFetchCart(true);
       }
     }
   };
+
   function localClickedList(fabric) {
     const clickedList =
       JSON.parse(localStorage.getItem("localClickedList")) || [];
-    const clickedItemId = clickedList.find((item) => item._id === fabric._id); // Assuming 'id' is unique for each fabric
-    if (clickedItemId) {
-    } else {
+    const clickedItemId = clickedList.find((item) => item._id === fabric._id);
+    if (!clickedItemId) {
       const clickedItem = { ...fabric, newquantity: 1 };
       clickedList.push(clickedItem);
     }
     scrollToTop();
     localStorage.setItem("localClickedList", JSON.stringify(clickedList));
   }
-   const handleImageLoad = () => {
-     setIsImageLoaded(true);
-   };
+
+  const handleImageLoad = () => {
+    setIsImageLoaded(true);
+  };
+
+  const isInCart =
+    cartList.some((cartItem) => cartItem._id === item._id) ||
+    (JSON.parse(localStorage.getItem("localCartList")) || []).some(
+      (storedCartItem) => storedCartItem._id === item._id
+    );
 
   return (
-    <div>
+    <div className="product-page-container">
+      {error && (
+        <div className="error-message">
+          <p>{error}</p>
+        </div>
+      )}
+
       <div className="item-info">
         <div className="item-info-img-container">
-          {item.image ? (
-            <>
-              {!isImageLoaded && <Preloader />}
+          <div className="image-wrapper">
+            {!isImageLoaded && (
+              <div className="item-image-loader-container">
+                <Loader size={40} className="item-image-spinner" />
+              </div>
+            )}
+            {item.image && (
               <img
-                className="item-info-img"
-                src={item.image}
-                alt={item.name}
+                className={`item-info-img ${isImageLoaded ? "loaded" : ""}`}
+                src={item.image || "/placeholder.svg"}
+                alt={item.type || "Product image"}
                 onLoad={handleImageLoad}
               />
+            )}
+          </div>
+
+          <button
+            onClick={() =>
+              isInCart ? handleDelete(item) : handleAddToCart(item)
+            }
+            className={`cart-button ${
+              isInCart ? "remove-button" : "add-button"
+            }`}
+          >
+            {isInCart ? (
+              <>
+                <Trash2 size={18} />
+                <span>Remove From Cart</span>
               </>
-          ) : (
-            <div className="loader">
-              <div className="item-image-loader-container">
-                <div className="item-image-spinner"></div>
+            ) : (
+              <>
+                <ShoppingCart size={18} />
+                <span>Add To Cart</span>
+              </>
+            )}
+          </button>
+        </div>
+
+        <div className="item-details">
+          <h1 className="product-title">{item.type}</h1>
+
+          <div className="price-badge">
+            <DollarSign size={18} />
+            <span>${item.price}</span>
+          </div>
+
+          <div className="product-info-section">
+            <div className="info-label">
+              <Fabric size={16} />
+              <span>Material</span>
+            </div>
+            <p>{item.material}</p>
+          </div>
+
+          <div className="product-info-section">
+            <div className="info-label">
+              <Tag size={16} />
+              <span>Quantity</span>
+            </div>
+            <div className="quantity-selector">
+              <select
+                className="quantity-input"
+                onChange={(e) =>
+                  handleQuantityChange(id, Number.parseInt(e.target.value))
+                }
+                value={
+                  (Array.isArray(initialItems) &&
+                    initialItems.find((item) => item._id == id)?.newquantity) ||
+                  (Array.isArray(clickedList) &&
+                    clickedList.find((item) => item._id == id)?.newquantity) ||
+                  selectedQuantity
+                }
+              >
+                {Array.from(
+                  {
+                    length: item.quantity || 1,
+                  },
+                  (_, i) => i + 1
+                ).map((optionValue) => (
+                  <option key={optionValue} value={optionValue}>
+                    {optionValue}
+                  </option>
+                ))}
+              </select>
+              <span className="unit-label">
+                {item.name === "fabric"
+                  ? selectedQuantity === 1
+                    ? "yard"
+                    : "yards"
+                  : ""}
+              </span>
+            </div>
+          </div>
+
+          <div className="product-info-section">
+            <div className="info-label">
+              <DollarSign size={16} />
+              <span>Total Price</span>
+            </div>
+            <p className="total-price">
+              $
+              {clickedList.find((clickedItem) => clickedItem._id === id)
+                ?.newprice ||
+                initialItems.find((item) => item._id == id)?.price ||
+                item.price}
+            </p>
+          </div>
+
+          <div className="product-info-section description-section">
+            <div className="info-label">
+              <Info size={16} />
+              <span>Description</span>
+            </div>
+            <p className="description">{item.description}</p>
+          </div>
+
+          <div className="product-info-section contact-section">
+            <p>
+              <MessageSquare size={16} />
+              <span>Need a special order?</span>
+              <a href="/contact" className="contact-link">
+                Contact our wholesales team
+              </a>
+              or call{" "}
+              <a href="tel:+234-8142360551" className="phone-link">
+                <Phone size={14} /> +234-8142360551
+              </a>
+            </p>
+          </div>
+
+          {item.instructions && (
+            <div className="product-info-section instructions-section">
+              <div className="info-label">
+                <Info size={16} />
+                <span>Instructions</span>
               </div>
+              <p>{item.instructions}</p>
             </div>
           )}
-          {cartList.some((cartItem) => cartItem._id === item._id) ||
-          (JSON.parse(localStorage.getItem("localCartList")) || []).some(
-            (storedCartItem) => storedCartItem._id === item._id
-          ) ? (
-            <button
-              onClick={() => handleDelete(item)}
-              className="already-in-cart"
-            >
-              Remove From Cart
-            </button>
-          ) : (
-            <button
-              onClick={() => handleAddToCart(item)}
-              className="add-to-cart"
-            >
-              Add To Cart
-            </button>
-          )}
-        </div>
-        <div className="item-details">
-          <p className="type">{item.type}</p>
-          <p className="price">${item.price}</p>
-          <p className="material">
-            <span>Material</span>
-            <br />
-            {item.material}
-          </p>
-          <div>
-            <span>Quantity</span>
-            <br />
-            <select
-              className="quantity-input"
-              onChange={(e) =>
-                handleQuantityChange(id, parseInt(e.target.value))
-              }
-              value={
-                (Array.isArray(initialItems) &&
-                  initialItems.find((item) => item._id == id)?.newquantity) ||
-                (Array.isArray(clickedList) &&
-                  clickedList.find((item) => item._id == id)?.newquantity)
-              }
-            >
-              {Array.from(
-                {
-                  length: item.quantity,
-                },
-                (_, i) => i + 1
-              ).map((optionValue) => (
-                <option key={optionValue} value={optionValue}>
-                  {optionValue}
-                </option>
-              ))}
-            </select>
-          </div>
-          <p>
-            <span>Total Price</span> <br /> $
-            {clickedList.find((clickedItem) => clickedItem._id === id)
-              ?.newprice ||
-              initialItems.find((item) => item._id == id)?.price ||
-              item.price}
-          </p>
-          <p className="description">
-            <span>Description</span>
-            <br /> {item.description}
-          </p>
-          <p>
-            You want to make a special order?{" "}
-            <a href="">Contact our wholesales team</a> or call{" "}
-            <a href="tel:+234-8142360551 ">+234-8142360551 </a>
-          </p>
-          <p>
-            <span>Instructions</span>
-            <br />
-            {item.instructions}
-          </p>
         </div>
       </div>
+
       <div className="related-items">
-        <h4>more like this..</h4>
+        <div className="section-header">
+          <ShoppingBag size={20} />
+          <h2>More Like This</h2>
+        </div>
+
         <div className="related-container">
+          <div className="swiper-button-prev-custom">
+            <ChevronLeft size={20} />
+          </div>
+          <div className="swiper-button-next-custom">
+            <ChevronRight size={20} />
+          </div>
+
           <Swiper
             modules={[Navigation, Pagination, A11y]}
             navigation={{
               nextEl: ".swiper-button-next-custom",
               prevEl: ".swiper-button-prev-custom",
             }}
-            spaceBetween={5}
+            spaceBetween={20}
             slidesPerView={4}
-            loop={true}
             breakpoints={{
               320: {
                 slidesPerView: 2,
@@ -355,27 +430,24 @@ export default function ItemsInfo() {
               },
               480: {
                 slidesPerView: 2,
-                spaceBetween: 10,
+                spaceBetween: 15,
               },
               768: {
                 slidesPerView: 3,
-                spaceBetween: 15,
+                spaceBetween: 20,
               },
               1024: {
                 slidesPerView: 4,
-                spaceBetween: 20,
+                spaceBetween: 25,
               },
             }}
-            // pagination={{ clickable: true }}
-            // scrollbar={{ draggable: true }}
           >
-            {relatedItems?.map((item, index) => (
-              <SwiperSlide>
+            {relatedItems?.map((item) => (
+              <SwiperSlide key={item._id}>
                 <div
                   className={`related-product-list ${
                     item.outOfStock ? "out-of-stock" : ""
                   }`}
-                  key={item._id}
                 >
                   <Link
                     onClick={() => !item.outOfStock && localClickedList(item)}
@@ -384,30 +456,28 @@ export default function ItemsInfo() {
                     }`}
                     to={!item.outOfStock ? `/${item._id}` : "#"}
                   >
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className={item.outOfStock ? "out-of-stock-img" : ""}
-                    />
-                    <div className="related-product-link-texts">
-                      <p>{item.type}</p>
-                      <p>
-                        $<span>{item.price}</span> per yard
-                      </p>
-                      <p>
-                        <span>{item.quantity}</span> yards left
-                      </p>
+                    <div className="related-product-image">
+                      <img
+                        src={item.image || "/placeholder.svg"}
+                        alt={item.type}
+                        className={item.outOfStock ? "out-of-stock-img" : ""}
+                      />
+                    </div>
+                    <div className="related-product-info">
+                      <h3 className="related-product-title">{item.type}</h3>
+                      <div className="related-product-price">
+                        <span className="price-value">${item.price}</span> per
+                        yard
+                      </div>
+                      <div className="related-product-stock">
+                        <span className="stock-value">{item.quantity}</span>{" "}
+                        yards left
+                      </div>
                     </div>
                   </Link>
                 </div>
               </SwiperSlide>
             ))}
-            <div className="swiper-button-prev-custom">
-              <MdOutlineNavigateBefore />
-            </div>
-            <div className="swiper-button-next-custom">
-              <MdOutlineNavigateNext />{" "}
-            </div>
           </Swiper>
         </div>
       </div>

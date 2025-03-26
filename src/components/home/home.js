@@ -28,13 +28,13 @@ const Home = memo(() => {
           <Link to="/fabrics" className="home-link">
             All Fabrics
           </Link>
-          <Link to="/ankara" className="home-link">
+          <Link to="/search?q=ankara" className="home-link">
             Ankara
           </Link>
-          <Link to="/dansiki" className="home-link">
+          <Link to="/search?q=dansiki" className="home-link">
             Dansiki
           </Link>
-          <Link to="/lace" className="home-link">
+          <Link to="/search?q=lace" className="home-link">
             lace
           </Link>
         </div>

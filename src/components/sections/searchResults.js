@@ -17,7 +17,6 @@ function SearchResults() {
       `${process.env.REACT_APP_API_URL}/api/search`,
       { searchTerm }
     );
-    console.log(searchTerm, response.data.result);
     return response.data.result;
   };
 

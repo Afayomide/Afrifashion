@@ -19,7 +19,6 @@ const useFabricStore = create((set, get) => ({
       );
 
       const newFabrics = response.data.fabrics;
-      console.log("called")
 
       if (JSON.stringify(newFabrics) !== JSON.stringify(get().fabricsList)) {
         set({ fabricsList: newFabrics, error: null });
