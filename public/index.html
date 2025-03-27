@@ -4,54 +4,108 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="rgb(13, 13, 77)" />
-    <meta name="description"content="Web site created using create-react-app"/>
+    <meta name="theme-color" content="#0D4D8D" />
+    
+    <!-- Primary Meta Tags -->
+    <title>NativeFabs | Authentic African Fabrics & Fashion</title>
+    <meta name="title" content="NativeFabs | Authentic African Fabrics & Fashion">
+    <meta name="description" content="Discover premium African fabrics including Ankara, Aso Oke, Dansiki, and Lace. Authentic designs with rich cultural heritage, shipped worldwide.">
+    <meta name="keywords" content="African fabrics, Ankara, Aso Oke, Dansiki, Lace, African fashion, traditional fabrics, cultural textiles">
+    <meta name="author" content="NativeFabs">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://afroroyals.com/">
+    <meta property="og:title" content="NativeFabs | Authentic African Fabrics & Fashion">
+    <meta property="og:description" content="Discover premium African fabrics including Ankara, Aso Oke, Dansiki, and Lace. Authentic designs with rich cultural heritage, shipped worldwide.">
+    <meta property="og:image" content="%PUBLIC_URL%/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://afroroyals.com/">
+    <meta property="twitter:title" content="NativeFabs | Authentic African Fabrics & Fashion">
+    <meta property="twitter:description" content="Discover premium African fabrics including Ankara, Aso Oke, Dansiki, and Lace. Authentic designs with rich cultural heritage, shipped worldwide.">
+    <meta property="twitter:image" content="%PUBLIC_URL%/og-image.jpg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://afroroyals.com/">
+    
+    <!-- Favicon and App Icons -->
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png" />
     <link rel="manifest" href="%PUBLIC_URL%/site.webmanifest" />
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
-    <title>Afro Royals</title>
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Store",
+        "name": "NativeFabs",
+        "description": "Premium African fabrics, clothing, and accessories showcasing the rich heritage and craftsmanship of African textiles.",
+        "image": "%PUBLIC_URL%/og-image.jpg",
+        <!-- "url": "https://afroroyals.com", -->
+        "telephone": "+2348051539903",
+        "priceRange": "$$",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "Nigeria"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          <!-- "target": "https://afroroyals.com/search?q={search_term_string}", -->
+          "query-input": "required name=search_term_string"
+        },
+        "sameAs": [
+          <!-- "https://facebook.com/afroroyals",
+          "https://instagram.com/afroroyals" -->
+        ]
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-   <script>
-                var url = 'https://wati-integration-prod-service.clare.ai/v2/watiWidget.js?9015';
-                var s = document.createElement('script');
-                s.type = 'text/javascript';
-                s.async = true;
-                s.src = url;
-                var options = {
-                "enabled":true,
-                "chatButtonSetting":{
-                    "backgroundColor":"#000000",
-                    "ctaText":"Chat with us",
-                    "borderRadius":"25",
-                    "marginLeft": "0",
-                    "marginRight": "20",
-                    "marginBottom": "20",
-                    "ctaIconWATI":false,
-                    "position":"right"
-                },
-                "brandSetting":{
-                    "brandName":"AfroRoyal",
-                    "brandSubTitle":"undefined",
-                    "brandImg":"https://www.wati.io/wp-content/uploads/2023/04/Wati-logo.svg",
-                    "welcomeText":"Hi there!\nHow can I help you?",
-                    "messageText":"Hello, %0A",
-                    "backgroundColor":"#000000",
-                    "ctaText":"Chat with us",
-                    "borderRadius":"25",
-                    "autoShow":false,
-                    "phoneNumber":"2348051539903"
-                }
-                };
-                s.onload = function() {
-                    CreateWhatsappChatWidget(options);
-                };
-                var x = document.getElementsByTagName('script')[0];
-                x.parentNode.insertBefore(s, x);
-            </script>
+    <script>
+      var url = 'https://wati-integration-prod-service.clare.ai/v2/watiWidget.js?9015';
+      var s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.async = true;
+      s.src = url;
+      var options = {
+        "enabled": true,
+        "chatButtonSetting": {
+          "backgroundColor": "#0D4D8D",
+          "ctaText": "Chat with us",
+          "borderRadius": "25",
+          "marginLeft": "0",
+          "marginRight": "20",
+          "marginBottom": "20",
+          "ctaIconWATI": false,
+          "position": "right"
+        },
+        "brandSetting": {
+          "brandName": "NativeFabs",
+          "brandSubTitle": "Premium African Fabrics",
+          "brandImg": "%PUBLIC_URL%/logo.png",
+          "welcomeText": "Hi there!\nHow can we help you find the perfect African fabric today?",
+          "messageText": "Hello, I'm interested in your African fabrics. %0A",
+          "backgroundColor": "#0D4D8D",
+          "ctaText": "Chat with us",
+          "borderRadius": "25",
+          "autoShow": false,
+          "phoneNumber": "2348051539903"
+        }
+      };
+      s.onload = function() {
+        CreateWhatsappChatWidget(options);
+      };
+      var x = document.getElementsByTagName('script')[0];
+      x.parentNode.insertBefore(s, x);
+    </script>
   </body>
 </html>
+
