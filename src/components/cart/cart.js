@@ -49,13 +49,20 @@ function Cart() {
 
     return true;
   }
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchData = async () => {
       if (authenticated && mainLoading) {
         try {
           const response = await axios.get(
-            `${process.env.REACT_APP_API_URL}/api/cart/list`
+            `${process.env.REACT_APP_API_URL}/api/cart/list`,
+            {
+              withCredentials: true,
+              headers: {
+                Authorization: `Bearer ${token}`, // Correct way to send token
+              },
+            }
           );
 
           setCartList(response.data.cartItems);
@@ -126,7 +133,6 @@ function Cart() {
       Array.isArray(clickedList) &&
       clickedList.find((item) => item._id === id)
     ) {
-
       const updatedClickedList = [...clickedList];
       const clickedItemToUpdate = updatedClickedList.find(
         (clickedItem) => clickedItem._id === id
@@ -138,7 +144,6 @@ function Cart() {
         "localClickedList",
         JSON.stringify(updatedClickedList)
       );
-
     }
   };
 
@@ -161,6 +166,10 @@ function Cart() {
       const fetchUrl = `${process.env.REACT_APP_API_URL}/api/cart/delete`;
       await axios.delete(fetchUrl, {
         data: { productId },
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`, // Correct way to send token
+        },
       });
     } catch (error) {
       console.error("Error deleting from cart:", error);

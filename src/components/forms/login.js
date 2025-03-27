@@ -23,6 +23,7 @@ export default function Login() {
   const [err, setErr] = useState("");
   const [changePassword, setChangePassword] = useState(true);
   const apiUrl = process.env.REACT_APP_API_URL;
+      const token = localStorage.getItem("token");
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -31,6 +32,9 @@ export default function Login() {
           `${apiUrl}/api/auth/customer/checkAuth`,
           {
             withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`, // Correct way to send token
+            },
           }
         );
 
@@ -88,7 +92,12 @@ export default function Login() {
             const response = await axios.post(
               `${process.env.REACT_APP_API_URL}/api/cart/add`,
               { productId: cartItem._id },
-              { headers }
+              {
+                withCredentials: true,
+                headers: {
+                  Authorization: `Bearer ${token}`, // Correct way to send token
+                },
+              }
             );
             console.log("Added item to user cart:", response.data);
           } else {
@@ -131,7 +140,7 @@ export default function Login() {
         email,
         password,
       },{withCredentials:true});
-
+      localStorage.setItem("token", response.data.token);
       return response;
     };
 

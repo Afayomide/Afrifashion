@@ -1,9 +1,19 @@
-import React, { memo } from "react";
+"use client";
+
+import { memo } from "react";
 import Preloader from "../../preloader";
 import { ProductContext } from "../productContext";
 import { useEffect, useState, useContext, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import {
+  ShoppingCart,
+  Check,
+  AlertCircle,
+  DollarSign,
+  Package,
+} from "lucide-react";
+const token = localStorage.getItem("token");
 
 const Card = memo(function Card(props) {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
@@ -18,7 +28,7 @@ const Card = memo(function Card(props) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          setSlideInItems((prev) => new Set(prev).add(entry.target)); // Add item to set
+          setSlideInItems((prev) => new Set([...prev, entry.target])); // Add item to set
           observer.unobserve(entry.target); // Stop observing once item is visible
         }
       });
@@ -53,7 +63,13 @@ const Card = memo(function Card(props) {
         const productId = fabric._id;
         const response = await axios.post(
           `${process.env.REACT_APP_API_URL}/api/cart/add`,
-          { productId }
+          { productId },
+          {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`, // Correct way to send token
+            },
+          }
         );
       } catch (error) {
         setError("An error occurred while adding to cart.");
@@ -84,11 +100,15 @@ const Card = memo(function Card(props) {
     setIsImageLoaded(true);
   };
 
+  const isInCart = (
+    JSON.parse(localStorage.getItem("localCartList")) || []
+  ).some((storedCartItem) => storedCartItem._id === props._id);
+
   return (
     <div
       ref={(el) => (itemRefs.current[props.index] = el)}
       className={`home-product-list ${props.outOfStock ? "out-of-stock" : ""} ${
-        slideInItems.has(props.index) ? "slide-in" : ""
+        slideInItems.has(itemRefs.current[props.index]) ? "slide-in" : ""
       }`}
       key={props._id}
     >
@@ -102,7 +122,7 @@ const Card = memo(function Card(props) {
         <div className="fab-image-container">
           {!isImageLoaded && <Preloader />}
           <img
-            src={props.image}
+            src={props.image || "/placeholder.svg"}
             alt={props.name}
             className={`${props.outOfStock ? "out-of-stock-img" : ""} ${
               !isImageLoaded ? "hidden" : ""
@@ -112,37 +132,40 @@ const Card = memo(function Card(props) {
         </div>
 
         <div className="home-product-link-texts">
-          <p>{props.type}</p>
-          <p>
-            $<span>{props.price}</span> per yard
+          <p className="product-type">{props.type}</p>
+          <p className="product-price">
+            <DollarSign size={14} className="info-icon" />
+            <span>{props.price}</span> per yard
           </p>
-          <p>
+          <p className="product-quantity">
+            <Package size={14} className="info-icon" />
             <span>{props.quantity}</span> yards left
           </p>
         </div>
       </Link>
 
-      {(JSON.parse(localStorage.getItem("localCartList")) || []).some(
-        (storedCartItem) => storedCartItem._id === props._id
-      ) ? (
-        <Link to={`/${props._id}`}>
+      {isInCart ? (
+        <Link to={`/${props._id}`} className="cart-button-link">
           <button
             onClick={() => navigate(`/${props._id}`)}
-            className="home-cart-button already-in-cart"
+            className="cart-button already-in-cart"
           >
-            Added To Cart
+            <Check size={16} className="button-icon" />
+            <span>Added To Cart</span>
           </button>
         </Link>
       ) : !props.outOfStock ? (
         <button
-          className="home-cart-button add-to-cart"
+          className="cart-button add-to-cart"
           onClick={() => handleAddToCart(props)}
         >
-          Add to Cart
+          <ShoppingCart size={16} className="button-icon" />
+          <span>Add to Cart</span>
         </button>
       ) : (
-        <button className="home-cart-button out-of-stock-button">
-          Out Of Stock
+        <button className="cart-button out-of-stock-button">
+          <AlertCircle size={16} className="button-icon" />
+          <span>Out Of Stock</span>
         </button>
       )}
     </div>

@@ -45,6 +45,7 @@ export default function ItemsInfo() {
     );
     return storedQuantity || 1; // Default to 1 if no stored quantity
   });
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     async function fetchData() {
@@ -156,9 +157,14 @@ export default function ItemsInfo() {
       setLocalCartLength(updatedLocalCartList.length);
 
       if (authenticated) {
+        console.log(token)
         const fetchUrl = `${process.env.REACT_APP_API_URL}/api/cart/delete`;
         await axios.delete(fetchUrl, {
           data: { productId },
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`, // Correct way to send token
+          },
         });
       }
     } catch (error) {
@@ -205,11 +211,20 @@ export default function ItemsInfo() {
     setCartNo(storedCartList.length);
 
     if (authenticated) {
+      console.log(token)
       try {
         const productId = fabric._id;
         const response = await axios.post(
           `${process.env.REACT_APP_API_URL}/api/cart/add`,
-          { productId }
+          {
+            productId,
+          },
+          {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`, // Correct way to send token
+            },
+          }
         );
       } catch (error) {
         console.error("Error adding to cart:", error);
@@ -259,7 +274,7 @@ export default function ItemsInfo() {
 
       <div className="item-info">
         <div className="item-info-img-container">
-          <div className="image-wrapper">
+          <div className="item-info-image-wrapper">
             {!isImageLoaded && (
               <div className="item-image-loader-container">
                 <Loader size={40} className="item-image-spinner" />
@@ -279,7 +294,7 @@ export default function ItemsInfo() {
             onClick={() =>
               isInCart ? handleDelete(item) : handleAddToCart(item)
             }
-            className={`cart-button ${
+            className={`items-info-cart-button ${
               isInCart ? "remove-button" : "add-button"
             }`}
           >

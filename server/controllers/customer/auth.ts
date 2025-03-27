@@ -40,9 +40,10 @@ export const login =  async (req:Request, res:Response) => {
         httpOnly: true,   
         secure: process.env.NODE_ENV === 'production',  
         sameSite: sameSiteValue,  
-        maxAge: 4 * 24 * 60 * 60 * 1000 
+        maxAge: 4 * 24 * 60 * 60 * 1000 ,
+        domain: process.env.COOKIE_DOMAIN
       });
-      res.json({success: true, user});
+      res.json({success: true, user,token});
   
     } catch (error:any) {
       console.error('Error:', error.message);
@@ -83,11 +84,12 @@ export const login =  async (req:Request, res:Response) => {
   }
 
 export const logOut = async (req:Request, res:Response) => {
-    res.cookie('token', '', {
+    res.cookie("token", "", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Set to true in production for HTTPS
+      secure: process.env.NODE_ENV === "production", // Set to true in production for HTTPS
       sameSite: sameSiteValue,
-      maxAge: 0 
+      maxAge: 0,
+      domain: process.env.COOKIE_DOMAIN,
     });
   
     return res.status(200).json({ success: true, message: 'Logged out successfully' });

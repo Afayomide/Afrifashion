@@ -105,11 +105,8 @@ export const previewed = async (req: Request, res: Response) => {
 
   export const search = async (req: Request, res: Response) => {
     const { searchTerm } = req.body;
-    console.log(req.query);
-    console.log(req.params);
-    console.log(req.body);
+   
     try {
-      console.log(`this is ${searchTerm}`);
       const searchOptions = {
         $or: [
           { name: { $regex: searchTerm, $options: "i" } },
@@ -131,7 +128,6 @@ export const aboutItem = async (req: Request, res: Response) => {
 
     try {      
          const { fabricId } = req.params;
-         console.log(req.params)
       const item = await Clothes.findById(fabricId);
       if (item) {
         return res.json({ success: true, item });

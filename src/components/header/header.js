@@ -16,7 +16,7 @@ import { GiCrown } from "react-icons/gi";
 import { GrCircleQuestion } from "react-icons/gr";
 import { useLocation } from "react-router-dom";
 import { title } from "../globalPhrases";
-
+const token = localStorage.getItem("token")
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,7 +73,6 @@ function Header() {
         ) {
           const response = await fetch("https://geolocation-db.com/json/");
           const data = await response.json();
-          console.log("Fetching API");
 
           setUserLocation({
             ipaddress: data.IPv4,
@@ -115,9 +114,16 @@ function Header() {
 
   useEffect(() => {
     const checkAuth = async () => {
+      const token = localStorage.getItem("token");
       try {
         const response = await axios.get(
-          `${apiUrl}/api/auth/customer/checkAuth`
+          `${apiUrl}/api/auth/customer/checkAuth`,
+          {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`, // Correct way to send token
+            },
+          }
         );
 
         if (response.status === 200) {
@@ -158,7 +164,12 @@ function Header() {
         try {
           const response = await axios.get(
             `${process.env.REACT_APP_API_URL}/api/cart/list`,
-            {}
+            {
+              withCredentials: true,
+              headers: {
+                Authorization: `Bearer ${token}`, // Correct way to send token
+              },
+            }
           );
           const userCartItems = await response.data.cartItems;
           setCartList(response.data.cartItems);
@@ -202,7 +213,12 @@ function Header() {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/cart`,
-          {}
+          {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`, // Correct way to send token
+            },
+          }
         );
 
         setCartNo(response.data.cartLength);
@@ -251,7 +267,7 @@ function Header() {
       .then((response) => {
         const { success } = response.data;
         if (success) {
-          ["authToken", "localCartList", "fullname", "email"].forEach((item) =>
+          ["authToken","token", "localCartList", "fullname", "email"].forEach((item) =>
             localStorage.removeItem(item)
           );
           changeDisplay();

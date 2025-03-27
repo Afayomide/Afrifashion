@@ -1,13 +1,22 @@
+"use client";
+
 import Preloader from "../../preloader";
 import { Link } from "react-router-dom";
-import { useEffect, useState, memo } from "react";
+import { useState, memo } from "react";
 import { useContext } from "react";
 import axios from "axios";
 import "./cards.css";
+import {
+  ShoppingCart,
+  Check,
+  AlertCircle,
+  DollarSign,
+  Package,
+} from "lucide-react";
 
 import { ProductContext } from "../productContext";
 
-export function Card(props) {
+export const Card = memo(function Card(props) {
   const [error, setError] = useState(null);
   const {
     authenticated,
@@ -16,27 +25,23 @@ export function Card(props) {
     setLocalCartLength,
     cartList,
   } = useContext(ProductContext);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   function localClickedList(fabric) {
     const clickedList =
       JSON.parse(localStorage.getItem("localClickedList")) || [];
-    const clickedItemId = clickedList.find((item) => item._id === fabric._id); // Assuming 'id' is unique for each fabric
-    if (clickedItemId) {
-      console.log("already in");
-    } else {
+    const clickedItemId = clickedList.find((item) => item._id === fabric._id);
+    if (!clickedItemId) {
       const clickedItem = { ...fabric, newquantity: 1 };
       clickedList.push(clickedItem);
-      console.log(clickedItem);
-      console.log("not in");
     }
     localStorage.setItem("localClickedList", JSON.stringify(clickedList));
-    console.log(clickedList);
   }
 
   const handleAddToCart = async (fabric) => {
     const storedCartList =
       JSON.parse(localStorage.getItem("localCartList")) || [];
-    const fabricWithQuantity = { ...fabric, newquantity: 1 }; // Add newQuantity field with default value 1
+    const fabricWithQuantity = { ...fabric, newquantity: 1 };
     storedCartList.push(fabricWithQuantity);
     localStorage.setItem("localCartList", JSON.stringify(storedCartList));
 
@@ -50,10 +55,9 @@ export function Card(props) {
         }
 
         const productId = fabric._id;
-        const response = await axios.post(
-          `${process.env.REACT_APP_API_URL}/api/cart/add`,
-          { productId }
-        );
+        await axios.post(`${process.env.REACT_APP_API_URL}/api/cart/add`, {
+          productId,
+        });
       } catch (error) {
         console.error("Error adding to cart:", error);
         setError("An error occurred while adding to cart.");
@@ -62,18 +66,22 @@ export function Card(props) {
           (item) => item._id !== fabric._id
         );
         localStorage.setItem("localCartList", JSON.stringify(updatedCartList));
-        console.log("Removed fabric from local cart:", fabric);
       } finally {
         setShouldFetchCart(true);
       }
     }
   };
 
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-
   const handleImageLoad = () => {
     setIsImageLoaded(true);
   };
+
+  const isInCart =
+    cartList.some((cartItem) => cartItem._id === props._id) ||
+    (JSON.parse(localStorage.getItem("localCartList")) || []).some(
+      (storedCartItem) => storedCartItem._id === props._id
+    );
+
   return (
     <div
       className={`product-list ${props.outOfStock ? "out-of-stock" : ""}`}
@@ -87,11 +95,11 @@ export function Card(props) {
         <div
           className={`image-wrapper ${props.outOfStock ? "out-of-stock" : ""}`}
         >
-          <div className="section-fab-image-container">
+          <div className="fab-image-container">
             {!isImageLoaded && <Preloader />}
             <img
-              src={props.image}
-              alt={props.name}
+              src={props.image || "/placeholder.svg"}
+              alt={props.type}
               className={props.outOfStock ? "out-of-stock-img" : ""}
               onLoad={handleImageLoad}
             />
@@ -101,24 +109,23 @@ export function Card(props) {
           )}
         </div>
         <div className="product-link-texts">
-          <p>{props.type}</p>
-          <p>
-            <span>${props.price}</span> per yard
+          <p className="product-type">{props.type}</p>
+          <p className="product-price">
+            <DollarSign size={14} className="info-icon" />
+            <span>{props.price}</span> per yard
           </p>
-          <p>
+          <p className="product-quantity">
+            <Package size={14} className="info-icon" />
             <span>{props.quantity} yards</span> left
           </p>
         </div>
       </Link>
 
-      {cartList.some((cartItem) => cartItem._id === props._id) ||
-      (JSON.parse(localStorage.getItem("localCartList")) || []).some(
-        (storedCartItem) => storedCartItem._id === props._id
-      ) ? (
+      {isInCart ? (
         <button className="cart-button already-in-cart">
           <Link className="already-link" to={`/${props._id}`}>
-            {" "}
-            Added To Cart
+            <Check size={16} className="button-icon" />
+            <span>Added To Cart</span>
           </Link>
         </button>
       ) : !props.outOfStock ? (
@@ -126,13 +133,15 @@ export function Card(props) {
           className="cart-button add-to-cart"
           onClick={() => handleAddToCart(props)}
         >
-          Add to Cart
+          <ShoppingCart size={16} className="button-icon" />
+          <span>Add to Cart</span>
         </button>
       ) : (
         <button className="cart-button out-of-stock-button">
-          Out Of Stock
+          <AlertCircle size={16} className="button-icon" />
+          <span>Out Of Stock</span>
         </button>
       )}
     </div>
   );
-}
+});

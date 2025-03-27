@@ -85,6 +85,8 @@ function CheckoutPage() {
   };
 
   const handlePayment = async (e) => {
+          const token = localStorage.getItem("token");
+
     e.preventDefault();
     const localCartList =
       JSON.parse(localStorage.getItem("localCartList")) || [];
@@ -96,16 +98,25 @@ function CheckoutPage() {
     }));
 
     try {
-      const response = await axios.post(`${apiUrl}/api/pay`, {
-        email,
-        fullName,
-        amount: total,
-        clothesData,
-        redirectUrl: `${process.env.REACT_APP_URL}/verify`,
-        selectedCountry,
-        selectedState,
-        address,
-      });
+      const response = await axios.post(
+        `${apiUrl}/api/pay`,
+        {
+          email,
+          fullName,
+          amount: total,
+          clothesData,
+          redirectUrl: `${process.env.REACT_APP_URL}/verify`,
+          selectedCountry,
+          selectedState,
+          address,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`, // Correct way to send token
+          },
+        }
+      );
 
       if (response.data.status === "success") {
         console.log(response.data);

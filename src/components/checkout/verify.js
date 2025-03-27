@@ -37,6 +37,7 @@ function VerifyPage() {
   }, []);
 
   useEffect(() => {
+          const token = localStorage.getItem("token");
     async function verify() {
       if (!reference) {
         navigate("/");
@@ -45,11 +46,19 @@ function VerifyPage() {
       }
 
       try {
-        await toast.promise(axios.get(`${apiUrl}/api/verify/${reference}`), {
-          loading: "Verifying payment...",
-          success: "Payment verified successfully!",
-          error: "Error verifying payment. Please try again.",
-        });
+        await toast.promise(
+          axios.get(`${apiUrl}/api/verify/${reference}`, {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`, // Correct way to send token
+            },
+          }),
+          {
+            loading: "Verifying payment...",
+            success: "Payment verified successfully!",
+            error: "Error verifying payment. Please try again.",
+          }
+        );
         setIsLoading(false);
         setShouldFetchCart(true);
 
