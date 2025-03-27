@@ -341,7 +341,7 @@
 @media (max-width: 400px) {
   .product-list,
   .home-product-list {
-    width: 140px;
+    width: 45vw;
   }
 
   .fab-image-container,

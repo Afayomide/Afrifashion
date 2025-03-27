@@ -147,7 +147,7 @@
     margin: 0 2rem;
   }
   .home-product-list-container {
-    justify-content: space-between;
+    justify-content: space-evenly;
   }
   .home-link {
     width: 5rem;
@@ -195,7 +195,14 @@
    .home-top-section-links{
     row-gap: .5rem;
   }
-   .home-link {
+  .home-links{
+    margin: 0;
+  }
+  .home-section-link{
+    margin-left: 2rem;
+  }
+   .home-link{
+    
     margin-top: .5rem !important;
     padding: .5rem .7rem;
   }
