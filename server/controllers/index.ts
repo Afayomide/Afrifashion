@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-const Clothes = require("../models/clothesSchema");
+const Products = require("../models/product");
 require("dotenv").config();
 const redis = require("redis");
 const nodemailer = require("nodemailer");
@@ -32,7 +32,7 @@ export const allFabrics = async (req: Request, res: Response) => {
       // 
       // else{
   
-      const fabrics = await Clothes.find();
+      const fabrics = await Products.find();
       if (fabrics) {
         // await client.set("fabrics", JSON.stringify(fabrics));
         // await client.expire("fabrics", 60 * 30);
@@ -56,15 +56,15 @@ export const previewed = async (req: Request, res: Response) => {
       // }
   
       const promises = [
-        Clothes.find({ type: "ankara" }).limit(5),
-        Clothes.find({ type: "aso-oke" }).limit(5),
-        Clothes.find({ type: "dansiki" }).limit(5),
-        Clothes.find({ type: "gele" }).limit(5),
-        Clothes.find({ type: "lace" }).limit(5),
-        Clothes.find({ type: "bogolanfini" }).limit(5),
-        Clothes.find({ type: "kente" }).limit(5),
-        Clothes.find({ type: "senufoCloth" }).limit(5),
-        Clothes.find({ type: "shweshwe" }).limit(5),
+        Products.find({ type: "ankara" }).limit(5),
+        Products.find({ type: "aso-oke" }).limit(5),
+        Products.find({ type: "dansiki" }).limit(5),
+        Products.find({ type: "gele" }).limit(5),
+        Products.find({ type: "lace" }).limit(5),
+        Products.find({ type: "bogolanfini" }).limit(5),
+        Products.find({ type: "kente" }).limit(5),
+        Products.find({ type: "senufoCloth" }).limit(5),
+        Products.find({ type: "shweshwe" }).limit(5),
       ];
   
       const [
@@ -117,7 +117,7 @@ export const previewed = async (req: Request, res: Response) => {
         ],
       };
   
-      const result = await Clothes.find(searchOptions);
+      const result = await Products.find(searchOptions);
       res.json({ result });
     } catch (error) {
       console.error(error);
@@ -128,7 +128,7 @@ export const aboutItem = async (req: Request, res: Response) => {
 
     try {      
          const { fabricId } = req.params;
-      const item = await Clothes.findById(fabricId);
+      const item = await Products.findById(fabricId);
       if (item) {
         return res.json({ success: true, item });
       }
@@ -142,13 +142,13 @@ export const aboutItem = async (req: Request, res: Response) => {
       const { fabricId } = req.params;
   
       // Find the fabric by ID
-      const fabric = await Clothes.findById(fabricId);
+      const fabric = await Products.findById(fabricId);
       if (!fabric) {
         return res.status(404).json({ message: "Fabric not found" });
       }
   
       // Find related items based on color, fabricType, or pattern
-      const relatedItems = await Clothes.find({
+      const relatedItems = await Products.find({
         _id: { $ne: fabric._id }, // Exclude the current fabric
         $or: [
           { color: fabric.color },

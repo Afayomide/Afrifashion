@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 require('dotenv').config();
 const Customer =  require("../../models/customer");
-const Clothes = require("../../models/clothesSchema")
+const Product = require("../../models/product")
 
 export const cartList = async (req:Request, res:Response) => {
     const id = req.user.userId; 
@@ -11,7 +11,7 @@ export const cartList = async (req:Request, res:Response) => {
   
       if (customer) {
         const cartItems = customer.cart.map(async (itemId:string) => {
-          const item = await Clothes.findById(itemId); 
+          const item = await Product.findById(itemId); 
           return item;
         });
   
@@ -53,7 +53,7 @@ export const addToCart = async (req:Request, res:Response) => {
         return res.status(400).json({ message: 'Missing product ID' });
       }
   
-      const product = await Clothes.findById(productId);
+      const product = await Product.findById(productId);
       if (!product) {
         return res.status(404).json({ message: 'Product not found' });
       }

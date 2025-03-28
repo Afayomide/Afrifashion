@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-const ClothesSchema = new mongoose.Schema(
+const ProductSchema = new mongoose.Schema(
     {
        name: {
         type: String
@@ -43,6 +43,6 @@ const ClothesSchema = new mongoose.Schema(
     }
 )
 
-const Clothes = mongoose.model('Clothes data', ClothesSchema)
+const Product = mongoose.model('Product', ProductSchema)
 
-module.exports = Clothes
+module.exports = Product

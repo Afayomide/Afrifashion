@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const Clothes = require("./clothesSchema");
+const Product = require("./product");
 
 
 const CustomerSchema = new mongoose.Schema(
@@ -19,11 +19,11 @@ const CustomerSchema = new mongoose.Schema(
        },
        cart:[{
          type: mongoose.Schema.Types.ObjectId,
-         ref: 'Clothes', // Reference Clothes model     
+         ref: 'Product', // Reference Clothes model     
        }]
     }
 )
 
-const Customer = mongoose.model('Customers profile data', CustomerSchema)
+const Customer = mongoose.model('Customers', CustomerSchema)
 
 module.exports = Customer

@@ -20,7 +20,7 @@ const paymentRouter = require("./routes/customer/payments");
 const cartRouter = require("./routes/customer/cart");
 const adminAuthRouter = require("./routes/admin/auth");
 const customerAuthRouter = require("./routes/customer/auth");
-const Clothes = require("./models/clothesSchema")
+const Product = require("./models/product")
 
 
 const corsOptions = {
@@ -134,7 +134,7 @@ app.route("/api/related-items/:fabricId").get(relatedItems);
 app.route("/api/visitor").post(visitor)
 
 app.post("/api/changeFab", async (req:Request,res:Response) =>{
- var clothes = await Clothes.find()
+ var clothes = await Product.find()
  const imageUrls = [
   "https://www.dropbox.com/scl/fi/kqwc9t4mq1oicmpjwlyle/VL-8070_large.png?rlkey=1xogn72vn161urqqitgkfov01&st=sogx2kbk&raw=1",
   "https://www.dropbox.com/scl/fi/xouzlfudehty2l6vgq3zj/VL-8053_large.png?rlkey=t7phcqbcc2y8wqxx85f4aqs6f&st=57eduw3s&raw=1",
