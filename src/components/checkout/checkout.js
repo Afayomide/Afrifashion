@@ -29,6 +29,9 @@ function CheckoutPage() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [street, setStreet] = useState("");
+  const [postalCode, setPostalCode] = useState("");
   const [focused, setFocused] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -85,9 +88,22 @@ function CheckoutPage() {
   };
 
   const handlePayment = async (e) => {
-          const token = localStorage.getItem("token");
-
     e.preventDefault();
+
+    // Ensure all address-related fields are filled
+    if (
+      !street ||
+      !city ||
+      !postalCode ||
+      !address ||
+      !selectedCountry ||
+      !selectedState
+    ) {
+      toast.error("Please fill in all required address fields.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
     const localCartList =
       JSON.parse(localStorage.getItem("localCartList")) || [];
 
@@ -109,11 +125,14 @@ function CheckoutPage() {
           selectedCountry,
           selectedState,
           address,
+          city,
+          street,
+          postalCode,
         },
         {
           withCredentials: true,
           headers: {
-            Authorization: `Bearer ${token}`, // Correct way to send token
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -299,6 +318,72 @@ function CheckoutPage() {
                       classNamePrefix="react-select"
                       required
                     />
+                  </div>
+
+                  <div
+                    className={`form-group ${
+                      focused === "street" ? "focused" : ""
+                    } ${street ? "has-value" : ""}`}
+                  >
+                    <div className="input-icon">
+                      <MapPin size={18} />
+                    </div>
+                    <input
+                      className="input-field"
+                      type="text"
+                      id="street"
+                      onChange={(e) => setStreet(e.target.value)}
+                      value={street}
+                      placeholder="Street"
+                      onFocus={() => handleFocus("street")}
+                      onBlur={handleBlur}
+                      required
+                    />
+                    <label htmlFor="street">Street</label>
+                  </div>
+
+                  <div
+                    className={`form-group ${
+                      focused === "city" ? "focused" : ""
+                    } ${city ? "has-value" : ""}`}
+                  >
+                    <div className="input-icon">
+                      <Building size={18} />
+                    </div>
+                    <input
+                      className="input-field"
+                      type="text"
+                      id="city"
+                      onChange={(e) => setCity(e.target.value)}
+                      value={city}
+                      placeholder="City"
+                      onFocus={() => handleFocus("city")}
+                      onBlur={handleBlur}
+                      required
+                    />
+                    <label htmlFor="city">City</label>
+                  </div>
+
+                  <div
+                    className={`form-group ${
+                      focused === "postalCode" ? "focused" : ""
+                    } ${postalCode ? "has-value" : ""}`}
+                  >
+                    <div className="input-icon">
+                      <MapPin size={18} />
+                    </div>
+                    <input
+                      className="input-field"
+                      type="text"
+                      id="postalCode"
+                      onChange={(e) => setPostalCode(e.target.value)}
+                      value={postalCode}
+                      placeholder="Postal Code"
+                      onFocus={() => handleFocus("postalCode")}
+                      onBlur={handleBlur}
+                      required
+                    />
+                    <label htmlFor="postalCode">Postal Code</label>
                   </div>
 
                   <div

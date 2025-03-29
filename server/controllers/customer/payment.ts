@@ -7,6 +7,7 @@ const Order = require("../../models/order");
 const nodemailer = require("nodemailer");
 const PAYSTACK_SECRET_KEY = process.env.paystack_secret_key;
 
+
 export const pay = async (req: Request, res: Response) => {
   const {
     email,
@@ -15,10 +16,11 @@ export const pay = async (req: Request, res: Response) => {
     itemsData,
     redirectUrl,
     selectedCountry,
-    selectedCity,
+    city,
     postalCode,
     selectedState,
     address,
+    street,
   } = req.body;
 
   if (!Array.isArray(itemsData)) {
@@ -38,10 +40,11 @@ export const pay = async (req: Request, res: Response) => {
           email,
           name: fullName,
           country: selectedCountry,
-          city: selectedCity,
+          city: city,
           postalCode: postalCode,
           state: selectedState,
           address,
+          street
         },
         callback_url: redirectUrl,
       },
@@ -83,10 +86,10 @@ export const verifyPayment = async (req: Request, res: Response) => {
     );
     const { status, data } = response.data;
     const metaData = data.metadata;
-    const clothesData = data.metadata.clothesData;
+    const productData = data.metadata.productData;
 
     if (status && data.status === "success") {
-      const fabrics = clothesData.map((data: any) => ({
+      const fabrics = productData.map((data: any) => ({
         fabricId: data.clothesId,
         quantity: data.quantity,
         price: data.amount,
@@ -97,10 +100,11 @@ export const verifyPayment = async (req: Request, res: Response) => {
         name: metaData.name,
         shippingAddress: {
           country: metaData.country.label,
-          city: metaData.city.label,
+          city: metaData.city,
           state: metaData.state.label,
           address: metaData.address,
-          postalCode: metaData.PostalCode,
+          street: metaData.street,
+          postalCode: metaData.postalCode,
         },
         clothes: fabrics,
         totalAmount: data.amount / 100,
@@ -165,6 +169,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
       });
     }
   } catch (error: any) {
+    console.error(error)
     res.status(500).json({
       status: "error",
       message: "An error occurred while verifying payment",

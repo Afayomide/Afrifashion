@@ -117,7 +117,7 @@ const Card = memo(function Card(props) {
         className={`home-product-link ${
           props.status === "out of stock" ? "disabled-link" : ""
         }`}
-        to={!props.status === "in stock" ? `/${props._id}` : "#"}
+        to={props.status === "in stock" ? `/${props._id}` : "#"}
       >
         <div className="fab-image-container">
           {!isImageLoaded && <Preloader />}

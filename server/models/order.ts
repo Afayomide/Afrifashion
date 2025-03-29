@@ -22,7 +22,8 @@ export interface IOrder extends Document {
   paymentMethod: "Credit Card" | "PayPal" | "Bank Transfer";
   totalAmount: number;
   paymentReference: string;
-  paymentStatus: "pending" | "successful" | "failed";
+  paymentStatus: "pending" | "successful" | "failed" | "refunded";
+  orderStatus: "Processing" | "Shipped" | "Delivered" | "Cancelled";
   paymentGateway?: string;
   transactionDate?: Date;
   callbackUrl?: string;
@@ -82,7 +83,7 @@ const OrderSchema: Schema = new Schema({
   paymentMethod: {
     type: String,
     enum: ["Credit Card", "PayPal", "Bank Transfer"],
-    required: [true, "Order must have a payment method"],
+    required: [false, "Order must have a payment method"],
   },
   totalAmount: {
     type: Number,
@@ -113,4 +114,6 @@ const OrderSchema: Schema = new Schema({
   notes: String,
 });
 
-export const Order = mongoose.model<IOrder>("Order", OrderSchema);
+const Order = mongoose.model<IOrder>("Order", OrderSchema);
+
+module.exports = Order
