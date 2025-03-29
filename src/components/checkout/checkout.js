@@ -107,8 +107,8 @@ function CheckoutPage() {
     const localCartList =
       JSON.parse(localStorage.getItem("localCartList")) || [];
 
-    const clothesData = localCartList.map((item) => ({
-      clothesId: item._id,
+    const itemsData = localCartList.map((item) => ({
+      productId: item._id,
       quantity: item.newquantity,
       amount: item.price,
     }));
@@ -120,7 +120,7 @@ function CheckoutPage() {
           email,
           fullName,
           amount: total,
-          clothesData,
+          itemsData,
           redirectUrl: `${process.env.REACT_APP_URL}/verify`,
           selectedCountry,
           selectedState,
@@ -138,8 +138,7 @@ function CheckoutPage() {
       );
 
       if (response.data.status === "success") {
-        console.log(response.data);
-        console.log("success");
+     
         window.location.href = response.data.data.authorization_url;
       } else {
         toast.error("Payment initialization failed.");

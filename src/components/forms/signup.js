@@ -88,7 +88,6 @@ export default function Signup() {
         if (success) {
           toast.success("Account created successfully!");
           navigate("/login");
-          console.log(response.data);
           setErr(response.data.message);
         } else {
           console.error(response.data.message);

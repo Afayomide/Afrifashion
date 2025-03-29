@@ -7,7 +7,6 @@ const Order = require("../../models/order");
 const nodemailer = require("nodemailer");
 const PAYSTACK_SECRET_KEY = process.env.paystack_secret_key;
 
-
 export const pay = async (req: Request, res: Response) => {
   const {
     email,
@@ -44,7 +43,7 @@ export const pay = async (req: Request, res: Response) => {
           postalCode: postalCode,
           state: selectedState,
           address,
-          street
+          street,
         },
         callback_url: redirectUrl,
       },
@@ -89,8 +88,8 @@ export const verifyPayment = async (req: Request, res: Response) => {
     const productData = data.metadata.productData;
 
     if (status && data.status === "success") {
-      const fabrics = productData.map((data: any) => ({
-        fabricId: data.clothesId,
+      const products = productData.map((data: any) => ({
+        productId: data.productId,
         quantity: data.quantity,
         price: data.amount,
       }));
@@ -106,7 +105,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
           street: metaData.street,
           postalCode: metaData.postalCode,
         },
-        clothes: fabrics,
+        item: products,
         totalAmount: data.amount / 100,
         paymentReference: reference,
         paymentStatus: "successful",
@@ -117,18 +116,21 @@ export const verifyPayment = async (req: Request, res: Response) => {
 
       await newPayment.save();
 
-      for (const fabric of fabrics) {
-        const fabricItem = await Product.findById(fabric.fabricId);
-        if (fabricItem) {
-          fabricItem.quantity -= fabric.quantity;
+      for (const product of products) {
+        const item = await Product.findById(product.productId);
+        if (item) {
+          item.quantity -= product.quantity;
 
-          if (fabricItem.quantity <= 0) {
-            fabricItem.quantity = 0;
-            fabricItem.status = "out of stock";
-          } else if (fabricItem.quantity <= 20) {
-            fabricItem.status = "low stock";
+          if (item.quantity <= 0) {
+            item.quantity = 0;
+            item.status = "out of stock";
+          } else if (item.quantity <= 20) {
+            item.status = "low stock";
           }
-          await fabricItem.save();
+          await item.save();
+        }
+        else{
+          console.error("Product not found:", product.productId);
         }
       }
 
@@ -169,7 +171,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
       });
     }
   } catch (error: any) {
-    console.error(error)
+    console.error(error);
     res.status(500).json({
       status: "error",
       message: "An error occurred while verifying payment",

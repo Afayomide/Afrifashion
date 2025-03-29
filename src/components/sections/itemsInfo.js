@@ -157,7 +157,6 @@ export default function ItemsInfo() {
       setLocalCartLength(updatedLocalCartList.length);
 
       if (authenticated) {
-        console.log(token)
         const fetchUrl = `${process.env.REACT_APP_API_URL}/api/cart/delete`;
         await axios.delete(fetchUrl, {
           data: { productId },
@@ -211,7 +210,6 @@ export default function ItemsInfo() {
     setCartNo(storedCartList.length);
 
     if (authenticated) {
-      console.log(token)
       try {
         const productId = fabric._id;
         const response = await axios.post(

@@ -47,7 +47,6 @@ export default function Login() {
         }
       } catch (error) {
         setAuthenticated(false);
-        console.log(error);
       }
     };
 
@@ -99,9 +98,7 @@ export default function Login() {
                 },
               }
             );
-            console.log("Added item to user cart:", response.data);
           } else {
-            console.log("already exists");
           }
         })
       );
@@ -147,7 +144,6 @@ export default function Login() {
     toast.promise(loginPromise(), {
       loading: "Logging in...",
       success: (response) => {
-        console.log(response);
         const { success } = response.data;
 
         if (success) {
