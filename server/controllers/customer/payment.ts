@@ -120,7 +120,9 @@ export const verifyPayment = async (req: Request, res: Response) => {
 
           if (fabricItem.quantity <= 0) {
             fabricItem.quantity = 0;
-            fabricItem.outOfStock = true;
+            fabricItem.status = "out of stock";
+          } else if (fabricItem.quantity <= 20) {
+            fabricItem.status = "low stock";
           }
           await fabricItem.save();
         }

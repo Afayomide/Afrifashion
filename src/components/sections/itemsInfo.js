@@ -280,10 +280,10 @@ export default function ItemsInfo() {
                 <Loader size={40} className="item-image-spinner" />
               </div>
             )}
-            {item.image && (
+            {item.images && (
               <img
                 className={`item-info-img ${isImageLoaded ? "loaded" : ""}`}
-                src={item.image || "/placeholder.svg"}
+                src={item.images[0] || "/placeholder.svg"}
                 alt={item.type || "Product image"}
                 onLoad={handleImageLoad}
               />
@@ -317,7 +317,7 @@ export default function ItemsInfo() {
 
           <div className="price-badge">
             <DollarSign size={18} />
-            <span>${item.price}</span>
+            <span>{item.price}</span>
           </div>
 
           <div className="product-info-section">
@@ -461,21 +461,21 @@ export default function ItemsInfo() {
               <SwiperSlide key={item._id}>
                 <div
                   className={`related-product-list ${
-                    item.outOfStock ? "out-of-stock" : ""
+                    item.status === "in stock" ? "out-of-stock" : ""
                   }`}
                 >
                   <Link
-                    onClick={() => !item.outOfStock && localClickedList(item)}
+                    onClick={() => item.status === "in stock" && localClickedList(item)}
                     className={`related-product-link ${
-                      item.outOfStock ? "disabled-link" : ""
+                      item.status === "in stock" ? "disabled-link" : ""
                     }`}
-                    to={!item.outOfStock ? `/${item._id}` : "#"}
+                    to={item.status === "in stock" ? `/${item._id}` : "#"}
                   >
                     <div className="related-product-image">
                       <img
                         src={item.image || "/placeholder.svg"}
                         alt={item.type}
-                        className={item.outOfStock ? "out-of-stock-img" : ""}
+                        className={item.status === "in stock" ? "out-of-stock-img" : ""}
                       />
                     </div>
                     <div className="related-product-info">

@@ -235,7 +235,7 @@ function Cart() {
                 <div className="cart-item-image">
                   <Link to={`/${item._id}`}>
                     <img
-                      src={item.image || "/placeholder.svg"}
+                      src={item.images[0] || "/placeholder.svg"}
                       alt={item.name}
                     />
                   </Link>

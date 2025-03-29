@@ -84,27 +84,27 @@ export const Card = memo(function Card(props) {
 
   return (
     <div
-      className={`product-list ${props.outOfStock ? "out-of-stock" : ""}`}
+      className={`product-list ${props.status === "out of stock" ? "out-of-stock" : ""}`}
       key={props._id}
     >
       <Link
-        onClick={() => !props.outOfStock && localClickedList(props)}
-        className={`product-link ${props.outOfStock ? "disabled-link" : ""}`}
-        to={!props.outOfStock ? `/${props._id}` : "#"}
+        onClick={() => props.status === "in stock" && localClickedList(props)}
+        className={`product-link ${props.status === "out of stock" ? "disabled-link" : ""}`}
+        to={props.status === "in stock" ? `/${props._id}` : "#"}
       >
         <div
-          className={`image-wrapper ${props.outOfStock ? "out-of-stock" : ""}`}
+          className={`image-wrapper ${props.status === "out of stock" ? "out-of-stock" : ""}`}
         >
           <div className="fab-image-container">
             {!isImageLoaded && <Preloader />}
             <img
-              src={props.image || "/placeholder.svg"}
+              src={props.images[0] || "/placeholder.svg"}
               alt={props.type}
-              className={props.outOfStock ? "out-of-stock-img" : ""}
+              className={props.status === "out of stock" ? "out-of-stock-img" : ""}
               onLoad={handleImageLoad}
             />
           </div>
-          {props.outOfStock && (
+          {props.status === "out of stock" && (
             <div className="out-of-stock-overlay">Out Of Stock</div>
           )}
         </div>
@@ -128,7 +128,7 @@ export const Card = memo(function Card(props) {
             <span>Added To Cart</span>
           </Link>
         </button>
-      ) : !props.outOfStock ? (
+      ) : props.status === "in stock" ? (
         <button
           className="cart-button add-to-cart"
           onClick={() => handleAddToCart(props)}

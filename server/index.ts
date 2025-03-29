@@ -128,9 +128,9 @@ app.route("/api/clothespreview").get(previewed);
 
 app.route("/api/search").post(search);
 
-app.route("/api/aboutItem/:fabricId").get(aboutItem);
+app.route("/api/aboutItem/:productId").get(aboutItem);
 
-app.route("/api/related-items/:fabricId").get(relatedItems);
+app.route("/api/related-items/:productId").get(relatedItems);
 app.route("/api/visitor").post(visitor)
 
 app.post("/api/changeFab", async (req:Request,res:Response) =>{
