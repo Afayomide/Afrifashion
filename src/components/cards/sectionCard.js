@@ -84,23 +84,38 @@ export const Card = memo(function Card(props) {
 
   return (
     <div
-      className={`product-list ${props.status === "out of stock" ? "out-of-stock" : ""}`}
+      className={`product-list ${
+        props.status === "out of stock" ? "out-of-stock" : ""
+      }`}
       key={props._id}
     >
       <Link
-        onClick={() => props.status === "in stock" && localClickedList(props)}
-        className={`product-link ${props.status === "out of stock" ? "disabled-link" : ""}`}
-        to={props.status === "in stock" ? `/${props._id}` : "#"}
+        onClick={() =>
+          (props.status === "in stock" || props.status === "low stock") &&
+          localClickedList(props)
+        }
+        className={`product-link ${
+          props.status === "out of stock" ? "disabled-link" : ""
+        }`}
+        to={
+          props.status === "in stock" || props.status === "low stock"
+            ? `/${props._id}`
+            : "#"
+        }
       >
         <div
-          className={`image-wrapper ${props.status === "out of stock" ? "out-of-stock" : ""}`}
+          className={`image-wrapper ${
+            props.status === "out of stock" ? "out-of-stock" : ""
+          }`}
         >
           <div className="fab-image-container">
             {!isImageLoaded && <Preloader />}
             <img
               src={props.images[0] || "/placeholder.svg"}
               alt={props.type}
-              className={props.status === "out of stock" ? "out-of-stock-img" : ""}
+              className={
+                props.status === "out of stock" ? "out-of-stock-img" : ""
+              }
               onLoad={handleImageLoad}
             />
           </div>
@@ -128,7 +143,7 @@ export const Card = memo(function Card(props) {
             <span>Added To Cart</span>
           </Link>
         </button>
-      ) : props.status === "in stock" ? (
+      ) : props.status === "in stock" || props.status === "low stock" ? (
         <button
           className="cart-button add-to-cart"
           onClick={() => handleAddToCart(props)}

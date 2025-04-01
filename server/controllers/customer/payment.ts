@@ -6,6 +6,7 @@ const Product = require("../../models/product");
 const Order = require("../../models/order");
 const nodemailer = require("nodemailer");
 const PAYSTACK_SECRET_KEY = process.env.paystack_secret_key;
+import { SalesStats } from "../../models/stats";
 
 export const pay = async (req: Request, res: Response) => {
   const {
@@ -113,6 +114,16 @@ export const verifyPayment = async (req: Request, res: Response) => {
         transactionDate: new Date(),
         callbackUrl: data.callback_url || "",
       });
+      await SalesStats.findOneAndUpdate(
+        {},
+        {
+          $inc: {
+            totalRevenue: data.amount / 100,
+            totalOrders: 1,
+          },
+        },
+        { upsert: true }
+      );
 
       await newPayment.save();
 

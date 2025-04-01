@@ -107,26 +107,33 @@ const Card = memo(function Card(props) {
   return (
     <div
       ref={(el) => (itemRefs.current[props.index] = el)}
-      className={`home-product-list ${props.status === "out of stock" ? "out-of-stock" : ""} ${
-        slideInItems.has(itemRefs.current[props.index]) ? "slide-in" : ""
-      }`}
+      className={`home-product-list ${
+        props.status === "out of stock" ? "out-of-stock" : ""
+      } ${slideInItems.has(itemRefs.current[props.index]) ? "slide-in" : ""}`}
       key={props._id}
     >
       <Link
-        onClick={() => props.status === "in stock" && localClickedList(props)}
+        onClick={() =>
+          props.status === "in stock" ||
+          (props.status === "low stock" && localClickedList(props))
+        }
         className={`home-product-link ${
           props.status === "out of stock" ? "disabled-link" : ""
         }`}
-        to={props.status === "in stock" ? `/${props._id}` : "#"}
+        to={
+          props.status === "in stock" || props.status === "low stock"
+            ? `/${props._id}`
+            : "#"
+        }
       >
         <div className="fab-image-container">
           {!isImageLoaded && <Preloader />}
           <img
             src={props.images[0] || "/placeholder.svg"}
             alt={props.name}
-            className={`${props.status === "out of stock" ? "out-of-stock-img" : ""} ${
-              !isImageLoaded ? "hidden" : ""
-            }`}
+            className={`${
+              props.status === "out of stock" ? "out-of-stock-img" : ""
+            } ${!isImageLoaded ? "hidden" : ""}`}
             onLoad={handleImageLoad}
           />
         </div>
@@ -154,7 +161,7 @@ const Card = memo(function Card(props) {
             <span>Added To Cart</span>
           </button>
         </Link>
-      ) : props.status === "in stock" ? (
+      ) : props.status === "in stock" || props.status === "low stock" ? (
         <button
           className="cart-button add-to-cart"
           onClick={() => handleAddToCart(props)}

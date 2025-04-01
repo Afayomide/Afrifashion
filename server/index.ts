@@ -18,7 +18,6 @@ const redis = require("redis");
 const cookieParser = require("cookie-parser");
 const paymentRouter = require("./routes/customer/payments");
 const cartRouter = require("./routes/customer/cart");
-const adminAuthRouter = require("./routes/admin/auth");
 const customerAuthRouter = require("./routes/customer/auth");
 const Product = require("./models/product")
 
@@ -44,7 +43,6 @@ app.use(bodyParser.text());
 app.use("/api/cart", cartRouter);
 app.use("/api", paymentRouter);
 app.use("/api/auth/customer", customerAuthRouter);
-app.use("/api/auth/admin", adminAuthRouter);
 
 const dburl = process.env.dburl || "";
 
