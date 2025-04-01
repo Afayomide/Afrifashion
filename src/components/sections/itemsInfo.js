@@ -471,7 +471,7 @@ export default function ItemsInfo() {
                   >
                     <div className="related-product-image">
                       <img
-                        src={item.image || "/placeholder.svg"}
+                        src={item.images[0] || "/placeholder.svg"}
                         alt={item.type}
                         className={item.status === "in stock" ? "out-of-stock-img" : ""}
                       />
