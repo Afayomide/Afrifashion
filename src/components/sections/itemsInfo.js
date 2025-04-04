@@ -367,10 +367,7 @@ export default function ItemsInfo() {
           </div>
 
           <div className="product-info-section">
-            <div className="info-label">
-              <DollarSign size={16} />
-              <span>Total Price</span>
-            </div>
+            <span>Total Price: </span>
             <p className="total-price">
               $
               {clickedList.find((clickedItem) => clickedItem._id === id)
@@ -463,7 +460,9 @@ export default function ItemsInfo() {
                   }`}
                 >
                   <Link
-                    onClick={() => item.status === "in stock" && localClickedList(item)}
+                    onClick={() =>
+                      item.status === "in stock" && localClickedList(item)
+                    }
                     className={`related-product-link ${
                       item.status === "in stock" ? "disabled-link" : ""
                     }`}
@@ -473,7 +472,9 @@ export default function ItemsInfo() {
                       <img
                         src={item.images[0] || "/placeholder.svg"}
                         alt={item.type}
-                        className={item.status === "in stock" ? "out-of-stock-img" : ""}
+                        className={
+                          item.status === "in stock" ? "out-of-stock-img" : ""
+                        }
                       />
                     </div>
                     <div className="related-product-info">
