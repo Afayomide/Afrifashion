@@ -26,7 +26,8 @@ const corsOptions = {
   origin: [    
     "https://afrifashion.vercel.app",
     "http://localhost:3000",
-    "https://coolafristyles.web.app",
+    "https://nativefabs.com",
+    "https://www.nativefabs.com"
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],

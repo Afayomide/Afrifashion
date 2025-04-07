@@ -47,6 +47,7 @@ export default function ItemsInfo() {
   });
   const token = localStorage.getItem("token");
 
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -126,13 +127,18 @@ export default function ItemsInfo() {
         JSON.stringify(updatedInitialItems)
       );
     }
+
+
+
     if (
       Array.isArray(clickedList) &&
       clickedList.find((item) => item._id === id)
     ) {
       updateClickedList();
     }
+
   };
+
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -208,6 +214,7 @@ export default function ItemsInfo() {
     localStorage.setItem("localCartList", JSON.stringify(storedCartList));
     setLocalCartLength(storedCartList.length);
     setCartNo(storedCartList.length);
+
 
     if (authenticated) {
       try {

@@ -114,8 +114,8 @@ const Card = memo(function Card(props) {
     >
       <Link
         onClick={() =>
-          props.status === "in stock" ||
-          (props.status === "low stock" && localClickedList(props))
+          (props.status === "in stock" ||
+          props.status === "low stock") && localClickedList(props)
         }
         className={`home-product-link ${
           props.status === "out of stock" ? "disabled-link" : ""
