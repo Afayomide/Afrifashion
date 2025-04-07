@@ -463,24 +463,24 @@ export default function ItemsInfo() {
               <SwiperSlide key={item._id}>
                 <div
                   className={`related-product-list ${
-                    item.status === "in stock" ? "out-of-stock" : ""
+                    item.status === "out of stock" ? "out-of-stock" : ""
                   }`}
                 >
                   <Link
                     onClick={() =>
-                      item.status === "in stock" && localClickedList(item)
+                      (item.status === "in stock" || item.status === "low stock") && localClickedList(item)
                     }
                     className={`related-product-link ${
-                      item.status === "in stock" ? "disabled-link" : ""
+                      item.status === "out of stock" ? "disabled-link" : ""
                     }`}
-                    to={item.status === "in stock" ? `/${item._id}` : "#"}
+                    to={item.status === "in stock" || item.status === "low stock"? `/${item._id}` : "#"}
                   >
                     <div className="related-product-image">
                       <img
                         src={item.images[0] || "/placeholder.svg"}
                         alt={item.type}
                         className={
-                          item.status === "in stock" ? "out-of-stock-img" : ""
+                          item.status === "out of stock" ? "out-of-stock-img" : ""
                         }
                       />
                     </div>
