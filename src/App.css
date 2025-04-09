@@ -3,7 +3,7 @@
   /* --navcolor: rgb(41, 41, 92); */
   --navcolor: rgb(13, 13, 77);
   --fadenavcolor: rgba(41, 41, 92, 0.4);
-  --fontcolor: #fff;
+  --fontcolor: hsl(0, 0%, 100%);
   --color-primary: rgba(0, 0, 128, 0.3);
   --color-secondary: #ffcb03;
   --homebuttons: 2rem;

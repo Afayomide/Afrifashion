@@ -114,6 +114,7 @@ function Cart() {
     authenticated,
   ]);
 
+
   const handleQuantityChange = (id, itemIndex, newQuantity, price) => {
     const updatedCart = [...cartList];
     updatedCart[itemIndex].quantity = newQuantity;
@@ -123,6 +124,8 @@ function Cart() {
     updatedInitialItems[itemIndex].newquantity = newQuantity;
     updatedInitialItems[itemIndex].price =
       updatedCart[itemIndex].price * newQuantity;
+    updatedInitialItems[itemIndex].discountPrice =
+      updatedCart[itemIndex].discountPrice * newQuantity;
     setInitialItems(updatedInitialItems);
 
     localStorage.setItem("localCartList", JSON.stringify(updatedInitialItems));
@@ -138,7 +141,7 @@ function Cart() {
         (clickedItem) => clickedItem._id === id
       );
       clickedItemToUpdate.newquantity = newQuantity;
-      clickedItemToUpdate.newprice = newQuantity * clickedItemToUpdate.price;
+      clickedItemToUpdate.newprice = newQuantity * clickedItemToUpdate.discountPrice || newQuantity * clickedItemToUpdate.price;
 
       localStorage.setItem(
         "localClickedList",
@@ -185,9 +188,12 @@ function Cart() {
 
   useEffect(() => {
     if (cartList.length >= 0 && initialItems.length >= 0) {
-      setTotal(
-        initialItems.reduce((accumulator, obj) => accumulator + obj.price, 0)
-      );
+     setTotal(
+       initialItems.reduce((accumulator, obj) => {
+         var priceToUse = obj.discountPrice ?? obj.price;
+         return accumulator + priceToUse;
+       }, 0)
+     );
       localStorage.setItem(
         "total",
         initialItems.reduce((accumulator, obj) => accumulator + obj.price, 0)
@@ -285,7 +291,7 @@ function Cart() {
 
                     <p className="item-price">
                       <span className="label">Price:</span>
-                      <span className="value">${item.price}</span>
+                      <span className="value">${item.discountPrice || item.price}</span>
                     </p>
                   </div>
 

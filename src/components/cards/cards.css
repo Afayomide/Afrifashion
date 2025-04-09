@@ -102,6 +102,24 @@
   display: none;
 }
 
+/* Discount Badge */
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #d32f2f;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 /* Product Info Styles */
 .product-link-texts,
 .home-product-link-texts {
@@ -119,6 +137,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .product-type {
@@ -136,6 +155,26 @@
   color: var(--navcolor);
   font-weight: 700;
   margin-right: 0.25rem;
+}
+
+/* Discount Price Styles */
+.original-price {
+  text-decoration: line-through;
+  color: #777;
+  font-weight: 400 !important;
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+
+.discount-price {
+  color: #d32f2f !important;
+  font-weight: 700;
+}
+
+.per-unit {
+  font-weight: 400 !important;
+  color: #555;
+  font-size: 0.85rem;
 }
 
 /* Product Link */
@@ -279,6 +318,11 @@
   .product-type {
     font-size: 1rem !important;
   }
+
+  .discount-badge {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -319,6 +363,17 @@
     padding: 0.6em 0.8rem;
     font-size: 0.8rem;
   }
+
+  .discount-badge {
+    top: 5px;
+    right: 5px;
+    padding: 2px 4px;
+    font-size: 0.65rem;
+  }
+
+  .original-price {
+    font-size: 0.75rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -349,4 +404,3 @@
     height: 110px;
   }
 }
-

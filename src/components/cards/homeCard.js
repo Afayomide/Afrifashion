@@ -12,6 +12,7 @@ import {
   AlertCircle,
   DollarSign,
   Package,
+  Tag,
 } from "lucide-react";
 const token = localStorage.getItem("token");
 
@@ -104,6 +105,14 @@ const Card = memo(function Card(props) {
     JSON.parse(localStorage.getItem("localCartList")) || []
   ).some((storedCartItem) => storedCartItem._id === props._id);
 
+  // Check if product has a discount
+  const hasDiscount = props.discountPrice && props.discountPrice < props.price;
+
+  // Calculate discount percentage if there's a discount
+  const discountPercentage = hasDiscount
+    ? Math.round(((props.price - props.discountPrice) / props.price) * 100)
+    : 0;
+
   return (
     <div
       ref={(el) => (itemRefs.current[props.index] = el)}
@@ -114,8 +123,8 @@ const Card = memo(function Card(props) {
     >
       <Link
         onClick={() =>
-          (props.status === "in stock" ||
-          props.status === "low stock") && localClickedList(props)
+          (props.status === "in stock" || props.status === "low stock") &&
+          localClickedList(props)
         }
         className={`home-product-link ${
           props.status === "out of stock" ? "disabled-link" : ""
@@ -136,14 +145,32 @@ const Card = memo(function Card(props) {
             } ${!isImageLoaded ? "hidden" : ""}`}
             onLoad={handleImageLoad}
           />
+
+          {/* Discount badge */}
+          {hasDiscount && (
+            <div className="discount-badge">
+              <Tag size={12} />
+              <span>{discountPercentage}% OFF</span>
+            </div>
+          )}
         </div>
 
         <div className="home-product-link-texts">
           <p className="product-type">{props.type}</p>
+
+          {/* Price display with discount if available */}
           <p className="product-price">
-            <DollarSign size={14} className="info-icon" />
-            <span>{props.price}</span> per yard
+            {hasDiscount ? (
+              <>
+                <span className="original-price">${props.price}</span>
+                <span className="discount-price">${props.discountPrice}</span>
+              </>
+            ) : (
+              <span>${props.price}</span>
+            )}
+            <span className="per-unit"> per yard</span>
           </p>
+
           <p className="product-quantity">
             <Package size={14} className="info-icon" />
             <span>{props.quantity}</span> yards left

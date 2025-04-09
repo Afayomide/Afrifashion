@@ -47,7 +47,6 @@ export default function ItemsInfo() {
   });
   const token = localStorage.getItem("token");
 
-
   useEffect(() => {
     async function fetchData() {
       try {
@@ -79,7 +78,9 @@ export default function ItemsInfo() {
         (clickedItem) => clickedItem._id === id
       );
       clickedItemToUpdate.newquantity = newQuantity;
-      clickedItemToUpdate.newprice = newQuantity * clickedItemToUpdate.price;
+      clickedItemToUpdate.newprice =
+        newQuantity * clickedItemToUpdate.discountPrice ||
+        newQuantity * clickedItemToUpdate.Price;
 
       localStorage.setItem(
         "localClickedList",
@@ -119,6 +120,7 @@ export default function ItemsInfo() {
       updatedInitialItems.find((initialItem) => initialItem._id === id).price =
         newQuantity * item.price;
 
+
       setCartList(updatedCartList);
       setInitialItems(updatedInitialItems);
 
@@ -128,17 +130,13 @@ export default function ItemsInfo() {
       );
     }
 
-
-
     if (
       Array.isArray(clickedList) &&
       clickedList.find((item) => item._id === id)
     ) {
       updateClickedList();
     }
-
   };
-
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -192,10 +190,12 @@ export default function ItemsInfo() {
       JSON.parse(localStorage.getItem("localClickedList")) || [];
 
     const clickedItem = clickedCartList.find((item) => item._id === fabric._id);
+
     const fabricWithQuantity = {
       ...fabric,
       newquantity: clickedItem ? clickedItem.newquantity : 1,
-      price: clickedItem ? clickedItem.newprice : fabric.price,
+      price: clickedItem?.newprice ?? fabric.price,
+      discountPrice: clickedItem?.newprice ?? fabric.discountPrice,
     };
 
     // Check if the item already exists in the local cart
@@ -247,6 +247,7 @@ export default function ItemsInfo() {
     }
   };
 
+
   function localClickedList(fabric) {
     const clickedList =
       JSON.parse(localStorage.getItem("localClickedList")) || [];
@@ -293,6 +294,17 @@ export default function ItemsInfo() {
                 onLoad={handleImageLoad}
               />
             )}
+            {item.discountPrice && item.discountPrice < item.price && (
+              <div className="discount-badge">
+                <Tag size={12} />
+                <span>
+                  {Math.round(
+                    ((item.price - item.discountPrice) / item.price) * 100
+                  )}
+                  % OFF
+                </span>
+              </div>
+            )}
           </div>
 
           <button
@@ -320,9 +332,23 @@ export default function ItemsInfo() {
         <div className="item-details">
           <h1 className="product-title">{item.type}</h1>
 
-          <div className="price-badge">
-            <DollarSign size={18} />
-            <span>{item.price}</span>
+          <div className="price-container">
+            {item.discountPrice && item.discountPrice < item.price ? (
+              <>
+                <div className="price-badge">
+                  <span className="original-price">${item.price}</span>
+                </div>
+                <div className="price-badge discount-price-badge">
+                  <DollarSign size={18} />
+                  <span>{item.discountPrice}</span>
+                </div>
+              </>
+            ) : (
+              <div className="price-badge">
+                <DollarSign size={18} />
+                <span>{item.price}</span>
+              </div>
+            )}
           </div>
 
           <div className="product-info-section">
@@ -374,13 +400,18 @@ export default function ItemsInfo() {
           </div>
 
           <div className="product-info-section">
-            <span>Total Price: </span>
+            <div className="info-label">
+              <DollarSign size={16} />
+              <span>Total Price</span>
+            </div>
             <p className="total-price">
               $
               {clickedList.find((clickedItem) => clickedItem._id === id)
                 ?.newprice ||
-                initialItems.find((item) => item._id == id)?.price ||
-                item.price}
+                initialItems.find((item) => item._id == id)?.discountPrice ||
+                (item.discountPrice && item.discountPrice < item.price
+                  ? item.discountPrice * selectedQuantity
+                  : item.price * selectedQuantity)}
             </p>
           </div>
 
@@ -468,19 +499,27 @@ export default function ItemsInfo() {
                 >
                   <Link
                     onClick={() =>
-                      (item.status === "in stock" || item.status === "low stock") && localClickedList(item)
+                      (item.status === "in stock" ||
+                        item.status === "low stock") &&
+                      localClickedList(item)
                     }
                     className={`related-product-link ${
                       item.status === "out of stock" ? "disabled-link" : ""
                     }`}
-                    to={item.status === "in stock" || item.status === "low stock"? `/${item._id}` : "#"}
+                    to={
+                      item.status === "in stock" || item.status === "low stock"
+                        ? `/${item._id}`
+                        : "#"
+                    }
                   >
                     <div className="related-product-image">
                       <img
                         src={item.images[0] || "/placeholder.svg"}
                         alt={item.type}
                         className={
-                          item.status === "out of stock" ? "out-of-stock-img" : ""
+                          item.status === "out of stock"
+                            ? "out-of-stock-img"
+                            : ""
                         }
                       />
                     </div>

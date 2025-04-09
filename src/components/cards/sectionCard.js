@@ -12,6 +12,7 @@ import {
   AlertCircle,
   DollarSign,
   Package,
+  Tag,
 } from "lucide-react";
 
 import { ProductContext } from "../productContext";
@@ -82,6 +83,14 @@ export const Card = memo(function Card(props) {
       (storedCartItem) => storedCartItem._id === props._id
     );
 
+  // Check if product has a discount
+  const hasDiscount = props.discountPrice && props.discountPrice < props.price;
+
+  // Calculate discount percentage if there's a discount
+  const discountPercentage = hasDiscount
+    ? Math.round(((props.price - props.discountPrice) / props.price) * 100)
+    : 0;
+
   return (
     <div
       className={`product-list ${
@@ -118,6 +127,14 @@ export const Card = memo(function Card(props) {
               }
               onLoad={handleImageLoad}
             />
+
+            {/* Discount badge */}
+            {hasDiscount && (
+              <div className="discount-badge">
+                <Tag size={12} />
+                <span>{discountPercentage}% OFF</span>
+              </div>
+            )}
           </div>
           {props.status === "out of stock" && (
             <div className="out-of-stock-overlay">Out Of Stock</div>
@@ -125,10 +142,20 @@ export const Card = memo(function Card(props) {
         </div>
         <div className="product-link-texts">
           <p className="product-type">{props.type}</p>
+
+          {/* Price display with discount if available */}
           <p className="product-price">
-            <DollarSign size={14} className="info-icon" />
-            <span>{props.price}</span> per yard
+            {hasDiscount ? (
+              <>
+                <span className="original-price">${props.price}</span>
+                <span className="discount-price">${props.discountPrice}</span>
+              </>
+            ) : (
+              <span>${props.price}</span>
+            )}
+            <span className="per-unit"> per yard</span>
           </p>
+
           <p className="product-quantity">
             <Package size={14} className="info-icon" />
             <span>{props.quantity} yards</span> left
