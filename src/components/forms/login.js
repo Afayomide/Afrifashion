@@ -127,18 +127,21 @@ export default function Login() {
     }
     const loginPromise = async () => {
       callCheck();
-      const response = await axios.post(`${apiUrl}/api/auth/customer/login`, {
-        email,
-        password,
-      });
-
+      const response = await axios.post(
+        `${apiUrl}/api/auth/customer/login`,
+        {
+          email,
+          password,
+        },
+        { withCredentials: true }
+      );
+      localStorage.setItem("token", response.data.token);
       return response;
     };
 
     toast.promise(loginPromise(), {
       loading: "Logging in...",
       success: (response) => {
-        console.log(response);
         const { success } = response.data;
 
         if (success) {
