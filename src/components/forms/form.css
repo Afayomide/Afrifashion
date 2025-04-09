@@ -22,8 +22,30 @@
   border-radius: 16px;
   box-shadow: 0 8px 30px rgba(13, 13, 77, 0.1);
   overflow: hidden;
-
+  animation: fadeIn 0.5s ease-out forwards;
+  will-change: opacity;
 }
+
+.forgot-password-link {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.forgot-password-link a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.forgot-password-link a:hover {
+  color: var(--navcolor);
+  text-decoration: underline;
+}
+
+
 
 @keyframes fadeIn {
   from {
@@ -367,3 +389,83 @@
   }
 }
 
+/* Add these styles to your existing AuthForms.css file */
+
+/* Success and Error States */
+.auth-success,
+.auth-error,
+.auth-loading {
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.auth-success h3,
+.auth-error h3 {
+  margin: 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.auth-success p,
+.auth-error p {
+  margin: 0 0 1.5rem;
+  color: rgba(13, 13, 77, 0.7);
+}
+
+.success-icon {
+  color: var(--success);
+}
+
+.error-icon {
+  color: #d32f2f;
+}
+
+.small-text {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--navcolor);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: var(--color-secondary);
+}
+
+.back-button {
+  margin-top: 1rem;
+}
+
+.password-requirements {
+  margin-bottom: 1.5rem;
+}
+
+.requirement {
+  font-size: 0.85rem;
+  color: rgba(13, 13, 77, 0.7);
+  margin: 0;
+}
+
+.spinner {
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

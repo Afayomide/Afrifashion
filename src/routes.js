@@ -11,6 +11,8 @@ import CheckoutPage from "./components/checkout/checkout";
 import Faq from "./components/faq/faq";
 import VerifyPage from "./components/checkout/verify";
 import ContactUs from "./components/contactUs/contactUs";
+import ForgotPassword from "./components/forms/forgotPassword";
+import ResetPassword from "./components/forms/resetPassword";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +30,8 @@ export const router = createBrowserRouter([
       { element: <CheckoutPage />, path: "/checkout" },
       { element: <VerifyPage />, path: "/verify" },
       { element: <Faq />, path: "/faqs" },
+      { element: <ForgotPassword />, path: "/forgot-password" },
+      { element: <ResetPassword />, path: "/reset-password/:token" },
     ],
   },
 ]);

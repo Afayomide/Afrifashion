@@ -23,7 +23,6 @@ export default function Login() {
   const [err, setErr] = useState("");
   const [changePassword, setChangePassword] = useState(true);
   const apiUrl = process.env.REACT_APP_API_URL;
-      const token = localStorage.getItem("token");
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -32,9 +31,6 @@ export default function Login() {
           `${apiUrl}/api/auth/customer/checkAuth`,
           {
             withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${token}`, // Correct way to send token
-            },
           }
         );
 
@@ -47,6 +43,7 @@ export default function Login() {
         }
       } catch (error) {
         setAuthenticated(false);
+        console.log(error);
       }
     };
 
@@ -91,14 +88,11 @@ export default function Login() {
             const response = await axios.post(
               `${process.env.REACT_APP_API_URL}/api/cart/add`,
               { productId: cartItem._id },
-              {
-                withCredentials: true,
-                headers: {
-                  Authorization: `Bearer ${token}`, // Correct way to send token
-                },
-              }
+              { headers }
             );
+            console.log("Added item to user cart:", response.data);
           } else {
+            console.log("already exists");
           }
         })
       );
@@ -136,14 +130,15 @@ export default function Login() {
       const response = await axios.post(`${apiUrl}/api/auth/customer/login`, {
         email,
         password,
-      },{withCredentials:true});
-      localStorage.setItem("token", response.data.token);
+      });
+
       return response;
     };
 
     toast.promise(loginPromise(), {
       loading: "Logging in...",
       success: (response) => {
+        console.log(response);
         const { success } = response.data;
 
         if (success) {
@@ -244,6 +239,9 @@ export default function Login() {
                 {changePassword ? <Eye size={18} /> : <EyeOff size={18} />}
               </button>
               <small className="helper-text">test password: johndoe12#</small>
+              <div className="forgot-password-link">
+                <Link to="/forgot-password">Forgot Password?</Link>
+              </div>
             </div>
 
             <button type="submit" className="auth-button">
