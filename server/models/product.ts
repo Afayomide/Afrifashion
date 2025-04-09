@@ -37,6 +37,7 @@ interface IProduct extends Document {
   new: boolean;
   tribe: AfricanTribe;
   price: number;
+  discountPrice: number;
   quantity: number;
   description: string[];
   instructions: string[];
@@ -121,6 +122,10 @@ const ProductSchema = new mongoose.Schema(
       required: [true, "A product must have a price"],
       min: [0, "Price must be above 0"],
     },
+    discountPrice: {
+      type: Number,
+      min: [0, "Discount price must be above 0"],
+    },
     quantity: {
       type: Number,
     },
@@ -140,6 +145,8 @@ const ProductSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+
 
 const Product = mongoose.model<IProduct>("Product", ProductSchema);
 
