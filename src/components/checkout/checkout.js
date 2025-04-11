@@ -131,7 +131,7 @@ function CheckoutPage() {
           city,
           street,
           postalCode,
-          currency: countryCode === "NG" ? "USD" : "USD",
+          currency: countryCode === "NG" ? "NGN" : "USD",
         },
         {
           withCredentials: true,
