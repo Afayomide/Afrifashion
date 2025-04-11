@@ -34,7 +34,7 @@ function CheckoutPage() {
   const [street, setStreet] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [focused, setFocused] = useState(null);
-  const {countryCode} = useCurrency(); 
+  const {countryCode, currency} = useCurrency(); 
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const countries = Country.getAllCountries().map((country) => ({
@@ -197,7 +197,7 @@ function CheckoutPage() {
                     </div>
                     <div className="total-text">
                       <span>Total Amount</span>
-                      <h3>${total}</h3>
+                      <h3>{currency}{total}</h3>
                     </div>
                   </div>
 
@@ -454,7 +454,7 @@ function CheckoutPage() {
                       </div>
 
                       <p className="item-price">
-                        <span>Price:</span> ${item.price}
+                        <span>Price:</span> {currency}{item.price}
                       </p>
                     </div>
                   </div>
@@ -464,7 +464,7 @@ function CheckoutPage() {
               <div className="summary-total">
                 <div className="summary-row">
                   <span>Subtotal</span>
-                  <span>${total}</span>
+                  <span>{currency}{total}</span>
                 </div>
                 <div className="summary-row">
                   <span>Shipping</span>
@@ -472,7 +472,7 @@ function CheckoutPage() {
                 </div>
                 <div className="summary-row total">
                   <span>Total</span>
-                  <span>${total}</span>
+                  <span>{currency}{total}</span>
                 </div>
               </div>
             </div>

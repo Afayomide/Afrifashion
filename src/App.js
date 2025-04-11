@@ -12,9 +12,7 @@ import { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-
 axios.defaults.withCredentials = true;
-
 
 function App() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -32,46 +30,54 @@ function App() {
   };
   const queryClient = new QueryClient();
 
+  const CURRENT_VERSION = "1.0";
+
+  const storedVersion = localStorage.getItem("appVersion");
+
+  if (storedVersion !== CURRENT_VERSION) {
+    localStorage.clear();
+    localStorage.setItem("appVersion", CURRENT_VERSION);
+  }
 
   return (
-        <QueryClientProvider client={queryClient}>
-    <ProductProvider>
-      <CurrencyProvider>
-      <div className="App">
-        <Toaster
-          position="top-center"
-          reverseOrder={false}
-          gutter={8}
-          containerClassName=""
-          containerStyle={{}}
-          toastOptions={{
-            className: "",
-            duration: 5000,
-            style: {
-              background: "#ffd79f",
-              color: "#00000",
-            },
-          }}
-        />
-        <Header />
-        <div className="topmargin">
-          <Outlet />
-        </div>
-        <div className="sound">
-          <audio ref={audioRef} src={AfroSounds} />
-          <div className="playmusic" onClick={togglePlayPause}>
-            {isPlaying ? (
-              <FaPause className="playmusic" />
-            ) : (
-              <FaPlay className="playmusic" />
-            )}
-          </div>
-        </div>
+    <QueryClientProvider client={queryClient}>
+      <ProductProvider>
+        <CurrencyProvider>
+          <div className="App">
+            <Toaster
+              position="top-center"
+              reverseOrder={false}
+              gutter={8}
+              containerClassName=""
+              containerStyle={{}}
+              toastOptions={{
+                className: "",
+                duration: 5000,
+                style: {
+                  background: "#ffd79f",
+                  color: "#00000",
+                },
+              }}
+            />
+            <Header />
+            <div className="topmargin">
+              <Outlet />
+            </div>
+            <div className="sound">
+              <audio ref={audioRef} src={AfroSounds} />
+              <div className="playmusic" onClick={togglePlayPause}>
+                {isPlaying ? (
+                  <FaPause className="playmusic" />
+                ) : (
+                  <FaPlay className="playmusic" />
+                )}
+              </div>
+            </div>
 
-        <Footer />
-      </div>    
-      </CurrencyProvider>
-    </ProductProvider>
+            <Footer />
+          </div>
+        </CurrencyProvider>
+      </ProductProvider>
     </QueryClientProvider>
   );
 }

@@ -16,7 +16,11 @@ import { GiCrown } from "react-icons/gi";
 import { GrCircleQuestion } from "react-icons/gr";
 import { useLocation } from "react-router-dom";
 import { title } from "../globalPhrases";
-const token = localStorage.getItem("token")
+import { useCurrency } from "../currency/currencyContext";
+import { applyExchangeRate } from "../currency/exchangeRate";
+
+
+const token = localStorage.getItem("token");
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,6 +45,7 @@ function Header() {
   const [searchDisplay, setSearchDisplay] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState(null);
+  const { exchangeRate } = useCurrency();
   const apiUrl = process.env.REACT_APP_API_URL;
 
   function arraysHaveSameItemsById(arr1, arr2) {
@@ -156,7 +161,7 @@ function Header() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (authenticated && mainLoading) {
+      if (authenticated && mainLoading && exchangeRate) {
         // const headers = {
         //   Authorization: `Bearer ${Token}`,
         // };
@@ -171,19 +176,22 @@ function Header() {
               },
             }
           );
-          const userCartItems = await response.data.cartItems;
-          setCartList(response.data.cartItems);
+          const cartListWithRate = applyExchangeRate(
+            response.data.cartItems,
+            exchangeRate
+          );
+          setCartList(cartListWithRate);
 
           const storedCartList =
             JSON.parse(localStorage.getItem("localCartList")) || [];
 
           if (
             storedCartList &&
-            arraysHaveSameItemsById(storedCartList, userCartItems)
+            arraysHaveSameItemsById(storedCartList, cartListWithRate)
           ) {
             setInitialItems(storedCartList);
           } else {
-            const initialItemsWithQuantity = response.data.cartItems.map(
+            const initialItemsWithQuantity = cartListWithRate.map(
               (item) => ({
                 ...item,
                 newquantity: 1,
@@ -205,7 +213,9 @@ function Header() {
     };
 
     fetchData();
-  }, [shouldFetchCart, mainLoading, authenticated]);
+  }, [shouldFetchCart, mainLoading, authenticated, exchangeRate]);
+
+
 
   useEffect(() => {
     const localCart = JSON.parse(localStorage.getItem("localCartList"));
@@ -267,8 +277,8 @@ function Header() {
       .then((response) => {
         const { success } = response.data;
         if (success) {
-          ["authToken","token", "localCartList", "fullname", "email"].forEach((item) =>
-            localStorage.removeItem(item)
+          ["authToken", "token", "localCartList", "fullname", "email"].forEach(
+            (item) => localStorage.removeItem(item)
           );
           changeDisplay();
           setAuthenticated(false);

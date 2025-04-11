@@ -73,18 +73,16 @@ function Cart() {
             exchangeRate
           );
 
-          console.log(cartListWithRate);
 
           setCartList(cartListWithRate);
 
           const storedCartList = JSON.parse(
             localStorage.getItem("localCartList")
           );
-          const userCartItems = await cartListWithRate;
 
           if (
             storedCartList &&
-            arraysHaveSameItemsById(storedCartList, userCartItems)
+            arraysHaveSameItemsById(storedCartList, cartListWithRate)
           ) {
             setInitialItems(storedCartList);
           } else {
@@ -122,6 +120,8 @@ function Cart() {
     authenticated,
     exchangeRate,
   ]);
+
+
 
   const handleQuantityChange = (id, itemIndex, newQuantity, price) => {
     const updatedCart = [...cartList];
