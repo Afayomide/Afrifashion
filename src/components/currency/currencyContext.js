@@ -18,10 +18,11 @@ export const CurrencyProvider = ({ children }) => {
     const fetchCurrencyInfo = async () => {
       try {
         // 1. Get user country
-        const res = await fetch("https://ip-api.com/json");
-        
+        // const res = await fetch("https://ip-api.com/json");
+        const res= await fetch("https://geolocation-db.com/json/");
+
         const data = await res.json();
-        const code = data.countryCode;
+        const code = data.country_code;
 
         setCountryCode(code);
         const isNigeria = code === "NG";
@@ -30,8 +31,10 @@ export const CurrencyProvider = ({ children }) => {
         // 2. Fetch exchange rate if Nigerian
         if (isNigeria) {
           try {
-          const rateRes = await fetch("https://open.er-api.com/v6/latest/USD");
-          const rateData = await rateRes.json();
+            const rateRes = await fetch(
+              "https://open.er-api.com/v6/latest/USD"
+            );
+            const rateData = await rateRes.json();
             const nairaRate = rateData?.rates?.NGN;
 
             if (nairaRate) {
@@ -55,7 +58,6 @@ export const CurrencyProvider = ({ children }) => {
 
     fetchCurrencyInfo();
   }, []);
-
 
   return (
     <CurrencyContext.Provider value={{ currency, countryCode, exchangeRate }}>

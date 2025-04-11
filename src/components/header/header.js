@@ -24,7 +24,7 @@ const token = localStorage.getItem("token");
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [userLocation, setUserLocation] = useState({});
+  // const [userLocation, setUserLocation] = useState({});
   const [displayNav, SetDisplayNav] = useState(false);
   const { authenticated, setAuthenticated } = useContext(ProductContext);
   const [slideout, setSlideOut] = useState("");
@@ -65,57 +65,57 @@ function Header() {
     return true;
   }
 
-  useEffect(() => {
-    const call = async () => {
-      try {
-        const localUserLocation = JSON.parse(
-          localStorage.getItem("localUserLocation")
-        );
+  // useEffect(() => {
+  //   const call = async () => {
+  //     try {
+  //       const localUserLocation = JSON.parse(
+  //         localStorage.getItem("localUserLocation")
+  //       );
 
-        if (
-          !localUserLocation ||
-          (localUserLocation && Object.keys(localUserLocation).length === 0)
-        ) {
-          const response = await fetch("https://geolocation-db.com/json/");
-          const data = await response.json();
+  //       if (
+  //         !localUserLocation ||
+  //         (localUserLocation && Object.keys(localUserLocation).length === 0)
+  //       ) {
+  //         const response = await fetch("https://geolocation-db.com/json/");
+  //         const data = await response.json();
 
-          setUserLocation({
-            ipaddress: data.IPv4,
-            country: data.country_name,
-          });
+  //         setUserLocation({
+  //           ipaddress: data.IPv4,
+  //           country: data.country_name,
+  //         });
 
-          localStorage.setItem(
-            "localUserLocation",
-            JSON.stringify({
-              ipaddress: data.IPv4,
-              country: data.country_name,
-            })
-          );
+  //         localStorage.setItem(
+  //           "localUserLocation",
+  //           JSON.stringify({
+  //             ipaddress: data.IPv4,
+  //             country: data.country_name,
+  //           })
+  //         );
 
-          await axios.post(`${apiUrl}/api/visitor`, {
-            route: location.pathname,
-            userLocation: {
-              ipaddress: data.IPv4,
-              country: data.country_name,
-            },
-          });
-        } else {
-          setUserLocation(localUserLocation);
+  //         await axios.post(`${apiUrl}/api/visitor`, {
+  //           route: location.pathname,
+  //           userLocation: {
+  //             ipaddress: data.IPv4,
+  //             country: data.country_name,
+  //           },
+  //         });
+  //       } else {
+  //         setUserLocation(localUserLocation);
 
-          await axios.post(`${apiUrl}/api/visitor`, {
-            route: location.pathname,
-            userLocation: {
-              ipaddress: localUserLocation.ipaddress,
-              country: localUserLocation.country,
-            },
-          });
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    call();
-  }, [location.pathname]);
+  //         await axios.post(`${apiUrl}/api/visitor`, {
+  //           route: location.pathname,
+  //           userLocation: {
+  //             ipaddress: localUserLocation.ipaddress,
+  //             country: localUserLocation.country,
+  //           },
+  //         });
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   call();
+  // }, [location.pathname]);
 
   useEffect(() => {
     const checkAuth = async () => {
