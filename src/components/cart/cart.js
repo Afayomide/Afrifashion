@@ -67,12 +67,10 @@ function Cart() {
               },
             }
           );
-
           const cartListWithRate = applyExchangeRate(
             response.data.cartItems,
             exchangeRate
           );
-
 
           setCartList(cartListWithRate);
 
@@ -120,7 +118,6 @@ function Cart() {
     authenticated,
     exchangeRate,
   ]);
-
 
 
   const handleQuantityChange = (id, itemIndex, newQuantity, price) => {

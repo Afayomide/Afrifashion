@@ -4,7 +4,8 @@
 
     if (Array.isArray(items)) {
 
-      return items.map((item) => ({
+      return items.map((item) => (
+        {
         ...item,
         price: Math.round(item.price * rate),
         discountPrice: item.discountPrice

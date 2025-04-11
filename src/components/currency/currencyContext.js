@@ -18,7 +18,7 @@ export const CurrencyProvider = ({ children }) => {
     const fetchCurrencyInfo = async () => {
       try {
         // 1. Get user country
-        const res = await fetch("http://ip-api.com/json");
+        const res = await fetch("https://ip-api.com/json");
         
         const data = await res.json();
         const code = data.countryCode;
@@ -30,10 +30,9 @@ export const CurrencyProvider = ({ children }) => {
         // 2. Fetch exchange rate if Nigerian
         if (isNigeria) {
           try {
-            const rateRes = await axios.get(
-              "https://api.exchangerate-api.com/v4/latest/USD"
-            );
-            const nairaRate = rateRes.data?.rates?.NGN;
+          const rateRes = await fetch("https://open.er-api.com/v6/latest/USD");
+          const rateData = await rateRes.json();
+            const nairaRate = rateData?.rates?.NGN;
 
             if (nairaRate) {
               setExchangeRate(nairaRate);
