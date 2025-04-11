@@ -1,19 +1,24 @@
-import { memo, useEffect } from "react";
-import useFabricStore from "../stores/useHomeStore"; // Import the Zustand store
+import { memo, useEffect,useState } from "react";
+import useFabricStore from"../stores/useHomeStore"; // Import the Zustand store
 import { Link } from "react-router-dom";
 import Card from "../cards/homeCard";
 import "./home.scss";
 import logo from "../../assets/logo.png";
 import hero from "../../assets/hero.png";
 import { title } from "../globalPhrases";
+import { useCurrency } from "../currency/currencyContext";
 
 const Home = memo(() => {
+  const {exchangeRate} = useCurrency();
   const { lace, asoOke, dansiki, ankara, gele, isLoading, fetchData } =
     useFabricStore();
+    
+useEffect(() => {
+  if (exchangeRate) {
+    fetchData(exchangeRate); 
+  }
+}, [exchangeRate]);
 
-  useEffect(() => {
-    fetchData(); // Fetch data only if it's not already stored
-  }, []);
 
   return (
     <div className="home-container">

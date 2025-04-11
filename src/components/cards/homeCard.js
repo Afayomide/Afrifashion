@@ -10,14 +10,15 @@ import {
   ShoppingCart,
   Check,
   AlertCircle,
-  DollarSign,
   Package,
   Tag,
 } from "lucide-react";
+import { useCurrency} from "../currency/currencyContext";
 const token = localStorage.getItem("token");
 
 const Card = memo(function Card(props) {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const { currency } = useCurrency();
   const { authenticated, setCartNo, setShouldFetchCart, setLocalCartLength } =
     useContext(ProductContext);
   const [error, setError] = useState(null);
@@ -162,11 +163,11 @@ const Card = memo(function Card(props) {
           <p className="product-price">
             {hasDiscount ? (
               <>
-                <span className="original-price">${props.price}</span>
-                <span className="discount-price">${props.discountPrice}</span>
+                <span className="original-price">{currency}{props.price}</span>
+                <span className="discount-price">{currency}{props.discountPrice}</span>
               </>
             ) : (
-              <span>${props.price}</span>
+              <span>{currency}{props.price}</span>
             )}
             <span className="per-unit"> per yard</span>
           </p>

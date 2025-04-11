@@ -14,6 +14,8 @@ import {
   Package,
   Tag,
 } from "lucide-react";
+import { useCurrency } from "../currency/currencyContext";
+
 
 import { ProductContext } from "../productContext";
 
@@ -27,6 +29,7 @@ export const Card = memo(function Card(props) {
     cartList,
   } = useContext(ProductContext);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const { currency } = useCurrency();
 
   function localClickedList(fabric) {
     const clickedList =
@@ -147,11 +150,11 @@ export const Card = memo(function Card(props) {
           <p className="product-price">
             {hasDiscount ? (
               <>
-                <span className="original-price">${props.price}</span>
-                <span className="discount-price">${props.discountPrice}</span>
+                <span className="original-price">{currency}{props.price}</span>
+                <span className="discount-price">{currency}{props.discountPrice}</span>
               </>
             ) : (
-              <span>${props.price}</span>
+              <span>{currency}{props.price}</span>
             )}
             <span className="per-unit"> per yard</span>
           </p>

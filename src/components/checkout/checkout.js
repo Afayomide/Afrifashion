@@ -7,6 +7,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import "./checkout.css";
 import Select from "react-select";
+import { useCurrency } from "../currency/currencyContext";
 import { Country, State } from "country-state-city";
 import {
   Truck,
@@ -33,6 +34,7 @@ function CheckoutPage() {
   const [street, setStreet] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [focused, setFocused] = useState(null);
+  const {countryCode} = useCurrency(); 
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const countries = Country.getAllCountries().map((country) => ({
@@ -52,6 +54,7 @@ function CheckoutPage() {
   const localName = localStorage.getItem("fullname");
 
   useEffect(() => {
+
     if (localEmail) {
       setEmail(localEmail);
     }
@@ -128,6 +131,7 @@ function CheckoutPage() {
           city,
           street,
           postalCode,
+          currency: countryCode === "NG" ? "USD" : "USD",
         },
         {
           withCredentials: true,

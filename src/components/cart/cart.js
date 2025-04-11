@@ -5,6 +5,7 @@ import axios from "axios";
 import { useContext } from "react";
 import { ProductContext } from "../productContext";
 import { Link } from "react-router-dom";
+import { useCurrency } from "../currency/currencyContext";
 import "./cart.css";
 import {
   ShoppingCart,
@@ -14,6 +15,7 @@ import {
   ShoppingBag,
   Loader,
 } from "lucide-react";
+import { applyExchangeRate } from "../currency/exchangeRate";
 
 function Cart() {
   const [isLoading, setIsLoading] = useState(true);
@@ -32,6 +34,7 @@ function Cart() {
     setTotal,
   } = useContext(ProductContext);
   const [error, setError] = useState(null);
+  const { currency, exchangeRate } = useCurrency();
 
   function arraysHaveSameItemsById(arr1, arr2) {
     if (arr1.length !== arr2.length) {
@@ -53,7 +56,7 @@ function Cart() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (authenticated && mainLoading) {
+      if (authenticated && mainLoading && exchangeRate) {
         try {
           const response = await axios.get(
             `${process.env.REACT_APP_API_URL}/api/cart/list`,
@@ -65,12 +68,19 @@ function Cart() {
             }
           );
 
-          setCartList(response.data.cartItems);
+          const cartListWithRate = applyExchangeRate(
+            response.data.cartItems,
+            exchangeRate
+          );
+
+          console.log(cartListWithRate);
+
+          setCartList(cartListWithRate);
 
           const storedCartList = JSON.parse(
             localStorage.getItem("localCartList")
           );
-          const userCartItems = await response.data.cartItems;
+          const userCartItems = await cartListWithRate;
 
           if (
             storedCartList &&
@@ -78,12 +88,10 @@ function Cart() {
           ) {
             setInitialItems(storedCartList);
           } else {
-            const initialItemsWithQuantity = response.data.cartItems.map(
-              (item) => ({
-                ...item,
-                newquantity: 1,
-              })
-            );
+            const initialItemsWithQuantity = cartListWithRate.map((item) => ({
+              ...item,
+              newquantity: 1,
+            }));
             setInitialItems(initialItemsWithQuantity);
             localStorage.setItem(
               "localCartList",
@@ -112,8 +120,8 @@ function Cart() {
     setMainLoading,
     setShouldFetchCart,
     authenticated,
+    exchangeRate,
   ]);
-
 
   const handleQuantityChange = (id, itemIndex, newQuantity, price) => {
     const updatedCart = [...cartList];
@@ -141,7 +149,9 @@ function Cart() {
         (clickedItem) => clickedItem._id === id
       );
       clickedItemToUpdate.newquantity = newQuantity;
-      clickedItemToUpdate.newprice = newQuantity * clickedItemToUpdate.discountPrice || newQuantity * clickedItemToUpdate.price;
+      clickedItemToUpdate.newprice =
+        newQuantity * clickedItemToUpdate.discountPrice ||
+        newQuantity * clickedItemToUpdate.price;
 
       localStorage.setItem(
         "localClickedList",
@@ -188,15 +198,18 @@ function Cart() {
 
   useEffect(() => {
     if (cartList.length >= 0 && initialItems.length >= 0) {
-     setTotal(
-       initialItems.reduce((accumulator, obj) => {
-         var priceToUse = obj.discountPrice ?? obj.price;
-         return accumulator + priceToUse;
-       }, 0)
-     );
+      setTotal(
+        initialItems.reduce((accumulator, obj) => {
+          var priceToUse = obj.discountPrice ?? obj.price;
+          return accumulator + priceToUse;
+        }, 0)
+      );
       localStorage.setItem(
         "total",
-        initialItems.reduce((accumulator, obj) => accumulator + obj.price, 0)
+        initialItems.reduce((accumulator, obj) => {
+          var priceToUse = obj.discountPrice ?? obj.price;
+          return accumulator + priceToUse;
+        }, 0)
       );
     }
   }, [handleDelete]);
@@ -211,7 +224,10 @@ function Cart() {
       <div className="cart-total-container">
         <div className="cart-total">
           <span>Total:</span>
-          <span className="total-amount">${total}</span>
+          <span className="total-amount">
+            {currency}
+            {total}
+          </span>
         </div>
       </div>
 
@@ -291,7 +307,10 @@ function Cart() {
 
                     <p className="item-price">
                       <span className="label">Price:</span>
-                      <span className="value">${item.discountPrice || item.price}</span>
+                      <span className="value">
+                        {currency}
+                        {item.discountPrice || item.price}
+                      </span>
                     </p>
                   </div>
 
@@ -311,7 +330,10 @@ function Cart() {
           <div className="cart-summary">
             <div className="summary-row">
               <span>Subtotal:</span>
-              <span>${total}</span>
+              <span>
+                {currency}
+                {total}
+              </span>
             </div>
             <div className="summary-row">
               <span>Shipping:</span>
@@ -319,7 +341,10 @@ function Cart() {
             </div>
             <div className="summary-row total">
               <span>Total:</span>
-              <span>${total}</span>
+              <span>
+                {currency}
+                {total}
+              </span>
             </div>
 
             <Link className="checkout-link" to="/checkout">

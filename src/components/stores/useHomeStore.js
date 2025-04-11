@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
+import { applyExchangeRate } from "../currency/exchangeRate";
+
 
 const useHomeStore = create((set, get) => ({
   lace: JSON.parse(localStorage.getItem("lace")) || [],
@@ -9,8 +11,7 @@ const useHomeStore = create((set, get) => ({
   gele: JSON.parse(localStorage.getItem("gele")) || [],
   isLoading: true,
 
-  fetchData: async () => {
-    
+  fetchData: async (exchangeRate) => {
     const token = localStorage.getItem("authToken");
 
     try {
@@ -21,16 +22,28 @@ const useHomeStore = create((set, get) => ({
         }
       );
 
-      const newData = response.data.previewData;
+      const rawData = response.data.previewData;
+
+      // Apply exchange rate to all categories
+      const newData = {
+        asoOke: applyExchangeRate(rawData.asoOke, exchangeRate),
+        lace: applyExchangeRate(rawData.lace, exchangeRate),
+        dansiki: applyExchangeRate(rawData.dansiki, exchangeRate),
+        gele: applyExchangeRate(rawData.gele, exchangeRate),
+        ankara: applyExchangeRate(rawData.ankara, exchangeRate),
+      };
+
+      const currentState = get();
 
       if (
-        JSON.stringify(newData.asoOke) !== JSON.stringify(get().asoOke) ||
-        JSON.stringify(newData.lace) !== JSON.stringify(get().lace) ||
-        JSON.stringify(newData.dansiki) !== JSON.stringify(get().dansiki) ||
-        JSON.stringify(newData.gele) !== JSON.stringify(get().gele) ||
-        JSON.stringify(newData.ankara) !== JSON.stringify(get().ankara)
+        JSON.stringify(newData.asoOke) !==
+          JSON.stringify(currentState.asoOke) ||
+        JSON.stringify(newData.lace) !== JSON.stringify(currentState.lace) ||
+        JSON.stringify(newData.dansiki) !==
+          JSON.stringify(currentState.dansiki) ||
+        JSON.stringify(newData.gele) !== JSON.stringify(currentState.gele) ||
+        JSON.stringify(newData.ankara) !== JSON.stringify(currentState.ankara)
       ) {
-        // ✅ Save fetched data to localStorage
         localStorage.setItem("asoOke", JSON.stringify(newData.asoOke));
         localStorage.setItem("lace", JSON.stringify(newData.lace));
         localStorage.setItem("dansiki", JSON.stringify(newData.dansiki));
@@ -38,11 +51,7 @@ const useHomeStore = create((set, get) => ({
         localStorage.setItem("ankara", JSON.stringify(newData.ankara));
 
         set({
-          asoOke: newData.asoOke,
-          lace: newData.lace,
-          dansiki: newData.dansiki,
-          gele: newData.gele,
-          ankara: newData.ankara,
+          ...newData,
           isLoading: false,
         });
       } else {

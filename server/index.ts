@@ -8,6 +8,7 @@ import {
   search,
   visitor,
 } from "./controllers";
+import axios from "axios";
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -158,42 +159,24 @@ for (var i = 0; i < clothes.length; i++){
 
  return res.json({clothes})
 })
-// async function getAll () {
-//   const allFabs = await Clothes.find()
 
-//   for (var fab of allFabs) {
-//     if(fab.quantity === 0) {
-//       fab.quantity = 10; // Update quantity to 10
-//       await fab.save();  // Save the updated fabric
-//     }
-//   }
-// }
-// async function updateOutOfStockStatus() {
-//   const allFabs = await Clothes.find(); // Fetch all clothes
+app.get("/api/getLocation", async (req:Request, res:Response) => {
+  const ipAddress = req.ip;
+  try {
+    const response = await axios.get(`http://ip-api.com/json/${ipAddress}`);
+    const data = response.data;
 
-//   for (var fab of allFabs) {
-//     if (fab.quantity === 0) {
-//       fab.outOfStock = true; // Mark as out of stock
-//     } else {
-//       fab.outOfStock = false; // In stock
-//     }
-//     await fab.save();  // Save the updated fabric
-//   }
-// }
+    if (data.status === "fail") {
+      console.log("Failed to get location data:", data.message);
+      return null;
+    }
 
-// updateOutOfStockStatus()
-
-// async function updateOutOfStockStatus() {
-//   const allFabs = await Clothes.find(); // Fetch all clothes
-
-//   for (var fab of allFabs) {
-//     fab.instruction = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"]
-//     await fab.save();  // Save the updated fabric    
-//     console.log("updating")
-//   }
-// }
-
-// updateOutOfStockStatus()
+    console.log("Location data:", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching geolocation data:", error);
+  }
+});
 
 const PORT = 4000;
 app.listen(PORT, () => {

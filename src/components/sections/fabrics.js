@@ -8,22 +8,32 @@ import "./sections.css";
 import formbg from "../../assets/formbg.webp";
 import { Card } from "../cards/sectionCard";
 import CategoryNav from "../categoryNav/categoryNav";
+import { useCurrency } from "../currency/currencyContext";
 
 const Fabrics = memo(() => {
   const { fabricsList, isLoading, error, fetchFabrics } = useFabricStore();
   const { mainLoading, setCartList } = useContext(ProductContext);
+   const {exchangeRate} = useCurrency()
 
   useEffect(() => {
-    if (mainLoading) {
-      fetchFabrics();
-      const interval = setInterval(fetchFabrics, 30000);
-      return () => clearInterval(interval);
+    // Only fetch fabrics when exchangeRate is available
+    if (mainLoading && exchangeRate) {
+      fetchFabrics(exchangeRate);
+
+      // Set up an interval to refetch fabrics every 30 seconds
+      const interval = setInterval(() => {
+        if (exchangeRate) fetchFabrics(exchangeRate); // Check again if exchangeRate is available
+      }, 30000);
+
+      return () => clearInterval(interval); // Clean up the interval on unmount
     }
-  }, [mainLoading]);
+  }, [mainLoading, exchangeRate, fetchFabrics]);
 
   const renderedCards = useMemo(() => {
     return fabricsList.map((item) => <Card key={item._id} {...item} />);
   }, [fabricsList]);
+
+
 
   return (
     <>

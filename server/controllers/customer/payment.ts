@@ -21,7 +21,10 @@ export const pay = async (req: Request, res: Response) => {
     selectedState,
     address,
     street,
+    currency,
   } = req.body;
+
+  console.log(req.body)
 
   if (!Array.isArray(itemsData)) {
     var arrayItemsData = [itemsData];
@@ -34,6 +37,7 @@ export const pay = async (req: Request, res: Response) => {
       "https://api.paystack.co/transaction/initialize",
       {
         email: email,
+        currency: currency,
         amount: amount * 100,
         metadata: {
           productData: arrayItemsData,
@@ -62,6 +66,7 @@ export const pay = async (req: Request, res: Response) => {
       data: response.data.data,
     });
   } catch (error: any) {
+    console.error(error)
     res.status(500).json({
       status: "error",
       message: "An error occurred while initializing payment",

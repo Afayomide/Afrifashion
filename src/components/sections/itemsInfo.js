@@ -22,6 +22,8 @@ import {
   MessageSquare,
   Loader,
 } from "lucide-react";
+import { applyExchangeRate } from "../currency/exchangeRate";
+import { useCurrency } from "../currency/currencyContext";
 
 export default function ItemsInfo() {
   const [item, setItem] = useState([]);
@@ -38,7 +40,9 @@ export default function ItemsInfo() {
     setCartNo,
     authenticated,
   } = useContext(ProductContext);
+  
   const { id } = useParams();
+  const { exchangeRate,currency } = useCurrency();
   const [selectedQuantity, setSelectedQuantity] = useState(() => {
     const storedQuantity = JSON.parse(
       localStorage.getItem(`selectedQuantity-${id}`)
@@ -56,8 +60,14 @@ export default function ItemsInfo() {
         const relatedResponse = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/related-Items/${id}`
         );
-        setItem(ItemInfo.data.item);
-        setRelatedItems(relatedResponse.data.relatedItems);
+      const itemWithRate = applyExchangeRate(ItemInfo.data.item, exchangeRate);
+      const relatedWithRate = applyExchangeRate(
+        relatedResponse.data.relatedItems,
+        exchangeRate
+      );
+
+      setItem(itemWithRate);
+      setRelatedItems(relatedWithRate);
       } catch (err) {
         console.error("Error fetching item data:", err);
         setError("Failed to load product information. Please try again later.");
@@ -66,7 +76,7 @@ export default function ItemsInfo() {
     fetchData();
     // Reset image loaded state when ID changes
     setIsImageLoaded(false);
-  }, [id]);
+  }, [id,exchangeRate]);
 
   const clickedList =
     JSON.parse(localStorage.getItem("localClickedList")) || [];
@@ -336,17 +346,24 @@ export default function ItemsInfo() {
             {item.discountPrice && item.discountPrice < item.price ? (
               <>
                 <div className="price-badge">
-                  <span className="original-price">${item.price}</span>
+                  <span className="original-price">
+                    {currency}
+                    {item.price}
+                  </span>
                 </div>
                 <div className="price-badge discount-price-badge">
-                  <DollarSign size={18} />
-                  <span>{item.discountPrice}</span>
+                  <span>
+                    {currency}
+                    {item.discountPrice}
+                  </span>
                 </div>
               </>
             ) : (
-              <div className="price-badge">
-                <DollarSign size={18} />
-                <span>{item.price}</span>
+              <div className="price-badge original-price-no-discount">
+                <span>
+                  {currency}
+                  {item.price}
+                </span>
               </div>
             )}
           </div>
@@ -401,11 +418,10 @@ export default function ItemsInfo() {
 
           <div className="product-info-section">
             <div className="info-label">
-              <DollarSign size={16} />
-              <span>Total Price</span>
+              <span>Total Price :</span>
             </div>
             <p className="total-price">
-              $
+              {currency}
               {clickedList.find((clickedItem) => clickedItem._id === id)
                 ?.newprice ||
                 initialItems.find((item) => item._id == id)?.discountPrice ||
@@ -526,8 +542,21 @@ export default function ItemsInfo() {
                     <div className="related-product-info">
                       <h3 className="related-product-title">{item.type}</h3>
                       <div className="related-product-price">
-                        <span className="price-value">${item.price}</span> per
-                        yard
+                        {item.discountPrice &&
+                        item.discountPrice < item.price ? (
+                          <>
+                            <span className="price-value">
+                              {currency}
+                              {item.discountPrice}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="price-value">
+                            {currency}
+                            {item.price}
+                          </span>
+                        )}{" "}
+                        per yard
                       </div>
                       <div className="related-product-stock">
                         <span className="stock-value">{item.quantity}</span>{" "}

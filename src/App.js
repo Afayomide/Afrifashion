@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa6";
 import { ProductProvider } from "./components/productContext";
+import { CurrencyProvider } from "./components/currency/currencyContext";
 import Footer from "./components/footer/footer";
 import Header from "./components/header/header";
 import AfroSounds from "./assets/afrosounds.mp3";
@@ -35,6 +36,7 @@ function App() {
   return (
         <QueryClientProvider client={queryClient}>
     <ProductProvider>
+      <CurrencyProvider>
       <div className="App">
         <Toaster
           position="top-center"
@@ -67,7 +69,8 @@ function App() {
         </div>
 
         <Footer />
-      </div>
+      </div>    
+      </CurrencyProvider>
     </ProductProvider>
     </QueryClientProvider>
   );
