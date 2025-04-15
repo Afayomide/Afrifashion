@@ -7,7 +7,8 @@ export interface ISalesStats {
   weeklyRevenue: number;
   monthlyRevenue: number;
   yearlyRevenue: number;
-  totalRevenue: number;
+  totalDollarRevenue: number;
+  totalNairaRevenue: number;
   orderCount: {
     daily: number;
     weekly: number;
@@ -51,7 +52,11 @@ const salesStatsSchema = new Schema<ISalesStats>({
     type: Number,
     default: 0,
   },
-  totalRevenue: {
+  totalDollarRevenue: {
+    type: Number,
+    default: 0,
+  },
+  totalNairaRevenue: {
     type: Number,
     default: 0,
   },

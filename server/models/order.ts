@@ -29,12 +29,13 @@ export interface IOrder extends Document {
   callbackUrl?: string;
   trackingNumber?: string;
   notes?: string;
+  currency: string;
 }
 
 const OrderSchema: Schema = new Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Customer",
+    ref: "Customers",
     required: true,
   },
   name: {
@@ -102,6 +103,10 @@ const OrderSchema: Schema = new Schema({
   paymentGateway: {
     type: String,
     default: "Paystack",
+  },
+  currency: {
+    type: String,
+    required: true
   },
   transactionDate: {
     type: Date,

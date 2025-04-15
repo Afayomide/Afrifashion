@@ -19,7 +19,6 @@ import { title } from "../globalPhrases";
 import { useCurrency } from "../currency/currencyContext";
 import { applyExchangeRate } from "../currency/exchangeRate";
 
-
 const token = localStorage.getItem("token");
 function Header() {
   const navigate = useNavigate();
@@ -185,18 +184,49 @@ function Header() {
           const storedCartList =
             JSON.parse(localStorage.getItem("localCartList")) || [];
 
+          const localClickedList = JSON.parse(
+            localStorage.getItem("localClickedList") || "[]"
+          );
+
+          console.log(cartListWithRate);
           if (
             storedCartList &&
             arraysHaveSameItemsById(storedCartList, cartListWithRate)
           ) {
+            console.log("same", storedCartList);
             setInitialItems(storedCartList);
           } else {
-            const initialItemsWithQuantity = cartListWithRate.map(
-              (item) => ({
+            const initialItemsWithQuantity = cartListWithRate.map((item) => {
+              var existingClickedItem = localClickedList.find(
+                (clickedItem) => clickedItem._id === item._id
+              );
+
+              var quantity = existingClickedItem?.newquantity ?? 1;
+
+              // Priority: localClickedList.discountPrice > localClickedList.price > original
+              var updatedPrice = item.price;
+              var updatedDiscountPrice = item.discountPrice;
+
+              if (existingClickedItem) {
+                if (existingClickedItem.discountPrice) {
+                  console.log("discount", existingClickedItem.newprice);
+                  updatedDiscountPrice = existingClickedItem.newprice;
+                } else if (existingClickedItem.price) {
+                  console.log("discount", existingClickedItem.newprice);
+
+                  updatedPrice = existingClickedItem.newprice;
+                  updatedDiscountPrice = null; // remove discount if only price is updated
+                }
+              }
+
+              return {
                 ...item,
-                newquantity: 1,
-              })
-            );
+                newquantity: quantity,
+                price: updatedPrice,
+                discountPrice: updatedDiscountPrice,
+              };
+            });
+
             setInitialItems(initialItemsWithQuantity);
             localStorage.setItem(
               "localCartList",
@@ -214,8 +244,6 @@ function Header() {
 
     fetchData();
   }, [shouldFetchCart, mainLoading, authenticated, exchangeRate]);
-
-
 
   useEffect(() => {
     const localCart = JSON.parse(localStorage.getItem("localCartList"));

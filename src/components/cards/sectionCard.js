@@ -15,8 +15,7 @@ import {
   Tag,
 } from "lucide-react";
 import { useCurrency } from "../currency/currencyContext";
-
-
+import { localClickedList } from "../clickedList";
 import { ProductContext } from "../productContext";
 
 export const Card = memo(function Card(props) {
@@ -31,16 +30,7 @@ export const Card = memo(function Card(props) {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const { currency } = useCurrency();
 
-  function localClickedList(fabric) {
-    const clickedList =
-      JSON.parse(localStorage.getItem("localClickedList")) || [];
-    const clickedItemId = clickedList.find((item) => item._id === fabric._id);
-    if (!clickedItemId) {
-      const clickedItem = { ...fabric, newquantity: 1 };
-      clickedList.push(clickedItem);
-    }
-    localStorage.setItem("localClickedList", JSON.stringify(clickedList));
-  }
+
 
   const handleAddToCart = async (fabric) => {
     const storedCartList =

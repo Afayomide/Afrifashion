@@ -6,14 +6,9 @@ import { ProductContext } from "../productContext";
 import { useEffect, useState, useContext, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {
-  ShoppingCart,
-  Check,
-  AlertCircle,
-  Package,
-  Tag,
-} from "lucide-react";
-import { useCurrency} from "../currency/currencyContext";
+import { ShoppingCart, Check, AlertCircle, Package, Tag } from "lucide-react";
+import { useCurrency } from "../currency/currencyContext";
+import { localClickedList } from "../clickedList";
 const token = localStorage.getItem("token");
 
 const Card = memo(function Card(props) {
@@ -86,18 +81,6 @@ const Card = memo(function Card(props) {
     }
   };
 
-  function localClickedList(fabric) {
-    const clickedList =
-      JSON.parse(localStorage.getItem("localClickedList")) || [];
-    const clickedItemId = clickedList.find((item) => item._id === fabric._id); // Assuming 'id' is unique for each fabric
-    if (clickedItemId) {
-    } else {
-      const clickedItem = { ...fabric, newquantity: 1 };
-      clickedList.push(clickedItem);
-    }
-    localStorage.setItem("localClickedList", JSON.stringify(clickedList));
-  }
-
   const handleImageLoad = () => {
     setIsImageLoaded(true);
   };
@@ -162,14 +145,25 @@ const Card = memo(function Card(props) {
           {/* Price display with discount if available */}
           <p className="product-price">
             {hasDiscount ? (
-              <>
-                <span className="original-price">{currency}{props.price}</span>
-                <span className="discount-price">{currency}{props.discountPrice}</span>
-              </>
+              <div>
+                <span className="original-price">
+                  {currency}
+                  {props.price}
+                </span>
+                <br />
+                <span className="discount-price">
+                  {currency}
+                  {props.discountPrice}{" "}
+                  <span className="per-unit"> per yard</span>
+                </span>
+              </div>
             ) : (
-              <span>{currency}{props.price}</span>
+              <span>
+                {currency}
+                {props.price} 
+                <span className="per-unit"> per yard</span>
+              </span>
             )}
-            <span className="per-unit"> per yard</span>
           </p>
 
           <p className="product-quantity">

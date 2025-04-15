@@ -24,12 +24,14 @@ import {
 } from "lucide-react";
 import { applyExchangeRate } from "../currency/exchangeRate";
 import { useCurrency } from "../currency/currencyContext";
+import { localClickedList } from "../clickedList";
 
 export default function ItemsInfo() {
   const [item, setItem] = useState([]);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [relatedItems, setRelatedItems] = useState([]);
   const [error, setError] = useState("");
+  const [usedPrice, setUsedPrice] = useState(1);
   const {
     cartList,
     setCartList,
@@ -40,9 +42,9 @@ export default function ItemsInfo() {
     setCartNo,
     authenticated,
   } = useContext(ProductContext);
-  
+
   const { id } = useParams();
-  const { exchangeRate,currency } = useCurrency();
+  const { exchangeRate, currency } = useCurrency();
   const [selectedQuantity, setSelectedQuantity] = useState(() => {
     const storedQuantity = JSON.parse(
       localStorage.getItem(`selectedQuantity-${id}`)
@@ -60,14 +62,24 @@ export default function ItemsInfo() {
         const relatedResponse = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/related-Items/${id}`
         );
-      const itemWithRate = applyExchangeRate(ItemInfo.data.item, exchangeRate);
-      const relatedWithRate = applyExchangeRate(
-        relatedResponse.data.relatedItems,
-        exchangeRate
-      );
+        const itemWithRate = applyExchangeRate(
+          ItemInfo.data.item,
+          exchangeRate
+        );
+        const price = itemWithRate.discountPrice || itemWithRate.price;
 
-      setItem(itemWithRate);
-      setRelatedItems(relatedWithRate);
+        const relatedWithRate = applyExchangeRate(
+          relatedResponse.data.relatedItems,
+          exchangeRate
+        );
+
+        setItem(itemWithRate);
+        setUsedPrice(price);
+        if (exchangeRate) {
+          localClickedList(itemWithRate)
+        }
+
+        setRelatedItems(relatedWithRate);
       } catch (err) {
         console.error("Error fetching item data:", err);
         setError("Failed to load product information. Please try again later.");
@@ -76,7 +88,7 @@ export default function ItemsInfo() {
     fetchData();
     // Reset image loaded state when ID changes
     setIsImageLoaded(false);
-  }, [id,exchangeRate]);
+  }, [id, exchangeRate]);
 
   const clickedList =
     JSON.parse(localStorage.getItem("localClickedList")) || [];
@@ -90,7 +102,7 @@ export default function ItemsInfo() {
       clickedItemToUpdate.newquantity = newQuantity;
       clickedItemToUpdate.newprice =
         newQuantity * clickedItemToUpdate.discountPrice ||
-        newQuantity * clickedItemToUpdate.Price;
+        newQuantity * clickedItemToUpdate.price;
 
       localStorage.setItem(
         "localClickedList",
@@ -114,6 +126,7 @@ export default function ItemsInfo() {
       matchingCartItem.quantity = newQuantity;
       matchingCartItem.price = price * newQuantity;
 
+
       const matchingInitialItem =
         Array.isArray(initialItems) &&
         initialItems.find((initialItem) => initialItem._id === id);
@@ -129,7 +142,8 @@ export default function ItemsInfo() {
       ).newquantity = newQuantity;
       updatedInitialItems.find((initialItem) => initialItem._id === id).price =
         newQuantity * item.price;
-
+      updatedInitialItems.find((initialItem) => initialItem._id === id).discountPrice =
+        newQuantity * item.discountPrice;
 
       setCartList(updatedCartList);
       setInitialItems(updatedInitialItems);
@@ -225,7 +239,6 @@ export default function ItemsInfo() {
     setLocalCartLength(storedCartList.length);
     setCartNo(storedCartList.length);
 
-
     if (authenticated) {
       try {
         const productId = fabric._id;
@@ -256,7 +269,6 @@ export default function ItemsInfo() {
       }
     }
   };
-
 
   function localClickedList(fabric) {
     const clickedList =
@@ -385,7 +397,11 @@ export default function ItemsInfo() {
               <select
                 className="quantity-input"
                 onChange={(e) =>
-                  handleQuantityChange(id, Number.parseInt(e.target.value))
+                  handleQuantityChange(
+                    id,
+                    Number.parseInt(e.target.value),
+                    usedPrice
+                  )
                 }
                 value={
                   (Array.isArray(initialItems) &&

@@ -24,7 +24,6 @@ export const pay = async (req: Request, res: Response) => {
     currency,
   } = req.body;
 
-  console.log(req.body)
 
   if (!Array.isArray(itemsData)) {
     var arrayItemsData = [itemsData];
@@ -49,6 +48,7 @@ export const pay = async (req: Request, res: Response) => {
           state: selectedState,
           address,
           street,
+          currency: currency,
         },
         callback_url: redirectUrl,
       },
@@ -103,6 +103,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
         user: userId,
         email: metaData.email,
         name: metaData.name,
+        currency: metaData.currency,
         shippingAddress: {
           country: metaData.country.label,
           city: metaData.city,
@@ -119,16 +120,31 @@ export const verifyPayment = async (req: Request, res: Response) => {
         transactionDate: new Date(),
         callbackUrl: data.callback_url || "",
       });
-      await SalesStats.findOneAndUpdate(
+      if (metaData.currency == 'NGN'){
+    await SalesStats.findOneAndUpdate(
         {},
         {
           $inc: {
-            totalRevenue: data.amount / 100,
+            totalNairaRevenue: data.amount / 100,
             totalOrders: 1,
           },
         },
         { upsert: true }
-      );
+      );       
+      }
+      else if (metaData.currency == 'USD'){
+         await SalesStats.findOneAndUpdate(
+        {},
+        {
+          $inc: {
+            totalDollarRevenue: data.amount / 100,
+            totalOrders: 1,
+          },
+        },
+        { upsert: true }
+      );    
+      }
+   
 
       await newPayment.save();
 
