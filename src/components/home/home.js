@@ -3,10 +3,12 @@ import useFabricStore from"../stores/useHomeStore"; // Import the Zustand store
 import { Link } from "react-router-dom";
 import Card from "../cards/homeCard";
 import "./home.scss";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.webp";
 import hero from "../../assets/hero.png";
 import { title } from "../globalPhrases";
 import { useCurrency } from "../currency/currencyContext";
+import logo2 from "../../assets/logo2.webp";
+import { ChevronRight } from "lucide-react";
 
 const Home = memo(() => {
   const {exchangeRate} = useCurrency();
@@ -25,9 +27,24 @@ useEffect(() => {
       <h3 className="welcome">
         Welcome To {title} <img src={logo} className="logo" />
       </h3>
-      <div className="hero-image">
-        <img src={hero} />
+
+      <div className="hero-section">
+        <div className="hero-image">
+          <img src={logo2} alt="Hero" />
+          <div className="hero-overlay">
+            <h1 className="hero-title">{title}</h1>
+            <p className="hero-subtitle">
+              Premium quality fabrics for your unique style
+            </p>
+            <Link to="https://wa.link/xk588j" className="hero-cta">
+              Special Order? <ChevronRight size={16} />
+            </Link>
+          </div>
+        </div>
       </div>
+      {/* <div className="hero-image">
+        <img src={hero} />
+      </div> */}
       <div className="home-links">
         <div className="home-top-section-links">
           <Link to="/fabrics" className="home-link">
