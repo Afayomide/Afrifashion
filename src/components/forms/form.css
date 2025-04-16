@@ -116,15 +116,7 @@
   margin-bottom: 1.5rem;
 }
 
-.input-icon {
-  position: absolute;
-  left: 1rem;
-  top: 1rem;
-  color: var(--navcolor);
-  opacity: 0.6;
-  transition: all 0.3s ease;
-  z-index: 1;
-}
+
 
 .input-field {
   width: 100%;

@@ -25,6 +25,15 @@
   left: 1rem;
   z-index: 100;
 }
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  color: var(--navcolor);
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
 
 html,
 body {

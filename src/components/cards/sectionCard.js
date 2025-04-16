@@ -140,11 +140,20 @@ export const Card = memo(function Card(props) {
           <p className="product-price">
             {hasDiscount ? (
               <>
-                <span className="original-price">{currency}{props.price}</span>
-                <span className="discount-price">{currency}{props.discountPrice}</span>
+                <span className="original-price">
+                  {currency}
+                  {props.price.toLocaleString()}
+                </span>
+                <span className="discount-price">
+                  {currency}
+                  {props.discountPrice.toLocaleString()}
+                </span>
               </>
             ) : (
-              <span>{currency}{props.price}</span>
+              <span>
+                {currency}
+                {props.price.toLocaleString()}
+              </span>
             )}
             <span className="per-unit"> per yard</span>
           </p>

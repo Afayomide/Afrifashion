@@ -148,19 +148,19 @@ const Card = memo(function Card(props) {
               <div>
                 <span className="original-price">
                   {currency}
-                  {props.price}
+                  {props.price.toLocaleString()}
                 </span>
                 <br />
                 <span className="discount-price">
                   {currency}
-                  {props.discountPrice}{" "}
+                  {props.discountPrice.toLocaleString()}{" "}
                   <span className="per-unit"> per yard</span>
                 </span>
               </div>
             ) : (
               <span>
                 {currency}
-                {props.price} 
+                {props.price.toLocaleString()}
                 <span className="per-unit"> per yard</span>
               </span>
             )}

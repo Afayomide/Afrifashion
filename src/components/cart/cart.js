@@ -54,6 +54,8 @@ function Cart() {
   }
   const token = localStorage.getItem("token");
 
+
+
   useEffect(() => {
     const fetchData = async () => {
       if (authenticated && mainLoading && exchangeRate) {
@@ -257,7 +259,7 @@ function Cart() {
           <span>Total:</span>
           <span className="total-amount">
             {currency}
-            {total}
+            {total.toLocaleString()}
           </span>
         </div>
       </div>
@@ -338,10 +340,18 @@ function Cart() {
 
                     <p className="item-price">
                       <span className="label">Price:</span>
-                      <span className="value">
-                        {currency}
-                        {item.discountPrice || item.price}
-                      </span>
+                      {item.discountPrice ? (
+                        <span className="value">
+                          {currency}
+                          {item.discountPrice.toLocaleString()}
+                        </span>
+                      ) : (
+                        <span className="value">
+                          {currency}
+                          {
+                            item.price.toLocaleString()}
+                        </span>
+                      )}
                     </p>
                   </div>
 
@@ -363,7 +373,7 @@ function Cart() {
               <span>Subtotal:</span>
               <span>
                 {currency}
-                {total}
+                {total.toLocaleString()}
               </span>
             </div>
             <div className="summary-row">
@@ -374,7 +384,7 @@ function Cart() {
               <span>Total:</span>
               <span>
                 {currency}
-                {total}
+                {total.toLocaleString()}
               </span>
             </div>
 

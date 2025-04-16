@@ -123,14 +123,11 @@
   position: relative;
 }
 
-.input-icon {
-  position: absolute;
-  left: 1rem;
-  top: 1rem;
-  color: var(--navcolor);
-  opacity: 0.6;
-  transition: all 0.3s ease;
+.select-group .input-icon {
   z-index: 1;
+}
+.first-label-group{
+  z-index: 3;
 }
 
 .textarea-icon {

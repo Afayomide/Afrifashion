@@ -47,7 +47,7 @@ function CheckoutPage() {
   const [selectedState, setSelectedState] = useState(null);
 
   useEffect(() => {
-    setTotal(localStorage.getItem("total"));
+    setTotal(Number(localStorage.getItem("total")));
   }, []);
 
   const localEmail = localStorage.getItem("email");
@@ -197,7 +197,10 @@ function CheckoutPage() {
                     </div>
                     <div className="total-text">
                       <span>Total Amount</span>
-                      <h3>{currency}{total}</h3>
+                      <h3>
+                        {currency}
+                        {total.toLocaleString()}
+                      </h3>
                     </div>
                   </div>
 
@@ -282,7 +285,7 @@ function CheckoutPage() {
                     <label htmlFor="phone">Phone Number</label>
                   </div>
 
-                  <div className="form-group select-group">
+                  <div className="form-group select-group first-label-group">
                     <div className="input-icon">
                       <Globe size={18} />
                     </div>
@@ -304,7 +307,9 @@ function CheckoutPage() {
                     <div className="input-icon">
                       <Building size={18} />
                     </div>
-                    <label className="select-label">State/Province</label>
+                    <label className="select-label state-label">
+                      State/Province
+                    </label>
                     <Select
                       options={states}
                       value={selectedState}
@@ -337,7 +342,6 @@ function CheckoutPage() {
                       id="street"
                       onChange={(e) => setStreet(e.target.value)}
                       value={street}
-                      placeholder="Street"
                       onFocus={() => handleFocus("street")}
                       onBlur={handleBlur}
                       required
@@ -359,7 +363,6 @@ function CheckoutPage() {
                       id="city"
                       onChange={(e) => setCity(e.target.value)}
                       value={city}
-                      placeholder="City"
                       onFocus={() => handleFocus("city")}
                       onBlur={handleBlur}
                       required
@@ -381,7 +384,6 @@ function CheckoutPage() {
                       id="postalCode"
                       onChange={(e) => setPostalCode(e.target.value)}
                       value={postalCode}
-                      placeholder="Postal Code"
                       onFocus={() => handleFocus("postalCode")}
                       onBlur={handleBlur}
                       required
@@ -454,7 +456,12 @@ function CheckoutPage() {
                       </div>
 
                       <p className="item-price">
-                        <span>Price:</span> {currency}{item.price}
+                        <span>Price:</span> {currency}
+                        {item.discountPrice ? (
+                          <>{item.discountPrice.toLocaleString()}</>
+                        ) : (
+                          <>{item.price.toLocaleString()}</>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -464,7 +471,10 @@ function CheckoutPage() {
               <div className="summary-total">
                 <div className="summary-row">
                   <span>Subtotal</span>
-                  <span>{currency}{total}</span>
+                  <span>
+                    {currency}
+                    {total.toLocaleString()}
+                  </span>
                 </div>
                 <div className="summary-row">
                   <span>Shipping</span>
@@ -472,7 +482,10 @@ function CheckoutPage() {
                 </div>
                 <div className="summary-row total">
                   <span>Total</span>
-                  <span>{currency}{total}</span>
+                  <span>
+                    {currency}
+                    {total.toLocaleString()}
+                  </span>
                 </div>
               </div>
             </div>
