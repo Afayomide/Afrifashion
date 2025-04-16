@@ -34,7 +34,8 @@ useEffect(() => {
           <div className="hero-overlay">
             <h1 className="hero-title">{title}</h1>
             <p className="hero-subtitle">
-              Premium quality fabrics for your unique style
+              Premium quality fabrics for your unique style<br/>
+              24/7 shopping and delivery
             </p>
             <Link to="https://wa.link/xk588j" className="hero-cta">
               Special Order? <ChevronRight size={16} />
