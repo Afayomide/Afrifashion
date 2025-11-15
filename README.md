@@ -1,7 +1,7 @@
 # AfriFashion — African Fashion E-Commerce Platform  
 **Live Demo:** [afrifashion.vercel.app](https://nativefabs.com)  
 **Now Public!**  
-*Freshly open-sourced — just made public today. PRs, issues, and stars welcome!*
+*Freshly open-sourced — just made public. PRs, issues, and stars welcome!*
 
 ---
 
