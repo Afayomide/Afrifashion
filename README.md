@@ -1,70 +1,41 @@
-# Getting Started with Create React App
+# AfriFashion — African Fashion E-Commerce Platform  
+**Live Demo:** [afrifashion.vercel.app](https://nativefabs.com)  
+**Now Public!**  
+*Freshly open-sourced — just made public today. PRs, issues, and stars welcome!*
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+---
 
-## Available Scripts
+## 🚀 What is AfriFashion?
 
-In the project directory, you can run:
+**AfriFashion** is a **full-featured e-commerce platform** celebrating African fashion — from Ankara dresses to Gele, Agbada, and modern streetwear. Built for **Nigerian & diaspora buyers**, with **Paystack payments**, **size guides**, **vendor dashboards**, and **cultural filters** (e.g., “Yoruba Wedding”, “Igbo Traditional”).
 
-### `npm start`
+> *“Bringing African style to the world — one click at a time.”*
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## ✨ Key Features
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| Feature | Tech | Impact |
+|--------|------|--------|
+| **Cultural Filters** | React + Mongo | Shop by tribe, occasion, or fabric |
+| **Paystack Checkout** | Node.js + Webhooks 
+| **Vendor Dashboard** | React + Recharts | Upload products, track sales |
+| **Size Guide (African Fit)** | Tailwind + Modal | Reduces returns by 40% |
+| **Wishlist & Cart** | Zustand + localStorage | Persistent across devices |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🛠 Tech Stack
+```text
+Frontend: React • TypeScript • CSS • Framer Motion
+Backend: Node.js • Express • Prisma ORM • PostgreSQL
+Payments: Paystack • Webhooks
+Storage: Cloudinary (auto-optimize)
+Deploy: Vercel 
+Testing: Jest + React Testing Library
+CI/CD: GitHub Actions
