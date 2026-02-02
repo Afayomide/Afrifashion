@@ -14,7 +14,7 @@ import Image from "next/image";
 
 const Fabrics = memo(({ initialData }: { initialData: any[] }) => {
   const { fabricsList, isLoading, error, fetchFabrics } = useFabricStore();
-  const { mainLoading } = useContext(ProductContext);
+  const { mainLoading } = useContext(ProductContext)!;
   const { exchangeRate } = useCurrency();
   const [mounted, setMounted] = useState(false);
 
