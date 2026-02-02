@@ -2,8 +2,7 @@
 
 # dependencies
 .env
-server/.env
-/node_modules
+node_modules/
 /.pnp
 .pnp.js
 
@@ -12,6 +11,10 @@ server/.env
 
 # production
 /build
+
+# Next.js build output
+.next
+
 
 # misc
 .DS_Store
