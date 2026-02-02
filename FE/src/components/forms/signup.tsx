@@ -22,7 +22,7 @@ import {
 
 export default function Signup() {
   const [check, setCheck] = useState(false);
-  const { authenticated } = useContext(ProductContext);
+  const { authenticated } = useContext(ProductContext)!;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [fullname, setFullname] = useState("");
