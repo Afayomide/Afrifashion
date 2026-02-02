@@ -22,21 +22,15 @@ function VerifyPage() {
   const reference = searchParams.get("reference");
 
   const {
-    total,
-    setTotal,
+    cartTotal,
     authenticated,
-    setLocalCartLength,
     setShouldFetchCart,
-  } = useContext(ProductContext);
+  } = useContext(ProductContext)!;
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.REACT_APP_API_URL;
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setTotal(localStorage.getItem("total"));
-    }
-  }, []);
+
 
   useEffect(() => {
           const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;

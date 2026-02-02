@@ -33,6 +33,7 @@ interface ProductContextType {
   setMainLoading: (loading: boolean) => void;
   shouldSearch: boolean;
   setShouldSearch: (search: boolean) => void;
+  setShouldFetchCart: (fetch: boolean) => void;
 }
 
 export const ProductContext = createContext<ProductContextType | null>(null);
@@ -42,9 +43,16 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
   const [authenticated, setAuthenticated] = useState(false);
   const [mainLoading, setMainLoading] = useState(true);
   const [shouldSearch, setShouldSearch] = useState(false);
+  const [shouldFetchCart, setShouldFetchCart] = useState(false);
   const { exchangeRate } = useCurrency();
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.REACT_APP_API_URL;
+
+  useEffect(() => {
+    if (shouldFetchCart) {
+      fetchCart().then(() => setShouldFetchCart(false));
+    }
+  }, [shouldFetchCart]);
 
   // Derived state
   const cartCount = useMemo(() => cartItems.length, [cartItems]);
@@ -235,6 +243,7 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
         setMainLoading,
         shouldSearch,
         setShouldSearch,
+        setShouldFetchCart,
       }}
     >
       {children}
